@@ -1,0 +1,276 @@
+/* RESET E VARIÁVEIS DO MODO ESCURO */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg-main: #0b0e11;         /* Fundo grafite profundo */
+    --bg-card: #13191f;         /* Cards principais */
+    --bg-inner: #1a222a;        /* Elementos destacados */
+    
+    --text-primary: #f8fafc;    /* Texto principal claro */
+    --text-secondary: #94a3b8;  /* Texto de suporte cinza */
+    
+    --success-mint: #34c759;    /* Verde padrão Apple iOS para segurança */
+    --success-glow: rgba(52, 199, 89, 0.1);
+    --success-border: rgba(52, 199, 89, 0.25);
+    
+    --radius-lg: 24px;
+    --radius-md: 16px;
+    --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* HEADER DO MANUAL */
+.dicas-header {
+    background: linear-gradient(to bottom, rgba(11, 14, 17, 0.4), #0b0e11), 
+                url('https://images.unsplash.com/photo-1592417817098-8f3d6eb19675') center/cover no-repeat;
+    padding: 90px 24px 50px 24px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.dicas-badge {
+    background: var(--success-glow);
+    border: 1px solid var(--success-border);
+    color: var(--success-mint);
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 20px;
+}
+
+.dicas-badge .material-symbols-rounded {
+    font-size: 1.1rem;
+}
+
+.dicas-header h1 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    letter-spacing: -1px;
+    margin-bottom: 12px;
+}
+
+.dicas-header p {
+    font-size: 1.15rem;
+    color: var(--text-secondary);
+    max-width: 700px;
+    margin: 0 auto;
+    font-weight: 300;
+}
+
+/* CONTAINER DE CONTEÚDO */
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px 60px 24px;
+}
+
+/* BOTÃO VOLTAR (ESTILO APPLE) */
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    margin: 32px 0;
+    transition: var(--transition);
+}
+
+.back-btn .material-symbols-rounded {
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.back-btn:hover {
+    color: #ffffff;
+    transform: translateX(-4px);
+}
+
+/* TÍTULO DA SEÇÃO */
+.section-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.icon-wrapper {
+    background: rgba(255, 255, 255, 0.04);
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--success-mint);
+}
+
+h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: #ffffff;
+}
+
+/* GRID DE ETAPAS (2x2 ou Responsivo) */
+.steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+/* CARDS DE DIRETRIZES */
+.step-card {
+    background-color: var(--bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: var(--radius-lg);
+    padding: 36px;
+    transition: var(--transition);
+}
+
+.step-card:hover {
+    border-color: var(--success-border);
+    background: linear-gradient(145deg, var(--bg-card), rgba(52, 199, 89, 0.01));
+    transform: translateY(-4px);
+}
+
+.card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.step-num {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.1);
+    font-variant-numeric: tabular-nums;
+}
+
+.card-apple-icon {
+    color: var(--success-mint);
+    background: rgba(255, 255, 255, 0.02);
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-apple-icon .material-symbols-rounded {
+    font-size: 1.3rem;
+}
+
+.step-card h3 {
+    color: #ffffff;
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    letter-spacing: -0.3px;
+}
+
+.step-card p {
+    color: var(--text-secondary);
+    font-size: 0.98rem;
+    line-height: 1.65;
+}
+
+.step-card strong {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* BANNER DE INFORMAÇÃO / ALERTA DE LOGÍSTICA */
+.banner-info {
+    background: var(--bg-inner);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    border-radius: var(--radius-md);
+    padding: 32px;
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    position: relative;
+    overflow: hidden;
+}
+
+.banner-info::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background-color: #ff9500; /* Laranja de Advertência iOS */
+}
+
+.banner-icon-box {
+    color: #ff9500;
+    background: rgba(255, 149, 0, 0.1);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.banner-icon-box .material-symbols-rounded {
+    font-size: 1.4rem;
+    font-variation-settings: 'FILL' 1; /* Preenche a lâmpada interna */
+}
+
+.banner-text {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.banner-text strong {
+    color: #ffffff;
+    display: block;
+    margin-bottom: 4px;
+    font-size: 1.1rem;
+}
+
+.banner-text span {
+    color: #ff453a; /* Vermelho suave para proibição */
+    font-weight: 500;
+}
+
+/* FOOTER */
+footer {
+    text-align: center;
+    padding: 40px 24px;
+    color: rgba(255, 255, 255, 0.15);
+    font-size: 0.85rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 950px) {
+    .steps-grid { grid-template-columns: 1fr; }
+    .step-card { padding: 28px; }
+    .banner-info { flex-direction: column; gap: 16px; padding: 24px; }
+    .dicas-header h1 { font-size: 2.2rem; }
+}

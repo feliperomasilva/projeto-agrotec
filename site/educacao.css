@@ -1,0 +1,297 @@
+/* RESET E VARIÁVEIS DO MODO ESCURO */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg-main: #090c0f;         /* Fundo preto azulado fosco */
+    --bg-card: #11161b;         /* Blocos principais */
+    --bg-inner: #182026;        /* Sub-cards e destaques */
+    
+    --text-primary: #f1f5f9;    /* Texto de alta clareza */
+    --text-secondary: #94a3b8;  /* Texto secundário cinza */
+    
+    --info-cyan: #38bdf8;       /* Azul iOS para educação/tecnologia */
+    --info-glow: rgba(56, 189, 248, 0.12);
+    --info-border: rgba(56, 189, 248, 0.25);
+    
+    --radius-lg: 24px;
+    --radius-md: 14px;
+    --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* HEADER INSTITUCIONAL */
+.edu-header {
+    background: linear-gradient(to bottom, rgba(9, 12, 15, 0.3), #090c0f), 
+                url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40') center/cover no-repeat;
+    padding: 90px 24px 50px 24px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.edu-badge {
+    background: var(--info-glow);
+    border: 1px solid var(--info-border);
+    color: var(--info-cyan);
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 20px;
+}
+
+.edu-badge .material-symbols-rounded {
+    font-size: 1.1rem;
+}
+
+.edu-header h1 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    letter-spacing: -1px;
+    margin-bottom: 12px;
+}
+
+.edu-header p {
+    font-size: 1.15rem;
+    color: var(--text-secondary);
+    max-width: 700px;
+    margin: 0 auto;
+    font-weight: 300;
+}
+
+/* CONTAINER */
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px 60px 24px;
+}
+
+/* BOTÃO VOLTAR (ESTILO APPLE) */
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    margin: 32px 0;
+    transition: var(--transition);
+}
+
+.back-btn .material-symbols-rounded {
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.back-btn:hover {
+    color: #ffffff;
+    transform: translateX(-4px);
+}
+
+/* CARDS DE CONTEÚDO PRINCIPAL */
+.content-card {
+    background-color: var(--bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: var(--radius-lg);
+    padding: 48px;
+    margin-bottom: 32px;
+}
+
+.content-card.info-blue {
+    border-color: var(--info-border);
+    background: linear-gradient(135deg, var(--bg-card), rgba(56, 189, 248, 0.01));
+}
+
+.section-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.icon-wrapper {
+    background: rgba(255, 255, 255, 0.04);
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--info-cyan);
+}
+
+h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: #ffffff;
+}
+
+.lead-text {
+    font-size: 1.15rem;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+    font-weight: 400;
+}
+
+.section-intro {
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+}
+
+/* GRID LAYOUT DA EDUCAÇÃO */
+.edu-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 48px;
+    align-items: start;
+}
+
+p {
+    color: var(--text-secondary);
+    font-size: 1.02rem;
+    margin-bottom: 20px;
+}
+
+/* CAIXA DE DESTAQUE INTERNO */
+.highlight-box {
+    background-color: var(--bg-inner);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    border-left: 4px solid var(--info-cyan);
+    border-radius: 4px var(--radius-md) var(--radius-md) 4px;
+    padding: 28px;
+    margin-top: 32px;
+}
+
+.highlight-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--info-cyan);
+    margin-bottom: 10px;
+}
+
+.highlight-title h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.highlight-box p {
+    font-size: 0.98rem;
+    margin-bottom: 0;
+}
+
+/* CAIXA DE IMAGEM */
+.img-box {
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    height: 430px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    opacity: 0.8;
+}
+
+.img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* GRID DOS PILARES EXTRA */
+.pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+}
+
+.pillar-card {
+    background: rgba(255, 255, 255, 0.01);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    padding: 32px;
+    border-radius: var(--radius-md);
+    transition: var(--transition);
+}
+
+.pillar-card:hover {
+    border-color: var(--info-border);
+    background: var(--bg-inner);
+    transform: translateY(-3px);
+}
+
+.pillar-tag {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--info-cyan);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-block;
+    margin-bottom: 12px;
+}
+
+.pillar-card h3 {
+    color: #ffffff;
+    margin-bottom: 12px;
+    font-size: 1.25rem;
+}
+
+.pillar-card p {
+    font-size: 0.95rem;
+    margin-bottom: 0;
+}
+
+/* COMPONENT DE SUMÁRIO INFERIOR */
+.edu-summary {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.large-icon {
+    font-size: 3.5rem;
+    color: var(--info-cyan);
+    flex-shrink: 0;
+}
+
+.summary-text h3 {
+    font-size: 1.3rem;
+    color: #ffffff;
+    margin-bottom: 6px;
+}
+
+.summary-text p {
+    margin-bottom: 0;
+    font-size: 1rem;
+}
+
+/* FOOTER */
+footer {
+    text-align: center;
+    padding: 40px 24px;
+    color: rgba(255, 255, 255, 0.15);
+    font-size: 0.85rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 850px) {
+    .edu-grid { grid-template-columns: 1fr; gap: 32px; }
+    .img-box { height: 260px; order: -1; }
+    .content-card { padding: 32px 20px; }
+    .edu-header h1 { font-size: 2.2rem; }
+    .edu-summary { flex-direction: column; text-align: center; }
+}
