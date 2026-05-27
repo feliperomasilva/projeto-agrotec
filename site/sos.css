@@ -1,0 +1,186 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #000000; /* Preto puro para alto contraste médico */
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.sos-container {
+    width: 100%;
+    max-width: 480px;
+    background: #121214;
+    border: 1px solid rgba(255, 59, 48, 0.2);
+    border-radius: 28px;
+    padding: 32px 24px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+}
+
+/* HEADER DO SOS */
+.sos-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.sos-icon-alert {
+    color: #ff3b30;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 59, 48, 0.1);
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    margin-bottom: 16px;
+    animation: pulseGlow 1.5s infinite alternate ease-in-out;
+}
+
+.sos-icon-alert .material-symbols-rounded {
+    font-size: 2.2rem;
+}
+
+.sos-header h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+}
+
+.sos-header p {
+    color: #94a3b8;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+/* CAIXAS DE LIGAÇÃO */
+.call-box {
+    background: #1c1c1e;
+    border-radius: 18px;
+    padding: 20px;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.call-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #94a3b8;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+.call-number-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: #2cc751; /* Verde iOS */
+    color: white;
+    text-decoration: none;
+    padding: 16px;
+    border-radius: 12px;
+    font-size: 1.3rem;
+    font-weight: 700;
+    transition: opacity 0.2s;
+}
+
+.call-number-btn.emergency {
+    background: #ff3b30; /* Vermelho Emergência */
+}
+
+.call-number-btn:active {
+    opacity: 0.8;
+}
+
+.call-sub {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-top: 8px;
+}
+
+/* PLANILHA DE INSTRUÇÃO CURTA */
+.action-sheet {
+    background: #1c1c1e;
+    border-radius: 18px;
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+.action-sheet h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 14px;
+    color: #ff9500; /* Laranja de Alerta */
+}
+
+.sheet-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: #e2e8f0;
+}
+
+.sheet-item:last-child {
+    margin-bottom: 0;
+}
+
+.item-num {
+    background: rgba(255, 255, 255, 0.08);
+    color: #94a3b8;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+/* BOTÃO DE SAÍDA */
+.exit-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: #64748b;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.2s;
+    margin: 0 auto;
+    width: fit-content;
+}
+
+.exit-btn:hover {
+    color: white;
+}
+
+.exit-btn .material-symbols-rounded {
+    font-size: 1.1rem;
+}
+
+/* ANIMAÇÃO DE PULSAR */
+@keyframes pulseGlow {
+    from {
+        box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.4);
+    }
+    to {
+        box-shadow: 0 0 0 12px rgba(255, 59, 48, 0);
+    }
+}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOS Emergência - Consciência no Campo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Ícones estilo iPhone/iOS -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
+    
+    <link rel="stylesheet" href="sos.css">
+</head>
+<body>
+
+<div class="sos-container">
+
+    <!-- CABEÇALHO DE ALERTA -->
+    <header class="sos-header">
+        <div class="sos-icon-alert">
+            <span class="material-symbols-rounded">warning</span>
+        </div>
+        <h1>Atendimento de Emergência</h1>
+        <p>Suspeita ou confirmação de intoxicação por defensivos agrícolas.</p>
+    </header>
+
+    <!-- CARD PRINCIPAL: LIGAÇÃO DIRETA -->
+    <main class="sos-content">
+        
+        <div class="call-box">
+            <span class="call-label">DISQUE-INTOXICAÇÃO (ANVISA)</span>
+            <a href="tel:08007226001" class="call-number-btn">
+                <span class="material-symbols-rounded">call</span>
+                0800 722 6001
+            </a>
+            <p class="call-sub">Ligação gratuita, direta e disponível 24h.</p>
+        </div>
+
+        <div class="call-box medical">
+            <span class="call-label">SOCORRO MÉDICO DE URGÊNCIA</span>
+            <a href="tel:192" class="call-number-btn emergency">
+                <span class="material-symbols-rounded">medical_services</span>
+                Ligar 192 (SAMU)
+            </a>
+        </div>
+
+        <!-- PROTOCOLO CURTO DE PRIMEIROS SOCORROS -->
+        <div class="action-sheet">
+            <h3>Conduta Imediata:</h3>
+            <div class="sheet-item">
+                <span class="item-num">1</span>
+                <p>Afaste a vítima do local da contaminação.</p>
+            </div>
+            <div class="sheet-item">
+                <span class="item-num">2</span>
+                <p>Retire as roupas sujas do produto e lave a pele com água corrente abundante.</p>
+            </div>
+            <div class="sheet-item">
+                <span class="item-num">3</span>
+                <p><strong>Não force o vômito</strong> a menos que orientado explicitamente por um médico.</p>
+            </div>
+            <div class="sheet-item">
+                <span class="item-num">4</span>
+                <p>Leve a embalagem ou o rótulo do produto para o hospital.</p>
+            </div>
+        </div>
+
+        <!-- LINK PARA VOLTAR -->
+        <a href="tela.html" class="exit-btn">
+            <span class="material-symbols-rounded">close</span> Sair do SOS
+        </a>
+
+    </main>
+
+</div>
+
+</body>
+</html>

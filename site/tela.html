@@ -8,14 +8,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Link para carregar os ícones estilo Apple/iOS (Material Symbols Rounded) -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,300,0,0" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
     
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- HEADER PRINCIPAL -->
 <header class="main-header">
     <div class="header-overlay"></div>
     <div class="header-container">
@@ -29,22 +27,29 @@
     </div>
 </header>
 
-<!-- NAVBAR FLUTUANTE -->
 <nav class="floating-nav">
     <div class="nav-container">
+        
         <div class="logo">Bio<span>Consciência</span></div>
+        
         <div class="nav-links">
             <a href="riscos.html">Riscos</a>
             <a href="educacao.html">Educação</a>
             <a href="dicas.html">Dicas</a>
             <a href="alternativas.html" class="nav-btn">Alternativas</a>
         </div>
+
+        <div class="nav-sos-wrapper">
+            <a href="sos.html" class="nav-sos-btn" title="Atendimento Rápido - Intoxicação">
+                <span class="material-symbols-rounded">warning</span>
+                <span>SOS INTOXICAÇÃO</span>
+            </a>
+        </div>
+
     </div>
 </nav>
-
 <main class="main-container">
 
-    <!-- SEÇÃO: RISCOS -->
     <section id="riscos" class="grid-layout">
         <div class="text-content">
             <span class="section-badge danger">Impacto Crítico</span>
@@ -63,7 +68,6 @@
         </div>
     </section>
 
-    <!-- SEÇÃO: EDUCAÇÃO -->
     <section id="educacao" class="grid-layout reverse">
         <div class="image-wrapper">
             <img src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6" alt="Agricultura consciente">
@@ -77,7 +81,6 @@
         </div>
     </section>
 
-    <!-- SEÇÃO: DICAS -->
     <section id="dicas" class="cards-section">
         <div class="center-title">
             <span class="section-badge success">Manejo Seguro</span>
@@ -87,21 +90,18 @@
 
         <div class="cards-grid">
             <div class="card-modern">
-                <!-- Ícone Estilo Target/Alvo do iOS -->
                 <div class="card-icon"><span class="material-symbols-rounded">track_changes</span></div>
                 <h3>Dosagem Cirúrgica</h3>
                 <p>O respeito absoluto aos limites técnicos evita a saturação de resíduos químicos na planta.</p>
             </div>
 
             <div class="card-modern">
-                <!-- Ícone Estilo Shield/Escudo do iOS -->
                 <div class="card-icon"><span class="material-symbols-rounded">shield</span></div>
                 <h3>Barreiras de Proteção</h3>
                 <p>A utilização correta de EPIs preserva o maior patrimônio do campo: a saúde do trabalhador.</p>
             </div>
 
             <div class="card-modern">
-                <!-- Ícone Estilo Lock/Cadeado do iOS -->
                 <div class="card-icon"><span class="material-symbols-rounded">lock</span></div>
                 <h3>Controle Logístico</h3>
                 <p>O armazenamento hermético e isolado elimina riscos de contaminações acidentais na propriedade.</p>
@@ -113,7 +113,6 @@
         </div>
     </section>
 
-    <!-- SEÇÃO: ALTERNATIVAS -->
     <section id="alternativas" class="cards-section alt-section">
         <div class="center-title">
             <span class="section-badge accent">A Nova Era</span>
@@ -123,21 +122,18 @@
 
         <div class="cards-grid">
             <div class="card-modern alt-card">
-                <!-- Ícone Estilo Leaf/Folha do iOS -->
                 <div class="card-icon"><span class="material-symbols-rounded">eco</span></div>
                 <h3>Sistemas Orgânicos</h3>
                 <p>Nutrição inteligente e bioadubação viva para restaurar a imunidade do solo.</p>
             </div>
 
             <div class="card-modern alt-card">
-                <!-- Ícone Estilo Bug/Inseto do iOS -->
                 <div class="card-icon"><span class="material-symbols-rounded">bug_report</span></div>
                 <h3>Manejo Biológico</h3>
                 <p>A utilização de inimigos naturais como defensores eficientes contra pragas agrícolas.</p>
             </div>
 
             <div class="card-modern alt-card">
-                <!-- Ícone Estilo Precision Manufacturing/Trator do iOS -->
                 <div class="card-icon"><span class="material-symbols-rounded">agriculture</span></div>
                 <h3>Modelos Agroecológicos</h3>
                 <p>Arranjos planejados que mimetizam o equilíbrio e a proteção de florestas nativas.</p>
@@ -152,7 +148,7 @@
 
 <footer>
     <div class="footer-content">
-        <p>&copy; 2026 BioConsciência. Semeando informação, colhendo preservação.</p>
+        <p>&copy; Projeto Agro-Tec em parceira com Técnico em agronegócio 
     </div>
 </footer>
 
