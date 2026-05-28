@@ -5,29 +5,38 @@
     box-sizing: border-box;
 }
 
-/* Estado inicial do elemento (escondido) */
+/* CORREÇÃO DO REVELAR: 
+   Garante que o conteúdo NÃO suma caso o JS falhe ou demore.
+   A animação só acontece se o navegador suportar e o JS disparar.
+*/
 .revelar {
-    opacity: 0;
-    transform: translateY(40px); /* Joga o elemento um pouco para baixo */
-    transition: opacity 0.8s ease-out, transform 0.8s ease-out; /* Suaviza a animação */
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
 }
 
-/* Estado ativo (ativado pelo JavaScript quando visível na tela) */
+/* O elemento só se prepara para sumir/subir se o JS estiver ativo na página */
+@media (prefers-reduced-motion: no-preference) {
+    .revelar:not(.ativo) {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+}
+
 .revelar.ativo {
     opacity: 1;
-    transform: translateY(0); /* Volta para a posição original */
+    transform: translateY(0);
 }
-
 
 :root {
     --bg-main: #0a0d10;         /* Preto fosco de fundo */
-    --bg-card: #12171c;         /* Cinza ardósia para blocos */
+    --bg-card: #12171c;         /* Cinza ardósia para blocks */
     --bg-inner: #192027;        /* Cards internos */
     
     --text-primary: #f8fafc;    /* Texto claro de alta legibilidade */
     --text-secondary: #94a3b8;  /* Texto de apoio */
     
-    --danger: #ff4d4d;          /* Vermelho iPhone para alertas */
+    --danger: #ff4d4d;          /* Vermelho para alertas */
     --danger-glow: rgba(255, 77, 77, 0.12);
     --danger-border: rgba(255, 77, 77, 0.25);
     
@@ -48,9 +57,9 @@ body {
 .riscos-header {
     background: linear-gradient(to bottom, rgba(10, 13, 16, 0.4), #0a0d10), 
                 url('https://images.unsplash.com/photo-1615811361523-6bd03d7748e7') center/cover no-repeat;
-    padding: 90px 24px 50px 24px;
+    padding: 97px 24px 50px 24px;
     text-align: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    border-bottom: 0px solid rgba(255, 255, 255, 0.03);
 }
 
 .danger-badge {
@@ -274,6 +283,53 @@ p {
     font-size: 1.5rem;
     color: #ffffff;
     margin-bottom: 4px;
+}
+
+/* CONTÊINER PARA VÍDEOS RESPONSIVOS */
+.video-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* Proporção 16:9 widescreen */
+    height: 0;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: #000;
+    margin-bottom: 24px;
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* SEÇÃO DE CRÉDITOS DO VÍDEO */
+.video-credits {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 20px;
+    background: var(--bg-inner);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.video-credits .material-symbols-rounded {
+    color: var(--text-secondary);
+    font-size: 1.2rem;
+}
+
+.video-credits p {
+    margin-bottom: 0;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+}
+
+.video-credits strong {
+    color: #ffffff;
 }
 
 /* FOOTER */

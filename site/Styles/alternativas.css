@@ -50,7 +50,7 @@ body {
                 url('https://images.unsplash.com/photo-1463123081488-729f551e3f3d') center/cover no-repeat;
     padding: 80px 24px 40px 24px;
     text-align: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+    border-bottom: 0px solid rgba(255, 255, 255, 0.02);
 }
 
 .alt-badge {
