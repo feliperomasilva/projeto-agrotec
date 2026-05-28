@@ -5,6 +5,20 @@
     box-sizing: border-box;
 }
 
+/* Estado inicial do elemento (escondido) */
+.revelar {
+    opacity: 0;
+    transform: translateY(40px); /* Joga o elemento um pouco para baixo */
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out; /* Suaviza a animação */
+}
+
+/* Estado ativo (ativado pelo JavaScript quando visível na tela) */
+.revelar.ativo {
+    opacity: 1;
+    transform: translateY(0); /* Volta para a posição original */
+}
+
+
 :root {
     --bg-main: #0a0d10;         /* Preto fosco de fundo */
     --bg-card: #12171c;         /* Cinza ardósia para blocos */
