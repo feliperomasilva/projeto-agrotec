@@ -341,10 +341,19 @@ footer {
     border-top: 1px solid rgba(255, 255, 255, 0.02);
 }
 
-/* RESPONSIVIDADE */
-@media (max-width: 850px) {
-    .grid { grid-template-columns: 1fr; gap: 32px; }
-    .img-box { height: 240px; order: -1; }
-    .info-section { padding: 32px 20px; }
-    .riscos-header h1 { font-size: 2.2rem; }
+/* RESPONSIVIDADE (MOBILE) */
+@media (max-width: 900px) {
+    .main-header h1 { font-size: 2.5rem; }
+    .grid-layout, .grid-layout.reverse {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    .image-wrapper { height: 280px; order: -1; }
+    section { padding: 32px 24px; }
+    
+    .nav-links { display: none; }
+    
+    .card-icon .material-symbols-rounded {
+        font-size: 2.8rem;
+    }
 }
