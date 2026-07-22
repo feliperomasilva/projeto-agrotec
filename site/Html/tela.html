@@ -1,159 +1,190 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cultivar o Amanhã - Consciência sobre Agrotóxicos</title>
+    <meta name="description" content="Projeto educativo sobre agrotóxicos com soluções sustentáveis, boas práticas e conscientização para o campo e a cidade.">
+    <title>Cultivar o Amanhã | AgroConsciência</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preload" href="../Styles/style.css" as="style">
     <link rel="stylesheet" href="../Styles/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 </head>
 <body>
-<header class="main-header">
-    <div class="header-overlay revelar"></div>
-    <div class="header-container revelar">
-        <span class="badge">PROJETO EDUCATIVO 2026</span>
-        <h1>O Futuro da Terra Depende da Nossa <span>Consciência</span></h1>
-        <p>Equilibrar a produtividade do campo com a saúde do nosso ecossistema não é apenas uma escolha, é a nossa única alternativa viável.</p>
-        <div class="header-actions">
-            <a href="#riscos" class="btn-primary">Entenda o Cenário</a>
-            <a href="#alternativas" class="btn-secondary">Ver Soluções Sustentáveis</a>
+<!-- Cabeçalho fixo com navegação principal do site -->
+<header class="site-header" data-reveal>
+    <div class="navbar">
+        <a class="brand" href="tela.html">Agro<span>Consciência</span></a>
+        <nav aria-label="Navegação principal">
+            <ul class="nav-links">
+                <li><a class="nav-link" href="#riscos">Riscos</a></li>
+                <li><a class="nav-link" href="#educacao">Educação</a></li>
+                <li><a class="nav-link" href="#dicas">Dicas</a></li>
+                <li><a class="nav-link" href="#alternativas">Alternativas</a></li>
+            </ul>
+        </nav>
+        <div class="nav-actions">
+            <a class="btn btn-tertiary" href="sos.html">SOS</a>
+            <button class="menu-toggle" aria-expanded="false" aria-label="Abrir menu" data-menu-toggle>
+                <span aria-hidden="true">☰</span>
+            </button>
         </div>
+    </div>
+    <div class="mobile-menu" data-mobile-menu>
+        <ul>
+            <li><a href="#riscos">Riscos</a></li>
+            <li><a href="#educacao">Educação</a></li>
+            <li><a href="#dicas">Dicas</a></li>
+            <li><a href="#alternativas">Alternativas</a></li>
+            <li><a class="btn btn-primary" href="sos.html">SOS Emergência</a></li>
+        </ul>
     </div>
 </header>
-
-<nav class="floating-nav revelar">
-    <div class="nav-container revelar">
-        
-        <div class="logo animate__animated animate__lightSpeedInLeft animate__delay-1s">Bio<span>Consciência</span></div>
-        
-        <div class="nav-links animate__animated animate__lightSpeedInLeft animate__delay-1s">
-            <a href="riscos.html">Riscos</a>
-            <a href="educacao.html">Educação</a>
-            <a href="dicas.html">Dicas</a>
-            <a href="alternativas.html">Alternativas</a>
+<!-- Conteúdo principal da página, dividido em seções temáticas -->
+<main>
+    <!-- Seção de apresentação com título principal e chamadas para ação -->
+    <section class="hero" aria-label="Seção principal">
+        <div class="hero-content" data-reveal>
+            <span class="hero-badge">Projeto Educativo 2026</span>
+            <h1 class="hero-title">O futuro da terra depende da nossa <span>consciência</span>.</h1>
+            <p class="hero-copy">Transforme informação em ação com um site que apresenta os riscos dos agrotóxicos, métodos sustentáveis e orientações práticas para o campo e o consumidor.</p>
+            <div class="hero-actions">
+                <a class="btn btn-primary" href="#riscos">Entenda os riscos</a>
+                <a class="btn btn-secondary" href="#alternativas">Ver alternativas</a>
+            </div>
         </div>
+        <aside class="hero-panel" data-reveal>
+            <div class="overlay-panel">
+                <h3>Impacto imediato</h3>
+                <p>Perda de biodiversidade, contaminação ambiental e risco à saúde humana.</p>
+            </div>
+            <div class="metric-grid">
+                <article class="metric-card" data-reveal>
+                    <p class="metric-value" data-counter data-target="75" data-duration="1400" data-suffix="%">0</p>
+                    <p class="metric-description">das culturas dependem de polinizadores.</p>
+                    <p class="metric-source">Fonte: Embrapa </p>
+                </article>
+                <article class="metric-card" data-reveal>
+                    <p class="metric-value" data-counter data-target="90" data-duration="1400" data-suffix="%">0</p>
+                    <p class="metric-description">dos agrotóxicos não atingem apenas as pragas.</p>
+                    <p class="metric-source">Fonte: Embrapa</p>
+                </article>
+            </div>
+        </aside>
+    </section>
 
-        <div class="nav-sos-wrapper">
-            <a href="sos.html" class="nav-sos-btn" title="Atendimento Rápido - Intoxicação">
-                <span class="material-symbols-rounded">warning</span>
-                <span>SOS INTOXICAÇÃO</span>
-            </a>
+    <!-- Seção dedicada aos riscos dos agrotóxicos e impactos ambientais -->
+    <section id="riscos" class="section" aria-labelledby="titulo-riscos" data-reveal>
+        <div class="section-header">
+            <span class="section-badge">Impacto Crítico</span>
+            <h2 id="titulo-riscos">O custo invisível do excesso</h2>
         </div>
-
-    </div>
-</nav>
-
-<main class="main-container">
-
-    <section id="riscos" class="grid-layout revelar">
-        <div class="text-content revelar">
-            <span class="section-badge danger revelar">Impacto Crítico</span>
-            <h2>O Custo Invisível do Excesso</h2>
-            <p class="section-description revelar">O uso desregulado e intensivo de compostos químicos na lavoura gera consequências silenciosas que ultrapassam as fronteiras da plantação, afetando o prato e a vida de milhares de pessoas.</p>
-            <ul class="custom-list revelar">
-                <li>Saturação química de solos produtivos</li>
-                <li>Exposição direta e crônica de produtores no campo</li>
-                <li>Infiltração residual em lençóis de abastecimento</li>
-                <li>Desequilíbrio drástico da fauna polinizadora</li>
-            </ul>
-            <a href="riscos.html" class="read-more-link">Descobrir impactos profundos <span>→</span></a>
-        </div>
-        <div class="image-wrapper revelar">
-            <img src="https://images.unsplash.com/photo-1560493676-04071c5f467b" alt="Plantação sob pulverização mecânica">
+        <div class="grid-2">
+            <div>
+                <p class="lead-text">O uso desregulado de defensivos no campo gera efeitos silenciosos que atravessam solo, água e alimento, impactando saúde e ecossistemas por décadas.</p>
+                <ul class="feature-list">
+                    <li>Saturação química de solos produtivos</li>
+                    <li>Exposição prolongada de produtores</li>
+                    <li>Contaminação de lençóis freáticos</li>
+                    <li>Colapso de polinizadores</li>
+                </ul>
+                <a class="btn btn-secondary" href="riscos.html">Descobrir impactos</a>
+            </div>
+            <div class="card card-compact" aria-hidden="true">
+                <img loading="lazy" src="https://images.unsplash.com/photo-1560493676-04071c5f467b?auto=format&fit=crop&w=900&q=80" alt="Plantação sendo pulverizada com defensivos agrícolas.">
+            </div>
         </div>
     </section>
 
-    <section id="educacao" class="grid-layout reverse revelar">
-        <div class="image-wrapper revelar">
-            <img src="../images/conhecimentos-praticos.webp" alt="Agricultura consciente">
+    <section id="educacao" class="section" aria-labelledby="titulo-educacao" data-reveal>
+        <div class="section-header">
+            <span class="section-badge">Conhecimento Prático</span>
+            <h2 id="titulo-educacao">Transformação através da informação</h2>
         </div>
-        <div class="text-content revelar">
-            <span class="section-badge info revelar">Conhecimento Prático</span>
-            <h2>Transformação Através da Informação</h2>
-            <p>Mais do que proibir, o papel atual da agronomia moderna é instrumentalizar o agricultor e a população urbana com dados científicos reais e acessíveis.</p>
-            <p>Compreender a toxicidade biológica e os ciclos de manejo correto é o primeiro passo para resgatar a autonomia técnica no ecossistema rural.</p>
-            <a href="educacao.html" class="read-more-link info-link revelar">Explorar nossa linha pedagógica <span>→</span></a>
+        <div class="grid-2">
+            <div class="card card-compact">
+                <p class="lead-text">Capacitar o produtor e educar o consumidor são os reais motores de uma transição agroecológica que preserve produtividade e proteja a vida.</p>
+                <p>O aprendizado técnico sobre toxicidade e manejo correto possibilita decisões baseadas em dados e reduz danos sem prejudicar a produção.</p>
+                <a class="btn btn-secondary" href="educacao.html">Explorar educação</a>
+            </div>
+            <div class="card card-compact" aria-hidden="true">
+                <img loading="lazy" src="../images/conhecimentos-praticos.webp" alt="Agricultor estudando práticas sustentáveis no campo.">
+            </div>
         </div>
     </section>
 
-    <section id="dicas" class="cards-section revelar">
-        <div class="center-title revelar">
-            <span class="section-badge success revelar">Manejo Seguro</span>
-            <h2>Diretrizes de Proteção Coletiva</h2>
-            <p>Boas práticas imediatas que minimizam o impacto operacional no dia a dia da colheita.</p>
+    <section id="dicas" class="section" aria-labelledby="titulo-dicas" data-reveal>
+        <div class="section-header">
+            <span class="section-badge">Manejo Seguro</span>
+            <h2 id="titulo-dicas">Diretrizes de proteção coletiva</h2>
         </div>
-
-        <div class="cards-grid revelar">
-            <div class="card-modern revelar">
-                <div class="card-icon revelar"><span class="material-symbols-rounded revelar">track_changes</span></div>
-                <h3>Dosagem Cirúrgica</h3>
-                <p>O respeito absoluto aos limites técnicos evita a saturação de resíduos químicos na planta.</p>
+        <div class="grid-cards">
+            <div class="card">
+                <h3>Dosagem cirúrgica</h3>
+                <p class="card-copy">Aplicar apenas quando necessário evita resíduos desnecessários e protege a saúde do solo e das pessoas.</p>
             </div>
-
-            <div class="card-modern revelar">
-                <div class="card-icon revelar"><span class="material-symbols-rounded revelar">shield</span></div>
-                <h3>Barreiras de Proteção</h3>
-                <p>A utilização correta de EPIs preserva o maior patrimônio do campo: a saúde do trabalhador.</p>
+            <div class="card">
+                <h3>Barreiras de proteção</h3>
+                <p class="card-copy">EPIs completos são essenciais para blindar o trabalhador do contato químico direto.</p>
             </div>
-
-            <div class="card-modern revelar">
-                <div class="card-icon revelar"><span class="material-symbols-rounded revelar">lock</span></div>
-                <h3>Controle Logístico</h3>
-                <p>O armazenamento hermético e isolado elimina riscos de contaminações acidentais na propriedade.</p>
+            <div class="card">
+                <h3>Controle logístico</h3>
+                <p class="card-copy">Armazenamento seguro reduz vazamentos, acidentes e contaminação cruzada em propriedade.</p>
             </div>
         </div>
-        
-        <div class="center-action revelar">
-            <a href="dicas.html" class="btn-outline revelar">Acessar Manual de Segurança</a>
+        <div class="section-panel">
+            <h3>Quer saber como aplicar corretamente?</h3>
+            <p>O caminho mais eficiente para reduzir danos no campo é o conhecimento técnico aliado a protocolos claros.</p>
+            <a class="btn btn-primary" href="dicas.html">Ver o manual completo</a>
         </div>
     </section>
 
-    <section id="alternativas" class="cards-section alt-section revelar">
-
-        <div class="center-title revelar">
-            <span class="section-badge accent revelar">A Nova Era</span>
-            <h2>Tecnologia e Biologia em Harmonia</h2>
-            <p>Conheça os métodos de cultivo escaláveis que estão redefinindo a produtividade global sem agredir o bioma.</p>
+    <section id="alternativas" class="section" aria-labelledby="titulo-alternativas" data-reveal>
+        <div class="section-header">
+            <span class="section-badge">A nova era</span>
+            <h2 id="titulo-alternativas">Tecnologia e biologia em harmonia</h2>
         </div>
-
-        <div class="cards-grid revelar">
-            <div class="card-modern alt-card revelar">
-                <div class="card-icon revelar"><span class="material-symbols-rounded revelar">eco</span></div>
-                <h3>Sistemas Orgânicos</h3>
-                <p>Nutrição inteligente e bioadubação viva para restaurar a imunidade do solo.</p>
+        <div class="grid-cards">
+            <div class="card">
+                <h3>Sistemas orgânicos</h3>
+                <p class="card-copy">Nutrição viva para o solo que restaura a estrutura e reduz a dependência de insumos sintéticos.</p>
             </div>
-
-            <div class="card-modern alt-card revelar">
-                <div class="card-icon revelar"><span class="material-symbols-rounded revelar">bug_report</span></div>
-                <h3>Manejo Biológico</h3>
-                <p>A utilização de inimigos naturais como defensores eficientes contra pragas agrícolas.</p>
+            <div class="card">
+                <h3>Manejo biológico</h3>
+                <p class="card-copy">Defensivos naturais e inimigos naturais protegem culturas sem deixar resíduos persistentes.</p>
             </div>
-
-            <div class="card-modern alt-card revelar">
-                <div class="card-icon revelar"><span class="material-symbols-rounded revelar">Agriculture</span></div>
-                <h3>Modelos Agroecológicos</h3>
-                <p>Arranjos planejados que mimetizam o equilíbrio e a proteção de florestas nativas.</p>
+            <div class="card">
+                <h3>Modelos agroecológicos</h3>
+                <p class="card-copy">Lavouras planejadas imitam florestas, ampliando resiliência e biodiversidade.</p>
+            </div>
+            <div class="card">
+                <h3>Extratos botânicos</h3>
+                <p class="card-copy">Caldas e óleos de plantas protegem colheitas e se degradam rapidamente no ambiente.</p>
+            </div>
+            <div class="card">
+                <h3>Feromônios sintéticos</h3>
+                <p class="card-copy">Armadilhas inteligentes quebram ciclos de praga com precisão e sem pulverizar a área inteira.</p>
+            </div>
+            <div class="card">
+                <h3>Agricultura de precisão</h3>
+                <p class="card-copy">Sensores e drones transformam o tratamento de manchas em ação localizada e econômica.</p>
             </div>
         </div>
-
-        <div class="center-action revelar">
-            <a href="alternativas.html" class="btn-accent revelar">Ver Ferramentas de Transição</a>
+        <div class="section-panel">
+            <h3>Quer saber mais alternativas eficientes?</h3>
+            <p>O caminho mais eficiente para transformar o campo é unificar conhecimento técnico e protocolos claros na adoção de bioinsumos e tecnologias limpas.</p>
+            <a class="btn btn-primary" href="alternativas.html">Ver alternativas eficientes</a>
         </div>
     </section>
+
+    <!-- Rodapé com informação de copyright e encerramento da página -->
 </main>
 
-<footer>
-    <div class="footer-content">
-        <p>&copy; Projeto Agro-Tec em parceria com Técnico em agronegócio</p> 
-    </div>
+<footer class="footer">
+    <p>&copy; 2026 AgroConsciência. Conteúdo educativo e focado em práticas sustentáveis para o agronegócio.</p>
 </footer>
 
-<script src="../script.js"></script>
+<script src="../script.js" defer></script>
 </body>
 </html>

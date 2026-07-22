@@ -2,10 +2,154 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0; url=site/Html/tela.html">
-    <title>Carregando...</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Projeto educativo sobre agrotóxicos com soluções sustentáveis, boas práticas e conscientização para o campo e a cidade.">
+    <title>Cultivar o Amanhã | AgroConsciência</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preload" href="/style.css" as="style">
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <p>Se você não for redirecionado, <a href="site/Html/tela.html">clique aqui</a>.</p>
+<header class="site-header" data-reveal>
+    <div class="navbar">
+        <a class="brand" href="index.html">Agro<span>Consciência</span></a>
+        <nav aria-label="Navegação principal">
+            <ul class="nav-links">
+                <li><a class="nav-link" href="#beneficios">Benefícios</a></li>
+                <li><a class="nav-link" href="#diferenciais">Diferenciais</a></li>
+                <li><a class="nav-link" href="#sobre">Perguntas</a></li>
+                <li><a class="btn btn-primary" href="site/Html/tela.html">Ir para o projeto</a></li>
+            </ul>
+        </nav>
+        <div class="nav-actions">
+            <button class="menu-toggle" aria-expanded="false" aria-label="Abrir menu" data-menu-toggle>
+                <span aria-hidden="true">☰</span>
+            </button>
+        </div>
+    </div>
+    <div class="mobile-menu" data-mobile-menu>
+        <ul>
+            <li><a href="#beneficios">Benefícios</a></li>
+            <li><a href="#diferenciais">Diferenciais</a></li>
+            <li><a href="#sobre">Perguntas</a></li>
+            <li><a class="btn btn-primary" href="site/Html/tela.html">Ir para o projeto</a></li>
+        </ul>
+    </div>
+</header>
+
+<main>
+    <!-- Seção principal: apresentação do projeto e números de impacto com fonte citada -->
+    <section class="hero" aria-label="Introdução" data-reveal>
+        <div class="hero-content">
+            <span class="hero-badge">Projeto Educativo 2026</span>
+            <h1 class="hero-title">Uma proposta para o campo que une segurança, produtividade e imagem sustentável.</h1>
+            <p class="hero-copy">Descubra o projeto que conecta conhecimento técnico e valor real para quem atua na cadeia agrícola.</p>
+            <div class="hero-actions">
+                <a class="btn btn-primary" href="site/Html/tela.html">Conhecer o projeto</a>
+                <a class="btn btn-secondary" href="#beneficios">Entenda o impacto</a>
+            </div>
+        </div>
+        <aside class="hero-panel" data-reveal>
+            <div class="overlay-panel">
+                <h3>Proposta alinhada ao impacto</h3>
+                <p>Conteúdo pensado para mostrar claramente por que este projeto faz diferença no campo.</p>
+                <p class="lead-text" style="margin-top:0.6rem; font-size:0.95rem; color:var(--muted);">Impactos imediatos: perda de biodiversidade local; contaminação de água e solo; risco direto à saúde de trabalhadores e comunidades próximas.</p>
+            </div>
+            <div class="metric-grid">
+                <article class="metric-card" data-reveal>
+                    <p class="metric-value" data-counter data-target="75" data-duration="1400" data-suffix="%">0</p>
+                    <p class="metric-description">das culturas dependem de polinizadores para prosperar.</p>
+                    <p class="metric-source">Fonte: Embrapa (embrapa.br)</p>
+                </article>
+                <article class="metric-card" data-reveal>
+                    <p class="metric-value" data-counter data-target="90" data-duration="1400" data-suffix="%">0</p>
+                    <p class="metric-description">dos agrotóxicos escapam da área tratada e impactam o ambiente.</p>
+                    <p class="metric-source">Fonte: Embrapa (embrapa.br)</p>
+                </article>
+            </div>
+        </aside>
+    </section>
+
+    <!-- Benefícios do projeto -->
+    <section id="beneficios" class="section" aria-labelledby="beneficios-title" data-reveal>
+        <div class="section-header">
+            <span class="section-badge">Benefícios</span>
+            <h2 id="beneficios-title">Por que este projeto faz sentido</h2>
+        </div>
+        <div class="grid-cards">
+            <div class="card">
+                <h3>Mensagem direta</h3>
+                <p class="card-copy">Apresenta o projeto como uma oportunidade relevante para quem quer agir no campo.</p>
+            </div>
+            <div class="card">
+                <h3>Impacto claro</h3>
+                <p class="card-copy">Mostra os benefícios esperados sem complicar a narrativa.</p>
+            </div>
+            <div class="card">
+                <h3>Valor percebido</h3>
+                <p class="card-copy">Foca em resultados mensuráveis e comunicação direta com decisores.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Diferenciais: o que torna este projeto diferente de conteúdo genérico sobre o tema -->
+    <section id="diferenciais" class="section" aria-labelledby="diferenciais-title" data-reveal>
+        <div class="section-header">
+            <span class="section-badge">Diferenciais</span>
+            <h2 id="diferenciais-title">O que diferencia esta proposta</h2>
+        </div>
+        <div class="grid-cards">
+            <div class="card">
+                <h3>Linguagem técnica acessível</h3>
+                <p class="card-copy">Conteúdo traduzido do jargão técnico para uma leitura direta, sem perder precisão.</p>
+            </div>
+            <div class="card">
+                <h3>Dados de fontes reconhecidas</h3>
+                <p class="card-copy">Números e estatísticas citam a fonte original, permitindo verificação por quem quiser aprofundar.</p>
+            </div>
+            <div class="card">
+                <h3>Foco em aplicação prática</h3>
+                <p class="card-copy">Menos teoria solta, mais orientação que pode ser aplicada diretamente no manejo do campo.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Perguntas frequentes: usa <details>/<summary> nativos do HTML, sem depender de JS -->
+    <section id="sobre" class="section" aria-labelledby="sobre-title" data-reveal>
+        <div class="section-header">
+            <span class="section-badge">Perguntas</span>
+            <h2 id="sobre-title">Perguntas frequentes</h2>
+        </div>
+        <div class="faq-list">
+            <details class="faq-item">
+                <summary>Este projeto substitui totalmente o uso de agrotóxicos?</summary>
+                <p>Não. O foco é reduzir o uso desregulado e apresentar alternativas complementares, priorizando manejo seguro e agroecológico onde for viável.</p>
+            </details>
+            <details class="faq-item">
+                <summary>Para quem este conteúdo é indicado?</summary>
+                <p>Produtores rurais, estudantes de agronegócio, técnicos do setor e qualquer pessoa interessada em práticas agrícolas mais sustentáveis.</p>
+            </details>
+            <details class="faq-item">
+                <summary>As informações apresentadas têm fonte confiável?</summary>
+                <p>Sim. Estatísticas citadas no site referenciam a Embrapa como fonte; sempre que um novo dado externo for incluído, a fonte é indicada junto ao número.</p>
+            </details>
+        </div>
+    </section>
+
+    <!-- Chamada final para ação, antes do rodapé -->
+    <section class="section-panel cta-panel" aria-labelledby="cta-title" data-reveal>
+        <h3 id="cta-title">Pronto para explorar o projeto completo?</h3>
+        <p>Acesse o site educativo com riscos, alternativas e orientações práticas detalhadas.</p>
+        <a class="btn btn-primary" href="site/Html/tela.html">Ir para o projeto</a>
+    </section>
+</main>
+
+<footer class="footer">
+    <p>&copy; 2026 AgroConsciência. Conteúdo educativo e focado em práticas sustentáveis para o agronegócio.</p>
+</footer>
+
+<script src="site/script.js" defer></script>
 </body>
 </html>
