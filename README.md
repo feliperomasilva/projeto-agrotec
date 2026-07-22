@@ -66,7 +66,7 @@ Essa funcionalidade reforça o compromisso do projeto não apenas com a **preven
 
 ## 📌 Status do Projeto
 
-Este projeto está em desenvolvimento como parte do **PMD (Projeto Multi Disciplinar)** do curso técnico em Análise e Desenvolvimento de Sistemas.
+Este projeto está em desenvolvimento como parte do **PMD (Projeto Multi Disciplinar)** do curso técnico em Análise e Desenvolvimento de Sistemas da escola E.E Prof Amilcare Mattei.
 
 ---
 
