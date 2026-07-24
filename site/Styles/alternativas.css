@@ -58,8 +58,8 @@ body {
 /* HEADER TECNOLÓGICO */
 .alt-header {
     background: linear-gradient(to bottom, rgba(8, 11, 13, 0.5), #080b0d),
-                url('https://images.unsplash.com/photo-1463123081488-729f551e3f3d') center/cover no-repeat;
-    padding: 80px 24px 40px 24px;
+                url('https://images.unsplash.com/photo-1533062618053-d51e617307ec') center/cover no-repeat;
+    padding: 200px 24px 70px 24px;
     text-align: center;
     border-bottom: 0px solid rgba(255, 255, 255, 0.02);
 }
@@ -128,6 +128,7 @@ body {
     transform: translateX(-4px);
 }
 
+
 /* TÍTULO DA SEÇÃO */
 .section-title-wrapper {
     display: flex;
@@ -152,6 +153,36 @@ h2 {
     font-weight: 700;
     letter-spacing: -0.5px;
     color: #ffffff;
+}
+
+/* BLOCO DE INTRODUÇÃO: TEXTO + IMAGEM (mesmo padrão de riscos.css/educacao.css) */
+.lead-text {
+    font-size: 1.05rem;
+    color: var(--text-primary);
+    margin-bottom: 0;
+    font-weight: 400;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 40px;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.img-box {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    height: 320px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    opacity: 0.85;
+}
+
+.img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 /* GRID DE CARDS RESUMIDOS */
@@ -243,5 +274,7 @@ footer {
 /* RESPONSIVIDADE */
 @media (max-width: 768px) {
     .alt-grid { grid-template-columns: 1fr; }
+    .grid { grid-template-columns: 1fr; gap: 24px; margin-bottom: 32px; }
+    .img-box { height: 220px; order: -1; }
     .alt-header h1 { font-size: 2rem; }
 }

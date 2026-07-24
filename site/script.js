@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const opcoes = {
             root: null,         // Usa a janela do navegador (viewport) como referência
             rootMargin: '0px',  // Sem margens extras
-            threshold: 0.15     // O elemento ativa quando 15% dele aparece na tela
+            threshold: 0.5   // O elemento ativa quando 15% dele aparece na tela
         };
 
         // Cria o observador que detecta a entrada do elemento na tela
@@ -21,6 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (entrada.isIntersecting) {
                     entrada.target.classList.add('is-visible');
                     observador.unobserve(entrada.target); // já revelou, não precisa mais observar
+
                 }
             });
         }, opcoes);
