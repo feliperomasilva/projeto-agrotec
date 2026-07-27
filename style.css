@@ -1831,7 +1831,7 @@ body[data-view="sos"] {
 /* ============================================================
    9. VIEW: SOS (escopado com #view-sos, tela cheia de alto contraste)
    ============================================================ */
-#view-sos {
+#view-sos.is-active-view {
     display: flex;
     min-height: 100vh;
     align-items: center;
