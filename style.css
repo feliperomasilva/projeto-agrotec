@@ -896,6 +896,7 @@ body[data-view="sos"] {
     border-radius: var(--radius-md);
     padding: 24px;
     transition: var(--transition);
+    --glow-color: rgba(255, 45, 85, 0.2);
 }
 
 #view-riscos .alert-card:hover {
@@ -947,6 +948,7 @@ body[data-view="sos"] {
     border: 1px solid rgba(255, 255, 255, 0.04);
     padding: 32px;
     border-radius: var(--radius-md);
+    --glow-color: rgba(255, 45, 85, 0.2);
 }
 
 #view-riscos .data-tag {
@@ -1830,7 +1832,7 @@ body[data-view="sos"] {
    9. VIEW: SOS (escopado com #view-sos, tela cheia de alto contraste)
    ============================================================ */
 #view-sos {
-    display: none;
+    display: flex;
     min-height: 100vh;
     align-items: center;
     justify-content: center;
@@ -1998,8 +2000,8 @@ body[data-view="sos"] {
 @keyframes pulseGlow {
     from { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.4); }
     to { box-shadow: 0 0 0 12px rgba(255, 59, 48, 0); }
-    
 }
+
 :root {
     --accent: #39ff9e;
     --accent-strong: #17c76d;
@@ -2153,6 +2155,7 @@ body {
 #view-alternativas .alt-card:hover {
     box-shadow: 0 0 0 1px var(--apple-green), 0 20px 46px rgba(0, 230, 118, 0.16);
 }
+
 /* ============================================================
    GLOW NO MOUSE — brilho que acompanha o cursor dentro dos cards
    ============================================================ */
@@ -2179,7 +2182,7 @@ body {
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(220px circle at var(--mx, 50%) var(--my, 50%), rgba(57, 255, 158, 0.16), transparent 70%);
+    background: radial-gradient(220px circle at var(--mx, 50%) var(--my, 50%), var(--glow-color, rgba(57, 255, 158, 0.16)), transparent 70%);
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;
