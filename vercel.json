@@ -1,4 +1,7 @@
 {
   "buildCommand": "bundle exec jekyll build",
-  "installCommand": "bundle install"
+  "installCommand": "bundle install",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }

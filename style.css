@@ -1137,6 +1137,7 @@ body[data-view="sos"] {
     border-radius: var(--radius-lg);
     padding: 48px;
     margin-bottom: 32px;
+    --glow-color: rgba(0, 229, 255, 0.2);
 }
 
 #view-educacao .content-card.info-blue {
@@ -1248,6 +1249,7 @@ body[data-view="sos"] {
     padding: 32px;
     border-radius: var(--radius-md);
     transition: var(--transition);
+    --glow-color: rgba(0, 229, 255, 0.2);
 }
 
 #view-educacao .pillar-card:hover {
@@ -2048,8 +2050,8 @@ body {
 }
 
 .hero-title {
-    font-size: clamp(3.6rem, 7vw, 6rem);
-    line-height: 0.94;
+    font-size: clamp(2.4rem, 4.5vw, 3.6rem);
+    line-height: 0.98;
 }
 
 /* Botão primário: peso, glow e resposta mais física no hover */
