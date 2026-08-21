@@ -311,12 +311,13 @@ document.addEventListener("DOMContentLoaded", () => {
 })();
 
 /* ============================================================
-   FAQ — accordion (só um aberto por vez)
+   FAQ — accordion (Animação persistente e fechamento suave)
    ============================================================ */
 document.querySelectorAll('.faq-item').forEach(details => {
     const summary = details.querySelector('summary');
     const originalP = details.querySelector('p');
 
+    // Cria a estrutura wrapper necessária para a transição de altura se não existir
     if (originalP && !details.querySelector('.faq-answer')) {
         const wrapper = document.createElement('div');
         wrapper.className = 'faq-answer';
@@ -330,12 +331,30 @@ document.querySelectorAll('.faq-item').forEach(details => {
         e.preventDefault();
         const isOpen = details.hasAttribute('open');
 
+        // Fecha outros itens abertos com suavidade
         document.querySelectorAll('.faq-item[open]').forEach(openItem => {
-            if (openItem !== details) openItem.removeAttribute('open');
+            if (openItem !== details) {
+                openItem.classList.remove('is-expanded');
+                // Aguarda o término da animação do CSS (450ms) antes de remover o atributo open nativo
+                setTimeout(() => {
+                    openItem.removeAttribute('open');
+                }, 450); 
+            }
         });
 
-        if (isOpen) details.removeAttribute('open');
-        else details.setAttribute('open', '');
+        if (isOpen) {
+            // Se já está aberto, remove a classe de expansão primeiro para o CSS animar fechando
+            details.classList.remove('is-expanded');
+            setTimeout(() => {
+                details.removeAttribute('open');
+            }, 450);
+        } else {
+            // Se está fechado, ativa o atributo open nativo e logo em seguida engaja a classe de animação do CSS
+            details.setAttribute('open', '');
+            requestAnimationFrame(() => {
+                details.classList.add('is-expanded');
+            });
+        }
     });
 });
 

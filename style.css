@@ -1,6 +1,4 @@
-/* ============================================================
-   1. RESET, TOKENS DE DESIGN E SISTEMA DE REVEAL-ON-SCROLL
-   ============================================================ */
+
 * {
     margin: 0;
     padding: 0;
@@ -29,9 +27,6 @@
     --shadow-soft: 0 18px 55px rgba(0, 0, 0, 0.25);
     --max-width: 1180px;
 
-    /* Curvas de easing premium — as mesmas famílias que a Apple usa
-       em transições de UI: saída rápida, chegada suave, sem "bounce"
-       exagerado a não ser onde é intencional (--ease-spring). */
     --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
     --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
     --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -63,9 +58,6 @@ html {
     scroll-behavior: smooth;
 }
 
-/* Base do canvas — deliberadamente contida. O brilho vem só da
-   camada de parallax injetada via JS (ver seção "PARALLAX"),
-   não de múltiplas camadas de gradiente empilhadas. */
 body {
     min-height: 100vh;
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -113,10 +105,6 @@ button, a { font: inherit; }
     outline-offset: 3px;
 }
 
-/* ============================================================
-   PARALLAX — camada de fundo única (substitui as 2 camadas
-   estáticas redundantes que existiam antes, mais sutil e leve)
-   ============================================================ */
 .img-parallax {
     overflow: hidden;
     border-radius: 20px;
@@ -143,7 +131,7 @@ button, a { font: inherit; }
 }
 
 /* ============================================================
-   3. CABEÇALHO GLOBAL — glass nav estilo Apple
+   3. CABEÇALHO GLOBAL
    ============================================================ */
 .site-header {
     position: fixed;
@@ -159,7 +147,7 @@ button, a { font: inherit; }
 }
 
 /* Esconde suavemente ao rolar pra baixo, reaparece ao rolar pra cima
-   (comportamento real do apple.com) — ver script.js: headerReveal() */
+   ver script.js: headerReveal() */
 .site-header.is-hidden {
     transform: translateY(-100%);
 }
@@ -197,14 +185,30 @@ button, a { font: inherit; }
 
 .nav-link {
     position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
     color: var(--muted);
     text-decoration: none;
     font-weight: 500;
     font-size: 0.95rem;
+    padding: 10px 0;
     transition: color 0.3s var(--ease-smooth);
 }
 
-/* Sublinhado que cresce do centro — microinteração premium clássica */
+
+.nav-link::before {
+    font-family: 'Material Symbols Rounded';
+    font-size: 1.1rem;
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%) scale(0.6);
+    opacity: 0;
+    transition: transform 0.35s var(--ease-spring), opacity 0.3s ease, color 0.3s ease;
+    pointer-events: none;
+}
+
 .nav-link::after {
     content: '';
     position: absolute;
@@ -212,10 +216,11 @@ button, a { font: inherit; }
     bottom: -4px;
     width: 0;
     height: 1.5px;
-    background: var(--accent);
+    background: transparent; 
     transform: translateX(-50%);
-    transition: width 0.35s var(--ease-out-expo);
+    transition: width 0.35s var(--ease-out-expo), background-color 0.3s ease;
 }
+
 
 .nav-link:hover,
 .nav-link:focus-visible {
@@ -223,11 +228,59 @@ button, a { font: inherit; }
 }
 
 .nav-link:hover::after,
-.nav-link:focus-visible::after {
+.nav-link:focus-visible::after,
+.nav-link.is-active::after {
     width: 100%;
 }
 
-.nav-link.is-active { color: var(--accent); }
+.nav-link:hover::before,
+.nav-link:focus-visible::before,
+.nav-link.is-active::before {
+    opacity: 1;
+    transform: translateX(-50%) scale(1) translateY(-2px); 
+}
+
+
+
+/* Início */
+.nav-link[href="#home"]::before { content: 'home'; }
+.nav-link[href="#home"]:hover::after,
+.nav-link[href="#home"].is-active::after { background-color: #39ff9e !important; }
+.nav-link[href="#home"]:hover::before,
+.nav-link[href="#home"].is-active::before { color: #39ff9e !important; }
+.nav-link[href="#home"].is-active { color: #39ff9e !important; }
+
+/* Riscos */
+.nav-link[href="#riscos"]::before { content: 'warning'; }
+.nav-link[href="#riscos"]:hover::after,
+.nav-link[href="#riscos"].is-active::after { background-color: #ff2d55 !important; }
+.nav-link[href="#riscos"]:hover::before,
+.nav-link[href="#riscos"].is-active::before { color: #ff2d55 !important; }
+.nav-link[href="#riscos"].is-active { color: #ff2d55 !important; }
+
+/* Educação  */
+.nav-link[href="#educacao"]::before { content: 'menu_book'; }
+.nav-link[href="#educacao"]:hover::after,
+.nav-link[href="#educacao"].is-active::after { background-color: #00e5ff !important; }
+.nav-link[href="#educacao"]:hover::before,
+.nav-link[href="#educacao"].is-active::before { color: #00e5ff !important; }
+.nav-link[href="#educacao"].is-active { color: #00e5ff !important; }
+
+/* Dicas */
+.nav-link[href="#dicas"]::before { content: 'sms'; }
+.nav-link[href="#dicas"]:hover::after,
+.nav-link[href="#dicas"].is-active::after { background-color: #ffcc00 !important; }
+.nav-link[href="#dicas"]:hover::before,
+.nav-link[href="#dicas"].is-active::before { color: #ffcc00 !important; }
+.nav-link[href="#dicas"].is-active { color: #ffcc00 !important; }
+
+/* Alternativas */
+.nav-link[href="#alternativas"]::before { content: 'eco'; }
+.nav-link[href="#alternativas"]:hover::after,
+.nav-link[href="#alternativas"].is-active::after { background-color: #39ff74 !important; }
+.nav-link[href="#alternativas"]:hover::before,
+.nav-link[href="#alternativas"].is-active::before { color: #39ff74 !important; }
+.nav-link[href="#alternativas"].is-active { color: #39ff74 !important; }
 
 .nav-actions {
     display: flex;
@@ -420,7 +473,7 @@ body[data-view="sos"] {
 }
 
 /* ============================================================
-   4. HERO CENTRALIZADO
+   4. HERO
    ============================================================ */
 .hero {
     position: relative;
@@ -484,21 +537,57 @@ body[data-view="sos"] {
     justify-content: center;
 }
 
-.hero-panel {
+/* ============================================================
+   ESTÉTICA DASHBOARD LIQUID GLASS NEUTRO (SEM PIGMENTAÇÃO)
+   ============================================================ */
+
+#view-home {
     position: relative;
-    z-index: 1;
-    width: 100%;
-    max-width: 900px;
-    margin: 5rem auto 0;
-    display: grid;
-    gap: 1.5rem;
-    border-radius: 32px;
-    padding: 2rem;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
-    border: 1px solid rgba(255, 255, 255, 0.07);
-    box-shadow: var(--shadow);
-    backdrop-filter: blur(16px);
+    isolation: isolate;
 }
+
+#view-home::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+        linear-gradient(180deg, rgba(5, 7, 12, 0.55) 0%, rgba(5, 7, 12, 0.85) 55%, var(--bg) 100%),;
+    pointer-events: none;
+}
+
+
+#view-home .grid-cards .card {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+}
+
+#view-home .grid-cards .card:hover {
+    backdrop-filter: blur(24px) saturate(160%);
+    border-color: var(--accent);
+}
+
+
+#view-home .overlay-panel {
+    background: rgba(10, 14, 22, 0.55);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+}
+
+#view-home .hero-panel {
+    background: rgba(255, 255, 255, 0);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+}
+
+#view-home .metric-card {
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(16px);
+}
+
 
 .hero-panel p {
     margin: 0;
@@ -506,49 +595,7 @@ body[data-view="sos"] {
 }
 
 /* ============================================================
-   EFEITO CINEMATOGRÁFICO — HERO (estilo Apple, view Tela)
-   ============================================================ */
-.hero-badge-fixed {
-    position: fixed;
-    top: 92px;
-    left: 24px;
-    z-index: 999;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.65rem;
-    padding: 0.6rem 1rem;
-    border-radius: 999px;
-    background: rgba(57, 255, 158, 0.12);
-    border: 1px solid rgba(57, 255, 158, 0.18);
-    color: var(--accent);
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    backdrop-filter: blur(12px);
-    opacity: 0;
-    transform: translateY(-10px);
-    transition: opacity 0.5s var(--ease-out-expo), transform 0.5s var(--ease-out-expo);
-    pointer-events: none;
-}
-
-.hero-badge-fixed.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.hero-title-cinematic {
-    transform-origin: center center;
-    will-change: transform, opacity, filter;
-}
-
-.hero-badge-original.is-hidden {
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-/* ============================================================
-   5. SEÇÕES — conteúdo flutuante, sem caixa
+   5. SEÇÕES 
    ============================================================ */
 .section {
     background: transparent;
@@ -610,7 +657,7 @@ body[data-view="sos"] {
 }
 
 /* ============================================================
-   CARDS — base compartilhada por .card, .metric-card etc.
+   CARDS
    ============================================================ */
 .card,
 .metric-card,
@@ -655,7 +702,7 @@ body[data-view="sos"] {
     color: var(--muted);
 }
 
-/* Glow que segue o cursor — via variáveis --mx/--my setadas no script.js */
+/* Glow que segue o cursor */
 .card::after,
 .metric-card::after,
 .alt-card::after,
@@ -708,7 +755,7 @@ body[data-view="sos"] {
     border-radius: 12px;
     background: var(--accent-soft);
     border: 1px solid var(--accent-soft);
-    color: var(--accent);
+        color: var(--accent);
     transition: transform 0.4s var(--ease-spring);
 }
 
@@ -791,7 +838,6 @@ body[data-view="sos"] {
     font-size: clamp(2.8rem, 5vw, 4.2rem);
     color: var(--text);
     font-weight: 800;
-    text-shadow: 0 0 32px rgba(57, 255, 158, 0.35);
     font-variant-numeric: tabular-nums;
 }
 
@@ -886,7 +932,7 @@ body[data-view="sos"] {
 .card-compact { padding: 1.4rem; }
 
 /* ============================================================
-   FAQ — accordion animado (uma única definição, cores do tema)
+   FAQ 
    ============================================================ */
 .faq-list {
     display: flex;
@@ -942,8 +988,22 @@ body[data-view="sos"] {
     transition: grid-template-rows 0.45s var(--ease-smooth);
 }
 
-.faq-item[open] .faq-answer { grid-template-rows: 1fr; }
-.faq-item .faq-answer > div { overflow: hidden; }
+
+.faq-item .faq-answer {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+.faq-item.is-expanded .faq-answer {
+    grid-template-rows: 1fr;
+}
+
+.faq-item .faq-answer > div {
+    overflow: hidden;
+}
+
 
 .faq-item .faq-answer p {
     padding: 0 1.8rem 1.6rem;
@@ -953,12 +1013,21 @@ body[data-view="sos"] {
     font-size: 0.97rem;
     opacity: 0;
     transform: translateY(-8px);
-    transition: opacity 0.35s ease 0.1s, transform 0.35s ease 0.1s;
+    transition: opacity 0.35s ease, transform 0.35s ease;
 }
 
-.faq-item[open] .faq-answer p {
+.faq-item.is-expanded .faq-answer p {
     opacity: 1;
     transform: translateY(0);
+    transition-delay: 0.1s; 
+}
+
+
+.faq-item summary::after {
+    transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+.faq-item.is-expanded summary::after {
+    transform: rotate(180deg);
 }
 
 @media (max-width: 860px) {
@@ -1095,14 +1164,15 @@ body[data-view="sos"] {
 }
 
 #view-riscos .icon-wrapper {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--danger-glow) !important;
+    border: 1px solid var(--danger-border) !important;
     width: 48px;
     height: 48px;
-    border-radius: 12px;
+    border-radius: 12px !important; 
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--danger);
+    color: var(--danger) !important;
 }
 
 #view-riscos h2 { font-size: 1.8rem; font-weight: 700; letter-spacing: -0.5px; }
@@ -1428,9 +1498,10 @@ body[data-view="sos"] {
     --bg-inner: #1a222a;
     --text-primary: #f8fafc;
     --text-secondary: #94a3b8;
-    --success-mint: #00ff85;
-    --success-glow: rgba(0, 255, 133, 0.1);
-    --success-border: rgba(0, 255, 133, 0.4);
+    --success-mint: #eeff009a;
+    --glow-color: rgba(237, 255, 0, 0.15) !important; 
+    --success-glow: rgba(217, 255, 0, 0.1);
+    --success-border: rgba(217, 255, 0, 0.4);
     --radius-lg: 24px;
     --radius-md: 16px;
 
@@ -1456,7 +1527,7 @@ body[data-view="sos"] {
 .dicas-badge {
     background: var(--success-glow);
     border: 1px solid var(--success-border);
-    color: var(--success-mint);
+    color: #edff00;
     padding: 6px 14px;
     border-radius: 50px;
     font-size: 0.8rem;
@@ -1503,7 +1574,7 @@ body[data-view="sos"] {
     width: 46px; height: 46px;
     border-radius: 12px;
     display: flex; align-items: center; justify-content: center;
-    color: var(--success-mint);
+    color: #edff00;
 }
 
 #view-dicas h2 { font-size: 1.8rem; font-weight: 700; letter-spacing: -0.5px; color: #ffffff; }
@@ -1547,7 +1618,7 @@ body[data-view="sos"] {
 }
 
 #view-dicas .card-apple-icon {
-    color: var(--success-mint);
+    color: #edff00;
     background: rgba(255, 255, 255, 0.02);
     width: 40px; height: 40px;
     border-radius: 10px;
@@ -1772,8 +1843,12 @@ body[data-view="sos"] {
     align-items: center;
     justify-content: center;
     padding: 20px;
-    font-family: 'Inter', sans-serif;
-    color: #ffffff;
+    background: #0f1115 !important; 
+}
+
+
+body[data-view="sos"] .background-container {
+    display: none !important;
 }
 
 .sos-container {
@@ -1883,7 +1958,7 @@ body[data-view="sos"] {
     to { box-shadow: 0 0 0 12px rgba(255, 59, 48, 0); }
 }
 /* ============================================================
-   SLIDING NUMBERS — Efeito de rolagem de dígitos (Vanilla JS)
+   SLIDING NUMBERS — Efeito de rolagem de dígitos (JS)
    ============================================================ */
 
 .sliding-number {
@@ -1932,10 +2007,9 @@ body[data-view="sos"] {
   font-size: clamp(2.8rem, 5vw, 4.2rem);
   color: var(--text);
   font-weight: 800;
-  text-shadow: 0 0 32px rgba(57, 255, 158, 0.35);
 }
 /* ============================================================
-   SISTEMA DE BACKGROUND INTEGRADO ADAPTATIVO
+   SISTEMA DE BACKGROUND INTEGRADO
    ============================================================ */
 .background-container {
     position: fixed;
@@ -1943,7 +2017,7 @@ body[data-view="sos"] {
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: -2; /* Fica atrás de todas as camadas, inclusive do parallax-bg-layer */
+    z-index: -2; 
     overflow: hidden;
     background-color: var(--bg);
 }
@@ -1961,7 +2035,7 @@ body[data-view="sos"] {
     transform: scale(1.03);
 }
 
-/* Overlay escuro em cada imagem para manter excelente contraste de leitura */
+
 .bg-image::after {
     content: '';
     position: absolute;
@@ -1971,10 +2045,10 @@ body[data-view="sos"] {
 
 .bg-image.active {
     opacity: 1;
-    transform: scale(1); /* Suave aproximação cinematográfica quando entra em foco */
+    transform: scale(1); 
 }
 
-/* Elementos flutuantes com desfoque de vidro para proteger a legibilidade do texto */
+
 .text-glass-panel {
     background: rgba(15, 23, 34, 0.55);
     backdrop-filter: blur(16px);
@@ -1998,10 +2072,19 @@ body[data-view="sos"] {
     -webkit-backdrop-filter: blur(16px);
 }
 
-/* Alinhamento responsivo para valorizar as imagens ao lado do texto */
+
 @media (min-width: 861px) {
     .flex-content-layout {
         align-items: center;
-        min-height: 70vh; /* Faz cada bloco respirar no scroll */
+        min-height: 70vh; 
     }
+}
+
+body[data-view="home"] .background-container .bg-image {
+    opacity: 0 !important;
+}
+body[data-view="home"] .background-container #bg-home {
+    opacity: 1 !important;
+    transform: scale(1) !important;
+    visibility: visible !important;
 }
