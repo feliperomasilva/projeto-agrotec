@@ -21,7 +21,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!alvo) return;
         const atual = document.querySelector('.view.is-active-view');
 
-        // A view que está saindo faz um fade-out rápido antes de sumir de vez
         if (atual && atual !== alvo) {
             atual.classList.remove('is-active-view');
             if (!prefereReduzirMovimento) {
@@ -31,12 +30,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         alvo.classList.add('is-active-view');
-
         document.body.dataset.view = nome;
         document.title = TITULOS[nome] || TITULOS.home;
         window.scrollTo(0, 0);
 
-        // Revela imediatamente o que já está visível na tela ao trocar de view
         document.querySelectorAll(`#view-${nome} .revelar`).forEach(el => {
             const rect = el.getBoundingClientRect();
             if (rect.top < window.innerHeight && rect.bottom >= 0) {
@@ -54,28 +51,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function rotear() {
         const hash = location.hash.replace('#', '');
-        if (!hash) {
-            mostrarView('home');
-            return;
-        }
-        if (VIEWS.includes(hash)) {
-            mostrarView(hash);
-        }
+        if (!hash) { mostrarView('home'); return; }
+        if (VIEWS.includes(hash)) mostrarView(hash);
     }
 
     window.addEventListener('hashchange', rotear);
     rotear();
 
     /* ============================================================
-       REVEAL-ON-SCROLL — mostra elementos suavemente ao rolar a tela
+       REVEAL-ON-SCROLL
        ============================================================ */
     const elementosParaRevelar = document.querySelectorAll('.revelar');
 
     if (prefereReduzirMovimento) {
-        elementosParaRevelar.forEach(elemento => elemento.classList.add('ativo'));
+        elementosParaRevelar.forEach(el => el.classList.add('ativo'));
     } else {
-        const opcoes = { root: null, rootMargin: '0px', threshold: 0.15 };
-
         const observador = new IntersectionObserver((entradas) => {
             entradas.forEach(entrada => {
                 if (entrada.isIntersecting) {
@@ -83,74 +73,143 @@ document.addEventListener("DOMContentLoaded", () => {
                     observador.unobserve(entrada.target);
                 }
             });
-        }, opcoes);
+        }, { root: null, rootMargin: '0px', threshold: 0.15 });
 
-        elementosParaRevelar.forEach(elemento => observador.observe(elemento));
+        elementosParaRevelar.forEach(el => observador.observe(el));
     }
 
-    /* ============================================================
-       CONTADORES ANIMADOS — recontam toda vez que a seção reaparece
-       ============================================================ */
-    const counters = document.querySelectorAll('[data-counter]');
-    counters.forEach(counter => {
-        const target = Number(counter.getAttribute('data-target')) || 0;
-        const duration = Number(counter.getAttribute('data-duration')) || 1200;
-        const suffix = counter.getAttribute('data-suffix') || '';
-        let animId = 0;
+   /* ============================================================
+   SLIDING NUMBERS — Vanilla JS
+   Adaptado do componente React SlidingNumber
+   ============================================================ */
 
-        function animar() {
-            const meuId = ++animId;
-            let start = null;
+(function initSlidingNumbers() {
+    'use strict';
 
-            function step(timestamp) {
-                if (meuId !== animId) return; // uma nova animação começou, cancela essa
-                if (!start) start = timestamp;
-                const progress = Math.min((timestamp - start) / duration, 1);
-                counter.textContent = Math.floor(progress * target) + suffix;
-                if (progress < 1) {
-                    requestAnimationFrame(step);
-                } else {
-                    counter.textContent = target + suffix;
-                }
+    const prefereReduzirMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const containers = document.querySelectorAll('[data-sliding-number]');
+    if (!containers.length) return;
+
+    const instances = new Map();
+
+    function buildSlidingNumber(container) {
+        const target = parseInt(container.dataset.target, 10) || 0;
+        const suffix = container.dataset.suffix || '';
+        const duration = parseInt(container.dataset.duration, 10) || 1400;
+        const stagger = parseFloat(container.dataset.stagger) || 80;
+
+        container.innerHTML = '';
+        container.classList.add('sliding-number');
+        container.style.opacity = '0';
+
+        const targetStr = String(target);
+        const digits = [];
+
+        for (let i = 0; i < targetStr.length; i++) {
+            const digitWrap = document.createElement('div');
+            digitWrap.className = 'sliding-digit';
+
+            const track = document.createElement('div');
+            track.className = 'sliding-digit-track';
+
+            for (let n = 0; n <= 9; n++) {
+                const span = document.createElement('span');
+                span.textContent = n;
+                track.appendChild(span);
             }
-            requestAnimationFrame(step);
+
+            digitWrap.appendChild(track);
+            container.appendChild(digitWrap);
+            digits.push({ track, index: i });
         }
+
+        if (suffix) {
+            const suffixEl = document.createElement('span');
+            suffixEl.className = 'sliding-suffix';
+            suffixEl.textContent = suffix;
+            container.appendChild(suffixEl);
+        }
+
+        container.offsetHeight;
+        container.style.opacity = '1';
+
+        return { target, suffix, duration, stagger, digits, targetStr, container };
+    }
+
+    function animateInstance(instance) {
+        const { targetStr, digits, duration, stagger } = instance;
+        digits.forEach(({ track, index }) => {
+            const digitVal = parseInt(targetStr[index], 10);
+            track.style.transition = `transform ${duration}ms cubic-bezier(0.16, 1, 0.3, 1) ${index * stagger}ms`;
+            track.offsetHeight;
+            track.style.transform = `translateY(-${digitVal}em)`;
+        });
+    }
+
+    function resetInstance(instance) {
+        instance.digits.forEach(({ track }) => {
+            track.style.transition = 'none';
+            track.style.transform = 'translateY(0)';
+            track.offsetHeight;
+            track.style.transition = '';
+        });
+    }
+
+    containers.forEach(container => {
+        const instance = buildSlidingNumber(container);
+        instances.set(container, instance);
 
         if (prefereReduzirMovimento) {
-            counter.textContent = target + suffix;
-        } else {
-            const obs = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        animar();
-                    } else {
-                        animId++; // invalida qualquer animação em andamento
-                        counter.textContent = '0' + suffix;
-                    }
-                });
-            }, { threshold: 0.4 });
-            obs.observe(counter);
+            container.innerHTML = instance.target + instance.suffix;
+            container.style.opacity = '1';
+            return;
         }
+
+        const obs = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateInstance(instance);
+                } else {
+                    resetInstance(instance);
+                }
+            });
+        }, { threshold: 0.4 });
+
+        obs.observe(container);
     });
+})();
 
     /* ============================================================
        GLOW NO MOUSE — brilho que acompanha o cursor dentro dos cards
+       (throttled via rAF para não recalcular estilo a cada pixel)
        ============================================================ */
     if (!prefereReduzirMovimento && window.matchMedia('(hover: hover)').matches) {
         const cardsComGlow = document.querySelectorAll(
             '.card, .metric-card, .alt-card, .step-card, .pillar-card, .data-card, .alert-card, .faq-item'
         );
+        let glowTicking = false;
+        let pendingGlow = null;
+
         cardsComGlow.forEach(card => {
             card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
-                card.style.setProperty('--mx', `${e.clientX - rect.left}px`);
-                card.style.setProperty('--my', `${e.clientY - rect.top}px`);
+                pendingGlow = { card, x: e.clientX - rect.left, y: e.clientY - rect.top };
+                if (!glowTicking) {
+                    requestAnimationFrame(() => {
+                        if (pendingGlow) {
+                            pendingGlow.card.style.setProperty('--mx', `${pendingGlow.x}px`);
+                            pendingGlow.card.style.setProperty('--my', `${pendingGlow.y}px`);
+                        }
+                        glowTicking = false;
+                    });
+                    glowTicking = true;
+                }
             });
         });
     }
 
     /* ============================================================
-       MENU MÓVEL — abrir, fechar ao clicar em link, fechar com Esc
+       MENU MÓVEL
        ============================================================ */
     const menuToggle = document.querySelector('[data-menu-toggle]');
     const mobileMenu = document.querySelector('[data-mobile-menu]');
@@ -175,4 +234,250 @@ document.addEventListener("DOMContentLoaded", () => {
             if (event.key === 'Escape') fecharMenu();
         });
     }
+
+    /* ============================================================
+       EFEITO MAGNÉTICO — cards e botões seguem levemente o cursor
+       ============================================================ */
+    function aplicarEfeitoMagnetico(seletor, forca) {
+        if (prefereReduzirMovimento || !window.matchMedia('(hover: hover)').matches) return;
+
+        document.querySelectorAll(seletor).forEach(el => {
+            if (el.closest('#view-sos')) return;
+
+            el.addEventListener('mousemove', (e) => {
+                const rect = el.getBoundingClientRect();
+                const x = (e.clientX - rect.left - rect.width / 2) * forca;
+                const y = (e.clientY - rect.top - rect.height / 2) * forca;
+                el.style.transform = `translate(${x}px, ${y}px) scale(1.04)`;
+                el.style.transition = 'transform 0.08s ease-out';
+            });
+
+            el.addEventListener('mouseleave', () => {
+                el.style.transform = '';
+                el.style.transition = 'transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+            });
+        });
+    }
+
+    aplicarEfeitoMagnetico(
+        '.card, .metric-card, .alert-card, .data-card, .pillar-card, .step-card, .alt-card',
+        0.12
+    );
+    aplicarEfeitoMagnetico('.footer-pill, .footer-pill-small, .footer-top-btn', 0.25);
+    aplicarEfeitoMagnetico('.hero-actions .btn, .nav-actions .btn', 0.18);
+
+    const footerTopBtn = document.getElementById('footer-scroll-top');
+    if (footerTopBtn) {
+        footerTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
 });
+
+/* ============================================================
+   CABEÇALHO — esconde ao rolar pra baixo, reaparece ao rolar pra
+   cima (comportamento real do apple.com). Roda uma única vez,
+   fora do loop de contadores onde estava antes.
+   ============================================================ */
+(function headerReveal() {
+    const header = document.querySelector('.site-header');
+    if (!header) return;
+
+    let lastScrollY = window.scrollY;
+    let ticking = false;
+    const threshold = 80;
+
+    function update() {
+        const currentScrollY = window.scrollY;
+
+        if (currentScrollY < threshold) {
+            header.classList.remove('is-hidden');
+        } else if (currentScrollY > lastScrollY) {
+            header.classList.add('is-hidden');    // rolando pra baixo
+        } else {
+            header.classList.remove('is-hidden'); // rolando pra cima
+        }
+
+        lastScrollY = currentScrollY;
+        ticking = false;
+    }
+
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            requestAnimationFrame(update);
+            ticking = true;
+        }
+    }, { passive: true });
+})();
+
+/* ============================================================
+   FAQ — accordion (só um aberto por vez)
+   ============================================================ */
+document.querySelectorAll('.faq-item').forEach(details => {
+    const summary = details.querySelector('summary');
+    const originalP = details.querySelector('p');
+
+    if (originalP && !details.querySelector('.faq-answer')) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'faq-answer';
+        const inner = document.createElement('div');
+        inner.appendChild(originalP);
+        wrapper.appendChild(inner);
+        details.appendChild(wrapper);
+    }
+
+    summary.addEventListener('click', (e) => {
+        e.preventDefault();
+        const isOpen = details.hasAttribute('open');
+
+        document.querySelectorAll('.faq-item[open]').forEach(openItem => {
+            if (openItem !== details) openItem.removeAttribute('open');
+        });
+
+        if (isOpen) details.removeAttribute('open');
+        else details.setAttribute('open', '');
+    });
+});
+
+/* ============================================================
+   EFEITO CINEMATOGRÁFICO HERO — Apple Style Scroll (view Tela)
+   ============================================================ */
+(function cinematicHero() {
+    const viewTela = document.getElementById('view-tela');
+    if (!viewTela) return;
+
+    const hero = viewTela.querySelector('.hero');
+    const title = viewTela.querySelector('.hero-title-cinematic');
+    const badgeFixed = document.querySelector('.hero-badge-fixed');
+    const badgeOriginal = viewTela.querySelector('.hero-badge-original');
+
+    if (!hero || !title) return;
+
+    let rafId = null;
+
+    function update() {
+        if (!viewTela.classList.contains('is-active-view')) {
+            if (badgeFixed) badgeFixed.classList.remove('is-visible');
+            cancelAnimationFrame(rafId);
+            setTimeout(() => { rafId = requestAnimationFrame(update); }, 100);
+            return;
+        }
+
+        const rect = hero.getBoundingClientRect();
+        const heroHeight = hero.offsetHeight;
+        const rawProgress = -rect.top / (heroHeight * 0.55);
+        const progress = Math.max(0, Math.min(1, rawProgress));
+
+        if (progress > 0.02) {
+            if (badgeFixed) badgeFixed.classList.add('is-visible');
+            if (badgeOriginal) badgeOriginal.classList.add('is-hidden');
+
+            const scale = 1 - (progress * 0.5);
+            const opacity = Math.max(0, 1 - (progress * 2.2));
+            const blur = progress * 14;
+            const translateY = progress * -90;
+
+            title.style.transform = `translate3d(0, ${translateY}px, 0) scale(${scale})`;
+            title.style.opacity = opacity;
+            title.style.filter = `blur(${blur}px)`;
+        } else {
+            if (badgeFixed) badgeFixed.classList.remove('is-visible');
+            if (badgeOriginal) badgeOriginal.classList.remove('is-hidden');
+            title.style.transform = '';
+            title.style.opacity = '';
+            title.style.filter = '';
+        }
+
+        rafId = requestAnimationFrame(update);
+    }
+
+    rafId = requestAnimationFrame(update);
+})();
+
+/* ============================================================
+   PARALLAX — camada de fundo única + imagens em profundidade
+   (substitui as 3 camadas de gradiente redundantes que existiam)
+   ============================================================ */
+(function parallax() {
+    const bgLayer = document.createElement('div');
+    bgLayer.className = 'parallax-bg-layer';
+    bgLayer.style.cssText = `
+        position: fixed; inset: 0; z-index: -1; pointer-events: none;
+        background:
+            radial-gradient(circle at 15% 25%, rgba(57, 255, 158, 0.12), transparent 35%),
+            radial-gradient(circle at 85% 20%, rgba(51, 240, 255, 0.08), transparent 25%),
+            radial-gradient(circle at 50% 80%, rgba(57, 255, 158, 0.06), transparent 30%);
+        will-change: transform;
+    `;
+    document.body.insertBefore(bgLayer, document.body.firstChild);
+
+    const images = document.querySelectorAll('.img-box img, .card-compact img');
+    let ticking = false;
+
+    function update() {
+        const scrollY = window.scrollY;
+        const winHeight = window.innerHeight;
+
+        bgLayer.style.transform = `translate3d(0, ${scrollY * 0.05}px, 0)`;
+
+        images.forEach(img => {
+            const rect = img.parentElement.getBoundingClientRect();
+            if (rect.top < winHeight && rect.bottom > 0) {
+                const offset = (winHeight - rect.top) * 0.15;
+                img.style.transform = `translate3d(0, ${-offset * 0.3}px, 0) scale(1.1)`;
+            }
+        });
+
+        ticking = false;
+    }
+
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            requestAnimationFrame(update);
+            ticking = true;
+        }
+    }, { passive: true });
+
+    update();
+})();
+/* ============================================================
+   MOTION BACKGROUND OBSERVER — Adaptação dinâmica de fundos
+   ============================================================ */
+(function initAdaptiveBackgrounds() {
+    'use strict';
+
+    const prefereReduzirMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefereReduzirMovimento) return;
+
+    // Seleciona todas as subseções que possuem um background mapeado
+    const sectionsWithBg = document.querySelectorAll('[data-bg]');
+    const bgImages = document.querySelectorAll('.bg-image');
+
+    if (!sectionsWithBg.length || !bgImages.length) return;
+
+    // Configuração ideal: Dispara quando a seção cruza a metade da tela do usuário
+    const observerOptions = {
+        root: null,
+        rootMargin: '-10% 0px -40% 0px', // Afunila a área de detecção no centro do visor
+        threshold: 0.15
+    };
+
+    const bgObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const targetBgId = entry.target.getAttribute('data-bg');
+                
+                // Ativa apenas a imagem de fundo correspondente à seção visível
+                bgImages.forEach(img => {
+                    if (img.id === targetBgId) {
+                        img.classList.add('active');
+                    } else {
+                        img.classList.remove('active');
+                    }
+                });
+            }
+        });
+    }, observerOptions);
+
+    sectionsWithBg.forEach(section => bgObserver.observe(section));
+})();
