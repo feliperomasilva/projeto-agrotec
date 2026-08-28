@@ -620,14 +620,25 @@ document.querySelectorAll('.faq-item').forEach(details => {
 
     formEl.addEventListener('submit', (e) => {
         e.preventDefault();
+        e.stopPropagation();
         enviarPergunta(inputEl.value);
     });
 
+    // Suporte para enviar ao pressionar Enter no mobile
+    inputEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            enviarPergunta(inputEl.value);
+        }
+    });
+
     if (suggestionsEl) {
-        suggestionsEl.querySelectorAll('[data-question]').forEach(chip => {
-            chip.addEventListener('click', () => {
+        // Event delegation - mais simples e confiável
+        suggestionsEl.addEventListener('click', (e) => {
+            const chip = e.target.closest('[data-question]');
+            if (chip) {
                 enviarPergunta(chip.getAttribute('data-question'));
-            });
+            }
         });
     }
 
