@@ -275,39 +275,16 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* ============================================================
-   CABEÇALHO — esconde ao rolar pra baixo, reaparece ao rolar pra
-   cima (comportamento real do apple.com). Roda uma única vez,
-   fora do loop de contadores onde estava antes.
+   CABEÇALHO — permanece sempre visível e fixo no topo.
+   (Antes escondia ao rolar pra baixo, mas isso deixava uma faixa
+   sem preenchimento visível no topo da página; removido.)
    ============================================================ */
 (function headerReveal() {
     const header = document.querySelector('.site-header');
     if (!header) return;
 
-    let lastScrollY = window.scrollY;
-    let ticking = false;
-    const threshold = 80;
-
-    function update() {
-        const currentScrollY = window.scrollY;
-
-        if (currentScrollY < threshold) {
-            header.classList.remove('is-hidden');
-        } else if (currentScrollY > lastScrollY) {
-            header.classList.add('is-hidden');    // rolando pra baixo
-        } else {
-            header.classList.remove('is-hidden'); // rolando pra cima
-        }
-
-        lastScrollY = currentScrollY;
-        ticking = false;
-    }
-
-    window.addEventListener('scroll', () => {
-        if (!ticking) {
-            requestAnimationFrame(update);
-            ticking = true;
-        }
-    }, { passive: true });
+    // Garante que nunca fique com a classe que o esconde
+    header.classList.remove('is-hidden');
 })();
 
 /* ============================================================
