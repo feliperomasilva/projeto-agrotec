@@ -21,8 +21,10 @@
 <body>
     <div class="background-container">
         <div id="bg-home" class="bg-image"
-            style="background-image: url('https://images.unsplash.com/photo-1501004318641-b39e6451bec6')"
-            alt="Produtor analisando folhas e aprendendo técnicas agrícolas sustentáveis">
+            style="background-image: url('https://images.unsplash.com/photo-1501004318641-b39e6451bec6')">
+        </div>
+        <div id="bg-tela" class="bg-image"
+            style="background-image: url('https://images.unsplash.com/photo-1700605201690-ab19ba4a4c61?auto=format&fit=crop&w=1200&q=80')">
         </div>
         <div id="bg-riscos" class="bg-image"
             style="background-image: url('https://images.unsplash.com/photo-1560493676-04071c5f467b?auto=format&fit=crop&w=900&q=80');">
@@ -30,8 +32,12 @@
         <div id="bg-educacao" class="bg-image"
             style="background-image: url('https://images.unsplash.com/photo-1495107334309-fcf20504a5ab?auto=format&fit=crop&w=900&q=80');">
         </div>
-        <div id="bg-dicas" class="bg-image" style="background-image: url('https://unsplash.com');"></div>
-        <div id="bg-alternativas" class="bg-image" style="background-image: url('https://unsplash.com');"></div>
+        <div id="bg-dicas" class="bg-image"
+            style="background-image: url('https://images.unsplash.com/photo-1687295278803-fd637fbf21e2?auto=format&fit=crop&w=1600&q=80');">
+        </div>
+        <div id="bg-alternativas" class="bg-image"
+            style="background-image: url('https://images.unsplash.com/photo-1657093114835-031e7cf9520c?auto=format&fit=crop&w=1600&q=80');">
+        </div>
     </div>
 
     <!-- ============ CABEÇALHO GLOBAL — some apenas na view SOS ============ -->
@@ -40,7 +46,7 @@
             <a class="brand" href="#home">Agro<span>Consciência</span></a>
             <nav aria-label="Navegação principal">
                 <ul class="nav-links">
-                    <li><a class="nav-link" href="#home">Início</a></li>
+                    <li><a class="nav-link" href="#tela">Início</a></li>
                     <li><a class="nav-link" href="#riscos">Riscos</a></li>
                     <li><a class="nav-link" href="#educacao">Educação</a></li>
                     <li><a class="nav-link" href="#dicas">Dicas</a></li>
@@ -56,7 +62,7 @@
         </div>
         <div class="mobile-menu" data-mobile-menu>
             <ul>
-                <li><a href="#home">Início</a></li>
+                <li><a href="#tela">Início</a></li>
                 <li><a href="#riscos">Riscos</a></li>
                 <li><a href="#educacao">Educação</a></li>
                 <li><a href="#dicas">Dicas</a></li>
@@ -66,15 +72,19 @@
         </div>
     </header>
 
+    <!-- ============ BADGE FIXO — acompanha a página ao rolar ============ -->
+    <div class="global-project-badge" aria-hidden="true">
+        <span class="material-symbols-rounded">eco</span>
+        Projeto Educativo 2026
+    </div>
+
     <main>
 
         <!-- ============ VIEW: HOME (landing) ============ -->
         <section id="view-home" class="view">
             <section class="hero" aria-label="Introdução">
                 <div class="hero-content revelar">
-                    <span class="hero-badge">Projeto Educativo 2026</span>
-                    <h1 class="hero-title">Uma proposta para o campo que une segurança, produtividade e imagem
-                        sustentável.</h1>
+                    <h1 class="hero-title hero-title-grande">Inovações inteligentes para blindar a sua lavoura, otimizar insumos e maximizar resultados.l.</h1>
                     <p class="hero-copy">Descubra o projeto que conecta conhecimento técnico e valor real para quem atua
                         na cadeia agrícola.</p>
                     <div class="hero-actions">
@@ -193,15 +203,10 @@
         </section>
 
         <section id="view-tela" class="view">
-            <div class="hero-badge-fixed" aria-hidden="true">
-                <span>Projeto Educativo 2026</span>
-            </div>
-
             <!-- Adicionado data-bg="bg-home" -->
-            <section class="hero" aria-label="Seção principal" data-bg="bg-home">
+            <section class="hero" aria-label="Seção principal" data-bg="bg-tela">
                 <div class="hero-content">
-                    <span class="hero-badge hero-badge-original">Projeto Educativo 2026</span>
-                    <h1 class="hero-title hero-title-cinematic">O futuro da terra depende da nossa
+                    <h1 class="hero-title hero-title-cinematic hero-title-grande">O futuro da terra depende da nossa
                         <span>consciência</span>.</h1>
                     <p class="hero-copy">Transforme informação em ação com um site que apresenta os riscos dos
                         agrotóxicos, métodos sustentáveis e orientações práticas para o campo e o consumidor.</p>
@@ -663,6 +668,26 @@
                             domésticos!</span>
                     </div>
                 </div>
+
+                <section class="info-section revelar">
+                    <div class="section-header">
+                        <span class="icon-wrapper"><span class="material-symbols-rounded">movie</span></span>
+                        <h2>Análise em Vídeo: Dicas de Uso Seguro </h2>
+                    </div>
+                    <p class="lead-text">Assista ao documentário explicativo e entenda de forma didática os
+                        desdobramentos causados pelo uso severo de defensivos químicos sintéticos.</p>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/689Lx-o_UMk?si=RaBl16ulxVWr692r"
+                            title="Vídeo explicativo sobre uso de defensivos agrícolas com segurança" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                    <div class="video-credits">
+                        <span class="material-symbols-rounded">person</span>
+                        <p>Créditos do vídeo: <strong>RuralCampoCast</strong></p>
+                    </div>
+                </section>
             </div>
         </section>
 
@@ -811,6 +836,56 @@
         </section>
 
     </main>
+
+    <!-- ============ CHATBOT IA — Assistente de Segurança na Agricultura ============ -->
+    <div class="chatbot-widget" data-chatbot>
+        <button class="chatbot-toggle" type="button" data-chatbot-toggle aria-expanded="false"
+            aria-controls="chatbot-window" aria-label="Abrir assistente virtual AgroConsciência">
+            <span class="material-symbols-rounded chatbot-toggle-icon-open">smart_toy</span>
+            <span class="material-symbols-rounded chatbot-toggle-icon-close">close</span>
+        </button>
+
+        <div class="chatbot-window" id="chatbot-window" data-chatbot-window role="dialog" aria-modal="false"
+            aria-label="Assistente virtual AgroConsciência">
+            <header class="chatbot-header">
+                <div class="chatbot-avatar">
+                    <span class="material-symbols-rounded">smart_toy</span>
+                </div>
+                <div class="chatbot-header-info">
+                    <strong class="chatbot-name">Vera <span class="chatbot-beta">BETA</span></strong>
+                    <span class="chatbot-status"><span class="chatbot-status-dot"></span> Segurança na
+                        Agricultura</span>
+                </div>
+                <button class="chatbot-close" type="button" data-chatbot-close aria-label="Fechar chat">
+                    <span class="material-symbols-rounded">close</span>
+                </button>
+            </header>
+
+            <div class="chatbot-messages" data-chatbot-messages></div>
+
+            <div class="chatbot-suggestions" data-chatbot-suggestions>
+                <button type="button" class="chatbot-chip"
+                    data-question="Quais EPIs devo usar ao aplicar agrotóxicos?">Quais EPIs usar?</button>
+                <button type="button" class="chatbot-chip"
+                    data-question="Como descartar corretamente as embalagens de agrotóxicos?">Descarte de
+                    embalagens</button>
+                <button type="button" class="chatbot-chip"
+                    data-question="O que fazer em caso de intoxicação por agrotóxicos?">Caso de intoxicação</button>
+                <button type="button" class="chatbot-chip"
+                    data-question="Quais alternativas sustentáveis existem aos agrotóxicos?">Alternativas
+                    sustentáveis</button>
+            </div>
+
+            <form class="chatbot-input-area" data-chatbot-form>
+                <input type="text" class="chatbot-input" data-chatbot-input
+                    placeholder="Digite sua dúvida sobre agricultura..." autocomplete="off"
+                    aria-label="Escreva sua pergunta">
+                <button type="submit" class="chatbot-send" aria-label="Enviar pergunta">
+                    <span class="material-symbols-rounded">send</span>
+                </button>
+            </form>
+        </div>
+    </div>
 
     <script src="script.js" defer></script>
 </body>
