@@ -367,8 +367,6 @@ document.querySelectorAll('.faq-item').forEach(details => {
 
     const hero = viewTela.querySelector('.hero');
     const title = viewTela.querySelector('.hero-title-cinematic');
-    const badgeFixed = document.querySelector('.hero-badge-fixed');
-    const badgeOriginal = viewTela.querySelector('.hero-badge-original');
 
     if (!hero || !title) return;
 
@@ -376,7 +374,6 @@ document.querySelectorAll('.faq-item').forEach(details => {
 
     function update() {
         if (!viewTela.classList.contains('is-active-view')) {
-            if (badgeFixed) badgeFixed.classList.remove('is-visible');
             cancelAnimationFrame(rafId);
             setTimeout(() => { rafId = requestAnimationFrame(update); }, 100);
             return;
@@ -388,9 +385,6 @@ document.querySelectorAll('.faq-item').forEach(details => {
         const progress = Math.max(0, Math.min(1, rawProgress));
 
         if (progress > 0.02) {
-            if (badgeFixed) badgeFixed.classList.add('is-visible');
-            if (badgeOriginal) badgeOriginal.classList.add('is-hidden');
-
             const scale = 1 - (progress * 0.5);
             const opacity = Math.max(0, 1 - (progress * 2.2));
             const blur = progress * 14;
@@ -400,8 +394,6 @@ document.querySelectorAll('.faq-item').forEach(details => {
             title.style.opacity = opacity;
             title.style.filter = `blur(${blur}px)`;
         } else {
-            if (badgeFixed) badgeFixed.classList.remove('is-visible');
-            if (badgeOriginal) badgeOriginal.classList.remove('is-hidden');
             title.style.transform = '';
             title.style.opacity = '';
             title.style.filter = '';
@@ -499,4 +491,173 @@ document.querySelectorAll('.faq-item').forEach(details => {
     }, observerOptions);
 
     sectionsWithBg.forEach(section => bgObserver.observe(section));
+})();
+/* ============================================================
+   CHATBOT IA — Vera, assistente de segurança na agricultura
+   Chat local (regras + palavras-chave), sem dependências externas
+   ============================================================ */
+(function chatbotIA() {
+    'use strict';
+
+    const widget = document.querySelector('[data-chatbot]');
+    if (!widget) return;
+
+    const toggleBtn = widget.querySelector('[data-chatbot-toggle]');
+    const closeBtn = widget.querySelector('[data-chatbot-close]');
+    const messagesEl = widget.querySelector('[data-chatbot-messages]');
+    const suggestionsEl = widget.querySelector('[data-chatbot-suggestions]');
+    const formEl = widget.querySelector('[data-chatbot-form]');
+    const inputEl = widget.querySelector('[data-chatbot-input]');
+
+    if (!toggleBtn || !closeBtn || !messagesEl || !formEl || !inputEl) return;
+
+    // Base de conhecimento simples sobre segurança na agricultura
+    const BASE_CONHECIMENTO = [
+        {
+            palavras: ['epi', 'equipamento', 'protecao individual', 'protecao', 'luva', 'mascara', 'respirador', 'roupa'],
+            resposta: 'Para aplicar agrotóxicos com segurança, use o EPI completo: macacão impermeável, luvas de nitrila, botas de borracha, óculos de proteção, protetor facial e respirador com filtro adequado ao produto. Nunca aplique sem cobrir totalmente pele e vias respiratórias.'
+        },
+        {
+            palavras: ['descarte', 'embalagem', 'embalagens', 'lavagem', 'triplice lavagem', 'reciclagem'],
+            resposta: 'As embalagens vazias devem passar pela tríplice lavagem (ou lavagem sob pressão) e ser devolvidas em até um ano ao estabelecimento onde foram compradas ou a um posto de recebimento credenciado. Nunca reutilize ou descarte no meio ambiente.'
+        },
+        {
+            palavras: ['intoxicacao', 'intoxicado', 'passou mal', 'emergencia', 'socorro', 'veneno', 'envenenamento'],
+            resposta: 'Em caso de suspeita de intoxicação, afaste a pessoa do local, retire as roupas contaminadas e lave a pele com água corrente. Ligue imediatamente para o Disque-Intoxicação (0800 722 6001) ou para o SAMU (192). Você também pode acessar a seção SOS deste site para instruções rápidas.'
+        },
+        {
+            palavras: ['carencia', 'periodo de carencia', 'prazo', 'colheita'],
+            resposta: 'O período de carência é o intervalo mínimo entre a última aplicação do produto e a colheita ou consumo. Ele varia por cultura e produto e está sempre indicado no rótulo — respeitá-lo evita resíduos acima do limite seguro nos alimentos.'
+        },
+        {
+            palavras: ['armazenamento', 'armazenar', 'guardar', 'deposito', 'estoque'],
+            resposta: 'Armazene agrotóxicos em local exclusivo, ventilado, sinalizado, longe de alimentos, água e crianças. Mantenha os produtos nas embalagens originais e com acesso restrito a pessoas autorizadas.'
+        },
+        {
+            palavras: ['agua', 'contaminacao da agua', 'lencol freatico', 'rio'],
+            resposta: 'A contaminação da água ocorre principalmente por escoamento superficial e lixiviação. Manter faixas de vegetação nas margens de rios (mata ciliar), respeitar a dosagem recomendada e evitar aplicação em dias de vento ou chuva reduz bastante esse risco.'
+        },
+        {
+            palavras: ['alternativa', 'alternativas', 'organico', 'organica', 'sustentavel', 'biologico', 'agroecologia'],
+            resposta: 'Existem várias alternativas sustentáveis: controle biológico com insetos predadores, extratos botânicos como óleo de Neem, feromônios sintéticos para armadilhas, agricultura de precisão com drones e sensores, e manejo agroecológico integrado. Veja mais na seção "Alternativas" do site.'
+        },
+        {
+            palavras: ['dosagem', 'dose', 'quantidade', 'aplicar demais', 'excesso'],
+            resposta: 'A dosagem correta é sempre a indicada no rótulo do produto, de acordo com a cultura e a praga-alvo. Aplicar mais do que o recomendado não aumenta a eficácia — só eleva o risco de contaminação e resíduos no alimento.'
+        },
+        {
+            palavras: ['polinizador', 'abelha', 'abelhas', 'biodiversidade'],
+            resposta: 'Agrotóxicos aplicados de forma incorreta afetam diretamente polinizadores como abelhas, essenciais para cerca de 75% das culturas agrícolas. Evitar aplicação durante a floração e em horários de maior atividade dos insetos ajuda a proteger esses agentes.'
+        },
+        {
+            palavras: ['clima', 'vento', 'chuva', 'deriva'],
+            resposta: 'Evite aplicar agrotóxicos em dias de vento forte (causa deriva para áreas vizinhas) ou pouco antes de chuva (escoamento e perda de eficácia). O ideal é verificar a previsão do tempo e aplicar em horários de menor vento, geralmente no início da manhã ou fim da tarde.'
+        },
+        {
+            palavras: ['ola', 'oi', 'bom dia', 'boa tarde', 'boa noite', 'tudo bem'],
+            resposta: 'Olá! Fico feliz em ajudar. Pode me perguntar sobre EPIs, descarte de embalagens, período de carência, armazenamento, contaminação da água, alternativas sustentáveis ou o que fazer em casos de intoxicação.'
+        }
+    ];
+
+    const RESPOSTA_PADRAO = 'Ainda não tenho uma resposta pronta para isso, mas posso ajudar com dúvidas sobre segurança na agricultura: uso de EPIs, descarte de embalagens, período de carência, armazenamento, contaminação da água, alternativas sustentáveis e o que fazer em casos de intoxicação. Pode reformular sua pergunta?';
+
+    function normalizar(texto) {
+        return texto
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '');
+    }
+
+    function buscarResposta(texto) {
+        const textoNormalizado = normalizar(texto);
+
+        for (const item of BASE_CONHECIMENTO) {
+            if (item.palavras.some(p => textoNormalizado.includes(p))) {
+                return item.resposta;
+            }
+        }
+        return RESPOSTA_PADRAO;
+    }
+
+    function rolarParaFinal() {
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function adicionarMensagem(texto, autor) {
+        const bolha = document.createElement('div');
+        bolha.className = `chatbot-msg chatbot-msg-${autor}`;
+        bolha.textContent = texto;
+        messagesEl.appendChild(bolha);
+        rolarParaFinal();
+    }
+
+    function mostrarDigitando() {
+        const digitando = document.createElement('div');
+        digitando.className = 'chatbot-typing';
+        digitando.innerHTML = '<span></span><span></span><span></span>';
+        messagesEl.appendChild(digitando);
+        rolarParaFinal();
+        return digitando;
+    }
+
+    function enviarPergunta(texto) {
+        const pergunta = (texto || '').trim();
+        if (!pergunta) return;
+
+        adicionarMensagem(pergunta, 'user');
+        inputEl.value = '';
+
+        const digitando = mostrarDigitando();
+        const atraso = 500 + Math.random() * 500;
+
+        setTimeout(() => {
+            digitando.remove();
+            adicionarMensagem(buscarResposta(pergunta), 'bot');
+        }, atraso);
+    }
+
+    function abrirChat() {
+        widget.classList.add('is-open');
+        toggleBtn.setAttribute('aria-expanded', 'true');
+        setTimeout(() => inputEl.focus(), 350);
+    }
+
+    function fecharChat() {
+        widget.classList.remove('is-open');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+    }
+
+    toggleBtn.addEventListener('click', () => {
+        if (widget.classList.contains('is-open')) {
+            fecharChat();
+        } else {
+            abrirChat();
+        }
+    });
+
+    closeBtn.addEventListener('click', fecharChat);
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && widget.classList.contains('is-open')) fecharChat();
+    });
+
+    formEl.addEventListener('submit', (e) => {
+        e.preventDefault();
+        enviarPergunta(inputEl.value);
+    });
+
+    if (suggestionsEl) {
+        suggestionsEl.querySelectorAll('[data-question]').forEach(chip => {
+            chip.addEventListener('click', () => {
+                enviarPergunta(chip.getAttribute('data-question'));
+            });
+        });
+    }
+
+    // Mensagens iniciais de boas-vindas — deixa claro o escopo do chat
+    adicionarMensagem(
+        'Olá! Eu sou a Vera, assistente virtual de segurança na agricultura do AgroConsciência. Este chat está aberto para responder todas as suas dúvidas sobre agrotóxicos, boas práticas e segurança no campo.',
+        'bot'
+    );
+    adicionarMensagem('Envie sua pergunta ou escolha uma sugestão abaixo:', 'bot');
 })();
