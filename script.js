@@ -644,7 +644,7 @@ document.querySelectorAll('.faq-item').forEach(details => {
 
     // Mensagens iniciais de boas-vindas — deixa claro o escopo do chat
     adicionarMensagem(
-        'Olá! Eu sou a Vera, assistente virtual de segurança na agricultura do AgroConsciência. Este chat está aberto para responder todas as suas dúvidas sobre agrotóxicos, boas práticas e segurança no campo.',
+        'Olá! Eu sou o AgroBot, assistente virtual de segurança na agricultura do AgroConsciência. Este chat está aberto para responder todas as suas dúvidas sobre agrotóxicos, boas práticas e segurança no campo.',
         'bot'
     );
     adicionarMensagem('Envie sua pergunta ou escolha uma sugestão abaixo:', 'bot');
