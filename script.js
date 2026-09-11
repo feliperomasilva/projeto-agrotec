@@ -1,3 +1,7 @@
+/* Remove o estado "sem JS" assim que o script carrega.
+   Em CSS, .no-js .revelar mantém o conteúdo visível caso o JS falhe. */
+document.documentElement.classList.remove('no-js');
+
 document.addEventListener("DOMContentLoaded", () => {
     const prefereReduzirMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -16,64 +20,100 @@ document.addEventListener("DOMContentLoaded", () => {
         sos: 'SOS Emergência | AgroConsciência'
     };
 
-    function mostrarView(nome) {
-        const alvo = document.getElementById(`view-${nome}`);
-        if (!alvo) return;
-        const atual = document.querySelector('.view.is-active-view');
+    const viewsCache = new Map(VIEWS.map(v => [v, document.getElementById(`view-${v}`)]));
+    let viewAtiva = document.querySelector('.view.is-active-view') || null;
+    const navLinksCache = Array.from(document.querySelectorAll('.nav-link'));
+    const linkPorView = new Map(navLinksCache.map(l => [(l.getAttribute('href') || '').slice(1), l]));
+    const mobileMenuCache = document.querySelector('[data-mobile-menu]');
+    const menuToggleCache = document.querySelector('[data-menu-toggle]');
+    let linkAtivoAtual = null;
 
-        if (atual && atual !== alvo) {
-            atual.classList.remove('is-active-view');
-            if (!prefereReduzirMovimento) {
-                atual.classList.add('is-leaving');
-                setTimeout(() => atual.classList.remove('is-leaving'), 200);
-            }
+    function mostrarView(nome, ancoraId) {
+        const alvo = viewsCache.get(nome);
+        if (!alvo) return;
+
+        if (viewAtiva !== alvo) {
+            if (viewAtiva) viewAtiva.classList.remove('is-active-view');
+            alvo.classList.add('is-active-view');
+            viewAtiva = alvo;
         }
 
-        alvo.classList.add('is-active-view');
         document.body.dataset.view = nome;
-        document.title = TITULOS[nome] || TITULOS.home;
-        window.scrollTo(0, 0);
+        const novoTitulo = TITULOS[nome] || TITULOS.home;
+        if (document.title !== novoTitulo) document.title = novoTitulo;
 
-        document.querySelectorAll(`#view-${nome} .revelar`).forEach(el => {
-            const rect = el.getBoundingClientRect();
-            if (rect.top < window.innerHeight && rect.bottom >= 0) {
-                el.classList.add('ativo');
-            }
-        });
+        const linkAtivo = linkPorView.get(nome) || null;
+        if (linkAtivoAtual !== linkAtivo) {
+            if (linkAtivoAtual) linkAtivoAtual.classList.remove('is-active');
+            if (linkAtivo) linkAtivo.classList.add('is-active');
+            linkAtivoAtual = linkAtivo;
+        }
 
-        const mobileMenu = document.querySelector('[data-mobile-menu]');
-        const menuToggle = document.querySelector('[data-menu-toggle]');
-        if (mobileMenu && mobileMenu.classList.contains('is-open')) {
-            mobileMenu.classList.remove('is-open');
-            if (menuToggle) menuToggle.setAttribute('aria-expanded', 'false');
+        if (mobileMenuCache && mobileMenuCache.classList.contains('is-open')) {
+            mobileMenuCache.classList.remove('is-open');
+            if (menuToggleCache) menuToggleCache.setAttribute('aria-expanded', 'false');
+        }
+
+        if (!ancoraId) {
+            window.scrollTo(0, 0);
+            return;
+        }
+        const destino = document.getElementById(ancoraId);
+        if (destino) {
+            requestAnimationFrame(() => {
+                destino.scrollIntoView({ behavior: prefereReduzirMovimento ? 'auto' : 'smooth', block: 'start' });
+            });
+        } else {
+            window.scrollTo(0, 0);
         }
     }
 
     function rotear() {
         const hash = location.hash.replace('#', '');
         if (!hash) { mostrarView('home'); return; }
-        if (VIEWS.includes(hash)) mostrarView(hash);
+        if (VIEWS.includes(hash)) { mostrarView(hash); return; }
+        const destino = document.getElementById(hash);
+        const viewPai = destino ? destino.closest('.view') : null;
+        if (destino && viewPai) {
+            mostrarView(viewPai.id.replace('view-', ''), hash);
+            return;
+        }
     }
 
     window.addEventListener('hashchange', rotear);
     rotear();
 
     /* ============================================================
-       REVEAL-ON-SCROLL
+       REVEAL-ON-SCROLL APRIMORADO
        ============================================================ */
     const elementosParaRevelar = document.querySelectorAll('.revelar');
 
     if (prefereReduzirMovimento) {
-        elementosParaRevelar.forEach(el => el.classList.add('ativo'));
+        elementosParaRevelar.forEach(el => {
+            el.classList.add('ativo');
+            el.style.transitionDelay = '0s';
+        });
     } else {
         const observador = new IntersectionObserver((entradas) => {
             entradas.forEach(entrada => {
                 if (entrada.isIntersecting) {
-                    entrada.target.classList.add('ativo');
+                    revelarElemento(entrada.target);
                     observador.unobserve(entrada.target);
                 }
             });
-        }, { root: null, rootMargin: '0px', threshold: 0.15 });
+        }, {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.12  // Reduzido de 0.15 para trigger mais natural
+        });
+
+        function revelarElemento(el) {
+            el.style.willChange = 'opacity, transform';
+            el.classList.add('ativo');
+            setTimeout(() => {
+                el.style.willChange = 'auto';
+            }, 1200);
+        }
 
         elementosParaRevelar.forEach(el => observador.observe(el));
     }
@@ -86,7 +126,6 @@ document.addEventListener("DOMContentLoaded", () => {
 (function initSlidingNumbers() {
     'use strict';
 
-    const prefereReduzirMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const containers = document.querySelectorAll('[data-sliding-number]');
     if (!containers.length) return;
 
@@ -162,50 +201,76 @@ document.addEventListener("DOMContentLoaded", () => {
         if (prefereReduzirMovimento) {
             container.innerHTML = instance.target + instance.suffix;
             container.style.opacity = '1';
-            return;
         }
+    });
 
-        const obs = new IntersectionObserver((entries) => {
+    if (!prefereReduzirMovimento) {
+        const slidingObs = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    animateInstance(instance);
-                } else {
-                    resetInstance(instance);
-                }
+                const instance = instances.get(entry.target);
+                if (!instance) return;
+                if (entry.isIntersecting) animateInstance(instance);
+                else resetInstance(instance);
             });
         }, { threshold: 0.4 });
-
-        obs.observe(container);
-    });
+        containers.forEach(container => slidingObs.observe(container));
+    }
 })();
 
     /* ============================================================
-       GLOW NO MOUSE — brilho que acompanha o cursor dentro dos cards
-       (throttled via rAF para não recalcular estilo a cada pixel)
+       GLOW NO MOUSE + EFEITO MAGNÉTICO — Event Delegation Otimizado
+       Reduz de múltiplos listeners (50+) para 1-2 globais com closest()
        ============================================================ */
     if (!prefereReduzirMovimento && window.matchMedia('(hover: hover)').matches) {
-        const cardsComGlow = document.querySelectorAll(
-            '.card, .metric-card, .alt-card, .step-card, .pillar-card, .data-card, .alert-card, .faq-item'
-        );
-        let glowTicking = false;
-        let pendingGlow = null;
+        const seletorGlow = '.card, .metric-card, .alt-card, .step-card, .pillar-card, .data-card, .alert-card, .faq-item';
+        const seletorMagnetico = '.card, .metric-card, .alert-card, .data-card, .pillar-card, .step-card, .alt-card';
+        let pendingEvent = null;
+        let glowMagRaf = 0;
+        let lastMag = null;
 
-        cardsComGlow.forEach(card => {
-            card.addEventListener('mousemove', (e) => {
+        function flushGlowMag() {
+            glowMagRaf = 0;
+            const e = pendingEvent;
+            pendingEvent = null;
+            if (!e || !(e.target instanceof Element)) return;
+            const cx = e.clientX;
+            const cy = e.clientY;
+
+            const card = e.target.closest(seletorGlow);
+            if (card) {
                 const rect = card.getBoundingClientRect();
-                pendingGlow = { card, x: e.clientX - rect.left, y: e.clientY - rect.top };
-                if (!glowTicking) {
-                    requestAnimationFrame(() => {
-                        if (pendingGlow) {
-                            pendingGlow.card.style.setProperty('--mx', `${pendingGlow.x}px`);
-                            pendingGlow.card.style.setProperty('--my', `${pendingGlow.y}px`);
-                        }
-                        glowTicking = false;
-                    });
-                    glowTicking = true;
-                }
-            });
-        });
+                card.style.setProperty('--mx', `${cx - rect.left}px`);
+                card.style.setProperty('--my', `${cy - rect.top}px`);
+            }
+
+            const found = e.target.closest(seletorMagnetico);
+            const mag = (found && !found.closest('#view-sos')) ? found : null;
+            if (mag !== lastMag) {
+                if (lastMag) lastMag.style.translate = '';
+                lastMag = mag;
+            }
+            if (mag) {
+                const rect = mag.getBoundingClientRect();
+                const forca = 0.12;
+                const x = (cx - rect.left - rect.width / 2) * forca;
+                const y = (cy - rect.top - rect.height / 2) * forca;
+                mag.style.translate = `${x.toFixed(1)}px ${y.toFixed(1)}px`;
+            }
+        }
+
+        document.body.addEventListener('mousemove', (e) => {
+            pendingEvent = e;
+            if (!glowMagRaf) glowMagRaf = requestAnimationFrame(flushGlowMag);
+        }, { passive: true });
+
+        document.body.addEventListener('mouseout', (e) => {
+            if (!(e.target instanceof Element)) return;
+            const el = e.target.closest(seletorMagnetico);
+            if (el && (!e.relatedTarget || !el.contains(e.relatedTarget))) {
+                el.style.translate = '';
+                if (lastMag === el) lastMag = null;
+            }
+        }, { passive: true });
     }
 
     /* ============================================================
@@ -235,36 +300,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    /* ============================================================
-       EFEITO MAGNÉTICO — cards e botões seguem levemente o cursor
-       ============================================================ */
-    function aplicarEfeitoMagnetico(seletor, forca) {
-        if (prefereReduzirMovimento || !window.matchMedia('(hover: hover)').matches) return;
-
-        document.querySelectorAll(seletor).forEach(el => {
-            if (el.closest('#view-sos')) return;
-
-            el.addEventListener('mousemove', (e) => {
-                const rect = el.getBoundingClientRect();
-                const x = (e.clientX - rect.left - rect.width / 2) * forca;
-                const y = (e.clientY - rect.top - rect.height / 2) * forca;
-                el.style.transform = `translate(${x}px, ${y}px) scale(1.04)`;
-                el.style.transition = 'transform 0.08s ease-out';
-            });
-
-            el.addEventListener('mouseleave', () => {
-                el.style.transform = '';
-                el.style.transition = 'transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-            });
-        });
-    }
-
-    aplicarEfeitoMagnetico(
-        '.card, .metric-card, .alert-card, .data-card, .pillar-card, .step-card, .alt-card',
-        0.12
-    );
-    aplicarEfeitoMagnetico('.footer-pill, .footer-pill-small, .footer-top-btn', 0.25);
-    aplicarEfeitoMagnetico('.hero-actions .btn, .nav-actions .btn', 0.18);
+    /* Efeito magnético agora usa event delegation otimizado (linha 220-262) */
 
     const footerTopBtn = document.getElementById('footer-scroll-top');
     if (footerTopBtn) {
@@ -275,24 +311,13 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* ============================================================
-   CABEÇALHO — permanece sempre visível e fixo no topo.
-   (Antes escondia ao rolar pra baixo, mas isso deixava uma faixa
-   sem preenchimento visível no topo da página; removido.)
-   ============================================================ */
-(function headerReveal() {
-    const header = document.querySelector('.site-header');
-    if (!header) return;
-
-    // Garante que nunca fique com a classe que o esconde
-    header.classList.remove('is-hidden');
-})();
-
-/* ============================================================
    FAQ — accordion (Animação persistente e fechamento suave)
    ============================================================ */
-document.querySelectorAll('.faq-item').forEach(details => {
+document.querySelectorAll('.faq-item:not([data-faq-init])').forEach(details => {
+    details.dataset.faqInit = '1';
     const summary = details.querySelector('summary');
-    const originalP = details.querySelector('p');
+    if (!summary) return;
+    const originalP = details.querySelector(':scope > p');
 
     // Cria a estrutura wrapper necessária para a transição de altura se não existir
     if (originalP && !details.querySelector('.faq-answer')) {
@@ -339,6 +364,7 @@ document.querySelectorAll('.faq-item').forEach(details => {
    EFEITO CINEMATOGRÁFICO HERO — Apple Style Scroll (view Tela)
    ============================================================ */
 (function cinematicHero() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const viewTela = document.getElementById('view-tela');
     if (!viewTela) return;
 
@@ -347,17 +373,14 @@ document.querySelectorAll('.faq-item').forEach(details => {
 
     if (!hero || !title) return;
 
-    let rafId = null;
+    let rafId = 0;
+    let heroVisivel = false;
 
     function update() {
-        if (!viewTela.classList.contains('is-active-view')) {
-            cancelAnimationFrame(rafId);
-            setTimeout(() => { rafId = requestAnimationFrame(update); }, 100);
-            return;
-        }
-
+        rafId = 0;
+        if (!heroVisivel) return;
         const rect = hero.getBoundingClientRect();
-        const heroHeight = hero.offsetHeight;
+        const heroHeight = hero.offsetHeight || 1;
         const rawProgress = -rect.top / (heroHeight * 0.55);
         const progress = Math.max(0, Math.min(1, rawProgress));
 
@@ -375,55 +398,80 @@ document.querySelectorAll('.faq-item').forEach(details => {
             title.style.opacity = '';
             title.style.filter = '';
         }
-
-        rafId = requestAnimationFrame(update);
     }
 
-    rafId = requestAnimationFrame(update);
+    function schedule() {
+        if (heroVisivel && !rafId) rafId = requestAnimationFrame(update);
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        heroVisivel = entries.some(entry => entry.isIntersecting);
+        if (heroVisivel) {
+            schedule();
+        } else {
+            if (rafId) { cancelAnimationFrame(rafId); rafId = 0; }
+            title.style.transform = '';
+            title.style.opacity = '';
+            title.style.filter = '';
+        }
+    });
+
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('hashchange', schedule, { passive: true });
+    observer.observe(viewTela);
 })();
 
 /* ============================================================
-   PARALLAX — camada de fundo única + imagens em profundidade
-   (substitui as 3 camadas de gradiente redundantes que existiam)
+   PARALLAX — imagens .img-box em profundidade (riscos, educação,
+   dicas, alternativas) + re-execução em mudança de view/resize.
+   Removida a camada .parallax-bg-layer (gradientes translúcidos
+   sobre position:fixed com backdrop-filter) porque gerava uma
+   barra visível sob a navbar em todo scroll.
    ============================================================ */
 (function parallax() {
-    const bgLayer = document.createElement('div');
-    bgLayer.className = 'parallax-bg-layer';
-    bgLayer.style.cssText = `
-        position: fixed; inset: 0; z-index: -1; pointer-events: none;
-        background:
-            radial-gradient(circle at 15% 25%, rgba(57, 255, 158, 0.12), transparent 35%),
-            radial-gradient(circle at 85% 20%, rgba(51, 240, 255, 0.08), transparent 25%),
-            radial-gradient(circle at 50% 80%, rgba(57, 255, 158, 0.06), transparent 30%);
-        will-change: transform;
-    `;
-    document.body.insertBefore(bgLayer, document.body.firstChild);
-
-    const images = document.querySelectorAll('.img-box img, .card-compact img');
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const images = Array.from(document.querySelectorAll('.img-box img, .card-compact img'));
+    if (!images.length) return;
+    const visiveis = new Set();
     let ticking = false;
 
     function update() {
-        const scrollY = window.scrollY;
+        ticking = false;
+        if (!visiveis.size) return;
         const winHeight = window.innerHeight;
 
-        bgLayer.style.transform = `translate3d(0, ${scrollY * 0.05}px, 0)`;
-
-        images.forEach(img => {
+        visiveis.forEach(img => {
             const rect = img.parentElement.getBoundingClientRect();
             if (rect.top < winHeight && rect.bottom > 0) {
                 const offset = (winHeight - rect.top) * 0.15;
                 img.style.transform = `translate3d(0, ${-offset * 0.3}px, 0) scale(1.1)`;
             }
         });
-
-        ticking = false;
     }
 
-    window.addEventListener('scroll', () => {
+    function schedule() {
         if (!ticking) {
             requestAnimationFrame(update);
             ticking = true;
         }
+    }
+
+    const visObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) visiveis.add(entry.target);
+            else visiveis.delete(entry.target);
+        });
+        schedule();
+    }, { rootMargin: '100px 0px' });
+    images.forEach(img => visObserver.observe(img));
+
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('hashchange', schedule, { passive: true });
+
+    let resizeDebounce;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeDebounce);
+        resizeDebounce = setTimeout(schedule, 150);
     }, { passive: true });
 
     update();
@@ -443,11 +491,12 @@ document.querySelectorAll('.faq-item').forEach(details => {
 
     if (!sectionsWithBg.length || !bgImages.length) return;
 
-    // Configuração ideal: Dispara quando a seção cruza a metade da tela do usuário
+    // Configuração ideal: faixa central ampla para a imagem fixar antes
+    // e permanecer nítida por mais tempo durante o scroll
     const observerOptions = {
         root: null,
-        rootMargin: '-10% 0px -40% 0px', // Afunila a área de detecção no centro do visor
-        threshold: 0.15
+        rootMargin: '-20% 0px -20% 0px', // Afunila a área de detecção no centro do visor
+        threshold: 0.25
     };
 
     const bgObserver = new IntersectionObserver((entries) => {
@@ -487,6 +536,8 @@ document.querySelectorAll('.faq-item').forEach(details => {
     const inputEl = widget.querySelector('[data-chatbot-input]');
 
     if (!toggleBtn || !closeBtn || !messagesEl || !formEl || !inputEl) return;
+
+    let boasVindasEnviadas = false;
 
     // Base de conhecimento simples sobre segurança na agricultura
     const BASE_CONHECIMENTO = [
@@ -596,12 +647,21 @@ document.querySelectorAll('.faq-item').forEach(details => {
     function abrirChat() {
         widget.classList.add('is-open');
         toggleBtn.setAttribute('aria-expanded', 'true');
+        if (!boasVindasEnviadas) {
+            boasVindasEnviadas = true;
+            adicionarMensagem(
+                'Olá! Eu sou o AgroBot, assistente virtual de segurança na agricultura do AgroConsciência. Este chat está aberto para responder todas as suas dúvidas sobre agrotóxicos, boas práticas e segurança no campo.',
+                'bot'
+            );
+            adicionarMensagem('Envie sua pergunta ou escolha uma sugestão abaixo:', 'bot');
+        }
         setTimeout(() => inputEl.focus(), 350);
     }
 
     function fecharChat() {
         widget.classList.remove('is-open');
         toggleBtn.setAttribute('aria-expanded', 'false');
+        toggleBtn.focus();
     }
 
     toggleBtn.addEventListener('click', () => {
@@ -620,16 +680,7 @@ document.querySelectorAll('.faq-item').forEach(details => {
 
     formEl.addEventListener('submit', (e) => {
         e.preventDefault();
-        e.stopPropagation();
         enviarPergunta(inputEl.value);
-    });
-
-    // Suporte para enviar ao pressionar Enter no mobile
-    inputEl.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            enviarPergunta(inputEl.value);
-        }
     });
 
     if (suggestionsEl) {
@@ -642,10 +693,4 @@ document.querySelectorAll('.faq-item').forEach(details => {
         });
     }
 
-    // Mensagens iniciais de boas-vindas — deixa claro o escopo do chat
-    adicionarMensagem(
-        'Olá! Eu sou o AgroBot, assistente virtual de segurança na agricultura do AgroConsciência. Este chat está aberto para responder todas as suas dúvidas sobre agrotóxicos, boas práticas e segurança no campo.',
-        'bot'
-    );
-    adicionarMensagem('Envie sua pergunta ou escolha uma sugestão abaixo:', 'bot');
 })();
