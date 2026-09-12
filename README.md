@@ -8,6 +8,8 @@
 
 ---
 
+![Prévia](images/projeto.png)
+
 ## Sobre o Projeto
 
 O uso indiscriminado de agrotóxicos representa um dos principais desafios da agricultura moderna, colocando em risco a saúde dos produtores, consumidores e do meio ambiente. Este projeto surgiu da parceria entre os cursos técnicos de Análise e Desenvolvimento de Sistemas (ADS) e Técnico em Agronegócio, unindo tecnologia e conhecimento agrícola para enfrentar essa problemática.
