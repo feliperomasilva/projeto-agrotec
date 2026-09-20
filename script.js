@@ -130,6 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!containers.length) return;
 
     const instances = new Map();
+    const homeInstances = [];
 
     function buildSlidingNumber(container) {
         const target = parseInt(container.dataset.target, 10) || 0;
@@ -197,6 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
     containers.forEach(container => {
         const instance = buildSlidingNumber(container);
         instances.set(container, instance);
+        if (container.closest('#view-home .home-hero')) homeInstances.push(instance);
 
         if (prefereReduzirMovimento) {
             container.innerHTML = instance.target + instance.suffix;
@@ -204,11 +206,22 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    if (homeInstances.length) {
+        const inHomeHero = (el) => !!(el && el.closest && el.closest('#view-home .home-hero'));
+        window.__slidingHome = {
+            animate() { homeInstances.forEach(animateInstance); },
+            reset() { homeInstances.forEach(resetInstance); },
+            isHome(el) { return inHomeHero(el); }
+        };
+    }
+
     if (!prefereReduzirMovimento) {
+        const isHomeHero = (el) => !!(el && el.closest && el.closest('#view-home .home-hero'));
         const slidingObs = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 const instance = instances.get(entry.target);
                 if (!instance) return;
+                if (isHomeHero(entry.target)) return;
                 if (entry.isIntersecting) animateInstance(instance);
                 else resetInstance(instance);
             });
@@ -251,9 +264,10 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             if (mag) {
                 const rect = mag.getBoundingClientRect();
-                const forca = 0.12;
-                const x = (cx - rect.left - rect.width / 2) * forca;
-                const y = (cy - rect.top - rect.height / 2) * forca;
+                const forca = 0.04;
+                const maxDesloc = 8;
+                const x = Math.max(-maxDesloc, Math.min(maxDesloc, (cx - rect.left - rect.width / 2) * forca));
+                const y = Math.max(-maxDesloc, Math.min(maxDesloc, (cy - rect.top - rect.height / 2) * forca));
                 mag.style.translate = `${x.toFixed(1)}px ${y.toFixed(1)}px`;
             }
         }

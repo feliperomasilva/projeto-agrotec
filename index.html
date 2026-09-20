@@ -14,12 +14,12 @@
         rel="stylesheet">
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,300,0,0" />
-    <link rel="preload" href="style.css" as="style">
-    <link rel="stylesheet" href="style.css">
+    <link rel="preload" href="style.css?v=3" as="style">
+    <link rel="stylesheet" href="style.css?v=3">
     <link rel="icon" type="image/x-icon" href="images/agriculture-svgrepo-com.svg">
 </head>
 
-<body>
+<body data-view="home">
     <div class="background-container">
         <div id="bg-home" class="bg-image"
             style="background-image: url('https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=1200&q=70')">
@@ -83,18 +83,36 @@
 
         <!-- ============ VIEW: HOME (landing) ============ -->
         <section id="view-home" class="view">
-            <section class="hero" aria-label="Introdução">
-                <div class="hero-content revelar">
-                    <h1 class="hero-title hero-title-grande">Inovações inteligentes para blindar a sua lavoura, otimizar insumos e maximizar resultados.</h1>
-                    <p class="hero-copy">Descubra o projeto que conecta conhecimento técnico e valor real para quem atua
+            <div class="home-hero-wrap" data-frame-wrap>
+            <section class="hero home-hero" aria-label="Introdução" data-frame-hero>
+                <canvas class="frame-canvas" data-frame-canvas aria-hidden="true"></canvas>
+                <div class="frame-progress" aria-hidden="true"><span data-frame-progress></span></div>
+                <p class="frame-debug" data-frame-debug hidden></p>
+                <div class="hero-content">
+                    <h1 class="hero-title hero-title-grande" data-cine="title">Inovações inteligentes para blindar a sua lavoura, otimizar insumos e <span class="hl">maximizar resultados.</span></h1>
+                    <p class="hero-copy" data-cine="copy">Descubra o projeto que conecta conhecimento técnico e valor real para quem atua
                         na cadeia agrícola.</p>
-                    <div class="hero-actions">
+                    <div class="hero-actions" data-cine="actions">
                         <a class="btn btn-primary" href="#tela">Conhecer o projeto</a>
                         <a class="btn btn-secondary" href="#beneficios">Entenda o impacto</a>
                     </div>
+                    <nav class="mapa-caminhos" data-cine="paths" aria-label="Caminhos do projeto">
+                        <a class="caminho caminho-proteger" href="#riscos">
+                            <span class="caminho-no" aria-hidden="true"><span class="material-symbols-rounded">warning</span></span>
+                            <span class="caminho-texto"><strong>Proteger</strong><small>Riscos e impactos</small></span>
+                        </a>
+                        <a class="caminho caminho-aprender" href="#dicas">
+                            <span class="caminho-no" aria-hidden="true"><span class="material-symbols-rounded">menu_book</span></span>
+                            <span class="caminho-texto"><strong>Aprender</strong><small>EPI, manejo e descarte</small></span>
+                        </a>
+                        <a class="caminho caminho-transformar" href="#alternativas">
+                            <span class="caminho-no" aria-hidden="true"><span class="material-symbols-rounded">eco</span></span>
+                            <span class="caminho-texto"><strong>Transformar</strong><small>Alternativas sustentáveis</small></span>
+                        </a>
+                    </nav>
                 </div>
-                <aside class="hero-panel revelar">
-                    <div class="overlay-panel">
+                <aside class="hero-panel">
+                    <div class="overlay-panel" data-cine="panel">
                         <h3>Proposta alinhada ao impacto</h3>
                         <p>Conteúdo pensado para mostrar claramente por que este projeto faz diferença no campo.</p>
                         <p class="lead-text" style="margin-top:0.6rem; font-size:0.95rem; color:var(--muted);">Impactos
@@ -102,16 +120,16 @@
                             de trabalhadores e comunidades próximas.</p>
                     </div>
                     <div class="metric-grid">
-                        <article class="metric-card revelar">
-                            <p class="metric-value" data-sliding-number data-target="75" data-duration="1400"
-                                data-suffix="%"></p>
+                        <article class="metric-card" data-cine="metric">
+                             <p class="metric-value" data-sliding-number data-target="75" data-duration="1400"
+                                 data-suffix="%"></p>
                             <p class="metric-description">das culturas dependem de polinizadores para prosperar.</p>
                             <p class="metric-source">Fonte: Embrapa (embrapa.br)</p>
                         </article>
 
-                        <article class="metric-card revelar">
-                            <p class="metric-value" data-sliding-number data-target="90" data-duration="1400"
-                                data-suffix="%"></p>
+                        <article class="metric-card" data-cine="metric">
+                             <p class="metric-value" data-sliding-number data-target="90" data-duration="1400"
+                                 data-suffix="%"></p>
                             <p class="metric-description">dos agrotóxicos escapam da área tratada e impactam o ambiente.
                             </p>
                             <p class="metric-source">Fonte: Embrapa (embrapa.br)</p>
@@ -119,6 +137,7 @@
                     </div>
                 </aside>
             </section>
+            </div>
 
             <section id="beneficios" class="section revelar" aria-labelledby="beneficios-title">
                 <div class="section-header">
@@ -884,7 +903,11 @@
         </div>
     </div>
 
-    <script src="script.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/SplitText.min.js" defer></script>
+    <script src="script.js?v=3" defer></script>
+    <script src="js/frame-sequence.js?v=3" defer></script>
 </body>
 
 </html>

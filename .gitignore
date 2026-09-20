@@ -140,3 +140,4 @@ vite.config.ts.timestamp-*
 /.codegraph
 /.impeccable
 /.playwright-mcp
+/images/frames
