@@ -81,28 +81,25 @@
 
     /* ---------- FrameRenderer (cover, DPR capado) ---------- */
     var ctx = canvas.getContext('2d');
-    var dprCap = window.innerWidth < 768 ? 1.25 : 1.75;
+    var isNarrowViewport = function () {
+        return window.matchMedia('(max-width: 820px)').matches;
+    };
+    var dprCap = isNarrowViewport() ? 1.25 : 1.75;
     var canvasW = 0;
     var canvasH = 0;
     var currentIndex = -1;
 
     function sizeCanvas() {
         var vw = window.innerWidth || 1280;
-        var vh = window.innerHeight || 800;
-        var w;
-        var h;
-        var heroPos = 'sticky';
-        try { heroPos = getComputedStyle(hero).position; } catch (e) {}
-        if (currentViewName() === 'home' && heroPos === 'sticky') {
-            w = vw;
-            h = vh;
-        } else {
+        var vh = (window.visualViewport && window.visualViewport.height) || window.innerHeight || 800;
+        var w = vw;
+        var h = vh;
+        if (currentViewName() !== 'home') {
             var rect = hero.getBoundingClientRect();
-            if (rect.width < 2 || rect.height < 2) {
-                rect = { width: Math.min(vw, 1600), height: vh };
+            if (rect.width > 2 && rect.height > 2) {
+                w = rect.width;
+                h = rect.height;
             }
-            w = rect.width;
-            h = rect.height;
         }
         var dpr = Math.min(window.devicePixelRatio || 1, dprCap);
         canvasW = Math.max(1, Math.round(w * dpr));
@@ -117,9 +114,19 @@
 
     function drawCover(img) {
         var scale = Math.max(canvasW / img.naturalWidth, canvasH / img.naturalHeight);
+        var portrait = canvasH > canvasW;
+        if (portrait || isNarrowViewport()) scale *= 1.05;
         var w = img.naturalWidth * scale;
         var h = img.naturalHeight * scale;
-        ctx.drawImage(img, (canvasW - w) / 2, (canvasH - h) / 2, w, h);
+        var fx = 0.5;
+        var fy = (portrait || isNarrowViewport()) ? 0.35 : 0.5;
+        ctx.fillStyle = '#05070c';
+        ctx.fillRect(0, 0, canvasW, canvasH);
+        ctx.drawImage(img, (canvasW - w) * fx, (canvasH - h) * fy, w, h);
+    }
+
+    function markReady() {
+        if (canvas.classList) canvas.classList.add('is-ready');
     }
 
     function render(f) {
@@ -130,6 +137,7 @@
         if (!img || !img.complete || !img.naturalWidth) return;
         currentIndex = idx;
         drawCover(img);
+        markReady();
         if (idx !== dbgFrame) { dbgFrame = idx; paintDebug(); }
     }
 
@@ -444,16 +452,17 @@
         mm = gsap.matchMedia();
         mm.add(
             {
-                isMobile: '(max-width: 768px)',
-                isDesktop: '(min-width: 769px)'
+                isNarrow: '(max-width: 820px)',
+                isWide: '(min-width: 821px)'
             },
-            function (context) {
+            function () {
                 st = ScrollTrigger.create({
                     trigger: wrap,
                     start: 'top top',
                     end: function () {
-                        var h = wrap.offsetHeight || (window.innerHeight * 2.6);
-                        return '+=' + Math.max(1, Math.round(h - window.innerHeight));
+                        var h = wrap.offsetHeight || (window.innerHeight * 3.4);
+                        var vh = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
+                        return '+=' + Math.max(1, Math.round(h - vh));
                     },
                     scrub: 1,
                     invalidateOnRefresh: true,
@@ -472,7 +481,7 @@
     function onResize() {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(function () {
-            dprCap = window.innerWidth < 768 ? 1.25 : 1.75;
+            dprCap = isNarrowViewport() ? 1.25 : 1.75;
             sizeCanvas();
             if (window.ScrollTrigger) ScrollTrigger.refresh();
         }, 200);
@@ -488,6 +497,10 @@
     function renderFirstFrame(force) {
         var idx = Math.max(0, Math.min(FRAMES.count - 1, Math.round(currentFloat)));
         var img = images[idx];
+        if ((!img || !img.complete || !img.naturalWidth) && images[FRAMES.count - 1] && images[FRAMES.count - 1].naturalWidth) {
+            idx = FRAMES.count - 1;
+            img = images[idx];
+        }
         if ((!img || !img.complete || !img.naturalWidth) && images[0] && images[0].naturalWidth) {
             idx = 0;
             img = images[0];
@@ -496,12 +509,14 @@
         if (!force && idx === currentIndex) return;
         currentIndex = idx;
         drawCover(img);
+        markReady();
     }
 
     function syncWithView() {
         var isHome = currentViewName() === 'home';
         active = isHome && !reduceMotion;
         if (active) {
+            if (!st) buildTrigger();
             if (st) st.enable();
             sizeCanvas();
             renderFirstFrame(true);
@@ -545,11 +560,14 @@
     applyCine(0, true);
     sizeCanvas();
 
+    /* Pré-carrega frame 0 (início) + 95 (fundo final) p/ is-ready rápido;
+       resto em background. Fallback = poster frame 96 via CSS. */
     loadOne(0).then(function () {
         sizeCanvas();
         renderFirstFrame(true);
         if (debug && debugEl) debugEl.hidden = false;
     });
+    loadOne(FRAMES.count - 1).then(function () { sizeCanvas(); });
     loadAll().then(function () {
         render(currentFloat);
         if (progressEl) progressEl.parentElement.classList.add('is-done');
@@ -589,6 +607,11 @@
                 ensureSplit();
                 applyCine(1, true);
                 fireHomeMetrics();
+                loadOne(FRAMES.count - 1).then(function () {
+                    sizeCanvas();
+                    targetFloat = currentFloat = FRAMES.count - 1;
+                    render(FRAMES.count - 1);
+                });
             }
             return;
         }
