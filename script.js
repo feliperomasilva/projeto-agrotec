@@ -28,6 +28,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const menuToggleCache = document.querySelector('[data-menu-toggle]');
     let linkAtivoAtual = null;
 
+    function hidratarIframes(viewEl) {
+        if (!viewEl) return;
+        viewEl.querySelectorAll('iframe[data-src]:not([src])').forEach(iframe => {
+            iframe.setAttribute('src', iframe.getAttribute('data-src'));
+        });
+    }
+
     function mostrarView(nome, ancoraId) {
         const alvo = viewsCache.get(nome);
         if (!alvo) return;
@@ -37,6 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
             alvo.classList.add('is-active-view');
             viewAtiva = alvo;
         }
+        hidratarIframes(alvo);
 
         document.body.dataset.view = nome;
         const novoTitulo = TITULOS[nome] || TITULOS.home;
@@ -82,6 +90,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.addEventListener('hashchange', rotear);
     rotear();
+    hidratarIframes(viewAtiva);
+
+    /* ============================================================
+       WARM-UP 4 VIEWS — prefetch no hover + preload no idle
+       Mantém q=75: mesma nitidez, entrada instantânea
+       ============================================================ */
+    (function warmupViews() {
+        const aquecidas = new Set();
+        function aquecer(nome) {
+            if (aquecidas.has(nome)) return;
+            aquecidas.add(nome);
+            const view = viewsCache.get(nome);
+            if (!view) return;
+            view.querySelectorAll('img[srcset], img[src]').forEach(img => {
+                const url = (img.currentSrc || img.src || '').split(' ')[0];
+                if (url && !document.querySelector(`link[rel="preload"][href="${url}"]`)) {
+                    const l = document.createElement('link');
+                    l.rel = 'preload'; l.as = 'image'; l.href = url;
+                    document.head.appendChild(l);
+                }
+            });
+            hidratarIframes(view);
+        }
+        document.querySelectorAll('.nav-link').forEach(link => {
+            const nome = (link.getAttribute('href') || '').slice(1);
+            if (!VIEWS.includes(nome)) return;
+            link.addEventListener('pointerenter', () => aquecer(nome), { passive: true });
+            link.addEventListener('focus', () => aquecer(nome), { passive: true });
+        });
+        const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 1500));
+        idle(() => ['riscos', 'educacao', 'dicas', 'alternativas'].forEach(aquecer));
+    })();
 
     /* ============================================================
        REVEAL-ON-SCROLL APRIMORADO
@@ -250,14 +290,14 @@ document.addEventListener("DOMContentLoaded", () => {
             const cy = e.clientY;
 
             const card = e.target.closest(seletorGlow);
-            if (card) {
+            if (card && !card.closest('#view-home')) {
                 const rect = card.getBoundingClientRect();
                 card.style.setProperty('--mx', `${cx - rect.left}px`);
                 card.style.setProperty('--my', `${cy - rect.top}px`);
             }
 
             const found = e.target.closest(seletorMagnetico);
-            const mag = (found && !found.closest('#view-sos')) ? found : null;
+            const mag = (found && !found.closest('#view-sos') && !found.closest('#view-home .home-hero')) ? found : null;
             if (mag !== lastMag) {
                 if (lastMag) lastMag.style.translate = '';
                 lastMag = mag;
@@ -444,8 +484,7 @@ document.querySelectorAll('.faq-item:not([data-faq-init])').forEach(details => {
    ============================================================ */
 (function parallax() {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const images = Array.from(document.querySelectorAll('.img-box img, .card-compact img'));
-    if (!images.length) return;
+    let images = [];
     const visiveis = new Set();
     let ticking = false;
 
@@ -477,10 +516,20 @@ document.querySelectorAll('.faq-item:not([data-faq-init])').forEach(details => {
         });
         schedule();
     }, { rootMargin: '100px 0px' });
-    images.forEach(img => visObserver.observe(img));
+
+    function escopoPorView() {
+        const ativa = document.querySelector('.view.is-active-view') || document.body;
+        images.forEach(img => visObserver.unobserve(img));
+        visiveis.clear();
+        images = Array.from(ativa.querySelectorAll('.img-box img, .card-compact img'));
+        images.forEach(img => visObserver.observe(img));
+        schedule();
+    }
+    escopoPorView();
+    setTimeout(escopoPorView, 400);
 
     window.addEventListener('scroll', schedule, { passive: true });
-    window.addEventListener('hashchange', schedule, { passive: true });
+    window.addEventListener('hashchange', () => setTimeout(escopoPorView, 60), { passive: true });
 
     let resizeDebounce;
     window.addEventListener('resize', () => {

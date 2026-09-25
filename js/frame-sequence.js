@@ -13,12 +13,12 @@
         count: 96,
         frameW: 1280,
         frameH: 720,
-        lerp: 0.07,
+        lerp: 0.045,
         concurrency: 6,
-        framesEnd: 0.55,
-        titleStart: 47,
+        framesEnd: 0.62,
+        titleStart: 45,
         titleEnd: 95,
-        hlStart: 84,
+        hlStart: 68,
         hlEnd: 95
     };
 
@@ -146,6 +146,30 @@
     var copyEl = hero.querySelector('[data-cine="copy"]');
     var actionsEl = hero.querySelector('[data-cine="actions"]');
     var pathsEl = hero.querySelector('[data-cine="paths"]');
+    var caminhoEls = pathsEl ? Array.prototype.slice.call(pathsEl.querySelectorAll('.caminho')) : [];
+    var pulsoEl = pathsEl ? pathsEl.querySelector('.caminho-pulso') : null;
+    var drawGroups = caminhoEls.map(function (c) {
+        return Array.prototype.slice.call(c.querySelectorAll('svg .draw'));
+    });
+    var noEls = caminhoEls.map(function (c) { return c.querySelector('.caminho-no'); });
+    var drawSmooth = 0;
+    var hlSmooth = 0;
+    var pulseSmooth = 0;
+    var targetPulse = 0;
+    var pulseTrackW = -1;
+    function paintPulse(p) {
+        if (!pulsoEl || !pathsEl) return;
+        p = Math.max(0, Math.min(1, p));
+        pulsoEl.style.opacity = (p > 0.005 && p < 0.999) ? '1' : '0';
+        var pc = p < 0.33 ? '#ff5d73' : (p < 0.66 ? '#ffd60a' : '#2ea968');
+        pulsoEl.style.setProperty('--pulso-c', pc);
+        if (pulseTrackW < 0) pulseTrackW = pathsEl.offsetWidth - 44;
+        if (pulseTrackW > 0) pulsoEl.style.transform = 'translate(-50%, -50%) translate3d(' + (p * pulseTrackW).toFixed(1) + 'px, 0, 0)';
+    }
+    function easeInOut(t) {
+        t = Math.max(0, Math.min(1, t));
+        return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    }
     var panelEl = hero.querySelector('[data-cine="panel"]');
     var metricEls = Array.prototype.slice.call(hero.querySelectorAll('[data-cine="metric"]'));
     var splitInstance = null;
@@ -263,7 +287,7 @@
         var o = t * t * (3 - 2 * t);
         el.style.opacity = o.toFixed(3);
         el.style.transform = 'translate3d(0, ' + ((1 - o) * 22).toFixed(1) + 'px, 0)';
-        el.style.filter = o > 0.985 ? '' : 'blur(' + ((1 - o) * 8).toFixed(2) + 'px)';
+        el.style.filter = '';
         el.style.visibility = o <= 0.01 ? 'hidden' : 'visible';
         el.style.pointerEvents = o <= 0.01 ? 'none' : 'auto';
     }
@@ -277,9 +301,14 @@
         var twFrame = seg(frameNow, FRAMES.titleStart, FRAMES.titleEnd);
         var twContent = seg(cp, 0, 0.38);
         var tw = Math.max(twFrame, twContent);
-        var hlFrame = seg(frameNow, FRAMES.hlStart, FRAMES.hlEnd);
-        var hlContent = seg(cp, 0.28, 0.38);
-        var hlP = Math.max(hlFrame, hlContent);
+        var hlContent = seg(cp, 0.30, 0.68);
+        var hlTarget = hlContent;
+        if (force) hlSmooth = hlTarget;
+        else {
+            hlSmooth += (hlTarget - hlSmooth) * 0.18;
+            if (Math.abs(hlTarget - hlSmooth) < 0.0005) hlSmooth = hlTarget;
+        }
+        var hlP = easeInOut(hlSmooth);
         if (titleEl) {
             titleEl.classList.toggle('is-hl-on', hlP > 0.05);
             titleEl.style.visibility = titleGate <= 0.01 ? 'hidden' : 'visible';
@@ -298,21 +327,19 @@
                     wordEls[i].style.transform = 'translate3d(0, ' + ((1 - local) * 14).toFixed(1) + 'px, 0)';
                 }
             }
-            var hlTotal = 0;
-            var hh;
-            for (hh = 0; hh < n; hh++) {
-                if (wordEls[hh].classList && wordEls[hh].classList.contains('in-hl')) hlTotal++;
+            var hlEls = [];
+            for (var hj = 0; hj < n; hj++) {
+                if (wordEls[hj].classList && wordEls[hj].classList.contains('in-hl')) hlEls.push(wordEls[hj]);
             }
-            var kk = 0;
-            for (var j = 0; j < n; j++) {
-                if (wordEls[j].classList && wordEls[j].classList.contains('in-hl')) {
-                    kk++;
-                    var frac = hlTotal ? Math.max(0, Math.min(1, hlP * hlTotal - (kk - 1))) : 0;
-                    var fill = wordEls[j].querySelector ? wordEls[j].querySelector('.hl-fill') : null;
-                    var txt = wordEls[j].querySelector ? wordEls[j].querySelector('.hl-text') : null;
-                    if (fill) fill.style.transform = 'scaleX(' + frac.toFixed(3) + ')';
-                    if (txt) txt.style.color = frac > 0.55 ? '#04140c' : '';
-                }
+            for (var hk = 0; hk < hlEls.length; hk++) {
+                var start = hk === 0 ? 0 : 0.5;
+                var end = hk === 0 ? 0.5 : 1;
+                var frac = Math.max(0, Math.min(1, (hlP - start) / (end - start)));
+                frac = frac * frac * (3 - 2 * frac);
+                var fill = hlEls[hk].querySelector ? hlEls[hk].querySelector('.hl-fill') : null;
+                var txt = hlEls[hk].querySelector ? hlEls[hk].querySelector('.hl-text') : null;
+                if (fill) fill.style.transform = 'scaleX(' + frac.toFixed(3) + ')';
+                if (txt) txt.style.color = frac > 0.55 ? '#04140c' : '';
             }
             if (debug && debugEl) {
                 var vis = Math.floor(tw * n);
@@ -324,11 +351,39 @@
         }
         setBlock(copyEl, seg(cp, 0.38, 0.52));
         setBlock(actionsEl, seg(cp, 0.48, 0.62));
-        setBlock(pathsEl, seg(cp, 0.58, 0.72));
-        setBlock(panelEl, seg(cp, 0.70, 0.84));
-        var mp = seg(cp, 0.82, 1);
+        setBlock(pathsEl, seg(cp, 0.58, 0.66));
+        var pp = seg(cp, 0.70, 0.88);
+        caminhoEls.forEach(function (c, k) {
+            setBlock(c, seg(cp, 0.60 + k * 0.07, 0.72 + k * 0.07));
+        });
+        if (pathsEl) {
+            pathsEl.style.setProperty('--paths-p', pp.toFixed(3));
+            pathsEl.classList.toggle('is-paths-done', pp >= 0.999);
+        }
+        var ppDrawTarget = easeInOut(pp);
+        drawSmooth += (ppDrawTarget - drawSmooth) * (force ? 1 : 0.22);
+        if (Math.abs(ppDrawTarget - drawSmooth) < 0.0005) drawSmooth = ppDrawTarget;
+        var pd = drawSmooth;
+        for (var g = 0; g < drawGroups.length; g++) {
+            var glocal = easeInOut(seg(pd, g * 0.22, 0.56 + g * 0.22));
+            var paths = drawGroups[g];
+            for (var q = 0; q < paths.length; q++) {
+                var sub = easeInOut(seg(glocal, q * 0.25, 0.70 + q * 0.15));
+                paths[q].style.strokeDashoffset = (1 - sub).toFixed(4);
+            }
+            if (noEls[g]) {
+                var pop = 0.90 + 0.10 * glocal;
+                noEls[g].style.transform = 'scale(' + pop.toFixed(3) + ')';
+                noEls[g].style.opacity = (0.35 + 0.65 * Math.max(glocal, seg(cp, 0.60 + g * 0.07, 0.72 + g * 0.07))).toFixed(3);
+            }
+        }
+        targetPulse = easeInOut(pp);
+        if (force) pulseSmooth = targetPulse;
+        paintPulse(force ? targetPulse : pulseSmooth);
+        setBlock(panelEl, seg(cp, 0.84, 0.94));
+        var mp = seg(cp, 0.90, 1);
         metricEls.forEach(function (m, k) {
-            setBlock(m, seg(cp, 0.82 + k * 0.07, 0.95 + k * 0.05));
+            setBlock(m, seg(cp, 0.90 + k * 0.05, 0.97 + k * 0.03));
         });
         if (mp > 0.4 && !metricsFired) {
             metricsFired = true;
@@ -355,12 +410,31 @@
     var lastErr = '';
     var lastFramesDone = false;
 
-    function syncNavbarByProgress(p) {
-        var show = p >= FRAMES.framesEnd - 0.001;
-        if (show !== lastFramesDone) {
-            lastFramesDone = show;
-            document.body.classList.toggle('is-frames-done', show);
+    function setChrome(show) {
+        show = !!show;
+        if (show === lastFramesDone) return;
+        lastFramesDone = show;
+        document.body.classList.toggle('is-frames-done', show);
+        if (!show) {
+            var widget = document.querySelector('[data-chatbot]');
+            if (widget && widget.classList.contains('is-open')) {
+                widget.classList.remove('is-open');
+                var t = widget.querySelector('[data-chatbot-toggle]');
+                if (t) t.setAttribute('aria-expanded', 'false');
+            }
         }
+    }
+
+    function initChromeObserver() {
+        var alvo = document.getElementById('diferenciais');
+        if (!alvo || !('IntersectionObserver' in window)) return;
+        var obs = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (currentViewName() !== 'home') return;
+                setChrome(entry.isIntersecting);
+            });
+        }, { threshold: 0.2 });
+        obs.observe(alvo);
     }
 
     function fireHomeMetrics() {
@@ -389,7 +463,7 @@
         var dt = lastTick ? Math.max(1, Math.min(100, t - lastTick)) : 16.67;
         lastTick = t;
         var kf = damp(FRAMES.lerp, dt);
-        var kc = damp(0.12, dt);
+        var kc = damp(0.085, dt);
         var frameDirty = false;
         var contentDirty = false;
         var diff = targetFloat - currentFloat;
@@ -416,6 +490,16 @@
         if (frameDirty || contentDirty) {
             applyCine(currentContent, false);
         }
+        var kp = damp(0.055, dt);
+        var dpulse = targetPulse - pulseSmooth;
+        if (Math.abs(dpulse) > 0.0004) {
+            pulseSmooth += dpulse * kp;
+            paintPulse(pulseSmooth);
+            settled = false;
+        } else if (pulseSmooth !== targetPulse) {
+            pulseSmooth = targetPulse;
+            paintPulse(pulseSmooth);
+        }
         } catch (e) {
             lastErr = String(e && e.message || e);
         }
@@ -435,7 +519,6 @@
 
     function onProgress(p) {
         p = Math.max(0, Math.min(1, p));
-        syncNavbarByProgress(p);
         var fp = Math.max(0, Math.min(1, p / FRAMES.framesEnd));
         targetFloat = fp * (FRAMES.count - 1);
         var cp = Math.max(0, Math.min(1, (p - FRAMES.framesEnd) / (1 - FRAMES.framesEnd)));
@@ -464,7 +547,7 @@
                         var vh = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
                         return '+=' + Math.max(1, Math.round(h - vh));
                     },
-                    scrub: 1,
+                    scrub: 2,
                     invalidateOnRefresh: true,
                     onUpdate: function (self) { setSt(self.progress); onProgress(self.progress); },
                     onRefresh: function (self) { sizeCanvas(); setSt(self.progress); onProgress(self.progress); }
@@ -483,6 +566,7 @@
         resizeTimer = setTimeout(function () {
             dprCap = isNarrowViewport() ? 1.25 : 1.75;
             sizeCanvas();
+            pulseTrackW = -1;
             if (window.ScrollTrigger) ScrollTrigger.refresh();
         }, 200);
     }
@@ -523,11 +607,8 @@
             render(currentFloat);
             ensureSplit();
             applyCine(currentContent, true);
-            if (st) syncNavbarByProgress(st.progress);
-            else if (window.scrollY < 10) {
-                lastFramesDone = false;
-                document.body.classList.remove('is-frames-done');
-            }
+            setChrome(false);
+            initChromeObserver();
             startLoop();
         } else {
             stopLoop();
