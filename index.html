@@ -14,30 +14,28 @@
         rel="stylesheet">
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,300,0,0" />
-    <link rel="preload" href="style.css?v=5" as="style">
-    <link rel="stylesheet" href="style.css?v=5">
+    <link rel="preload" href="style.css?v=15" as="style">
+    <link rel="stylesheet" href="style.css?v=15">
+    <link rel="preload" as="image"
+        href="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1600&q=70">
     <link rel="icon" type="image/x-icon" href="images/agriculture-svgrepo-com.svg">
 </head>
 
 <body data-view="home">
+    <a class="skip-link" href="#main-content">Pular para o conteúdo</a>
     <div class="background-container">
-        <div id="bg-home" class="bg-image"
-            style="background-image: url('https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=1200&q=70')">
+        <div id="bg-home" class="bg-image" data-bg-src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=70" aria-hidden="true">
         </div>
-        <div id="bg-tela" class="bg-image"
-            style="background-image: url('https://images.unsplash.com/photo-1700605201690-ab19ba4a4c61?auto=format&fit=crop&w=1200&q=70')">
+        <div id="bg-tela" class="bg-image active"
+            style="background-image: url('https://images.unsplash.com/photo-1560493676-04071c5f467b?auto=format&fit=crop&w=1600&q=70')" aria-hidden="true">
         </div>
-        <div id="bg-riscos" class="bg-image"
-            style="background-image: url('https://images.unsplash.com/photo-1560493676-04071c5f467b?auto=format&fit=crop&w=1200&q=70');">
+        <div id="bg-riscos" class="bg-image" data-bg-src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=1200&q=70" aria-hidden="true">
         </div>
-        <div id="bg-educacao" class="bg-image"
-            style="background-image: url('https://images.unsplash.com/photo-1495107334309-fcf20504a5ab?auto=format&fit=crop&w=1200&q=70');">
+        <div id="bg-educacao" class="bg-image" data-bg-src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=1200&q=70" aria-hidden="true">
         </div>
-        <div id="bg-dicas" class="bg-image"
-            style="background-image: url('https://images.unsplash.com/photo-1582586131076-6c308a437385?auto=format&fit=crop&w=1200&q=70');">
+        <div id="bg-dicas" class="bg-image" data-bg-src="https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1200&q=70" aria-hidden="true">
         </div>
-        <div id="bg-alternativas" class="bg-image"
-            style="background-image: url('https://images.unsplash.com/photo-1533062618053-d51e617307ec?auto=format&fit=crop&w=1200&q=70');">
+        <div id="bg-alternativas" class="bg-image" data-bg-src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1200&q=70" aria-hidden="true">
         </div>
     </div>
 
@@ -56,18 +54,20 @@
             </nav>
             <div class="nav-actions">
                 <a class="btn btn-tertiary" href="#sos">SOS</a>
-                <button class="menu-toggle" aria-expanded="false" aria-label="Abrir menu" data-menu-toggle>
+                <button class="menu-toggle" aria-expanded="false" aria-controls="mobile-menu" aria-label="Abrir menu" data-menu-toggle>
                     <span aria-hidden="true">☰</span>
                 </button>
             </div>
         </div>
-        <div class="mobile-menu" data-mobile-menu>
+        <div class="mobile-menu" id="mobile-menu" data-mobile-menu>
             <ul>
+                <li><a href="#home">Home Principal</a></li>
                 <li><a href="#tela">Início</a></li>
                 <li><a href="#riscos">Riscos</a></li>
                 <li><a href="#educacao">Educação</a></li>
                 <li><a href="#dicas">Dicas</a></li>
                 <li><a href="#alternativas">Alternativas</a></li>
+                <li><a href="#sos">SOS</a></li>
             </ul>
         </div>
     </header>
@@ -78,10 +78,10 @@
         Projeto Educativo 2026
     </div>
 
-    <main>
+    <main id="main-content" tabindex="-1">
 
         <!-- ============ VIEW: HOME (landing) ============ -->
-        <section id="view-home" class="view">
+        <section id="view-home" class="view is-active-view">
             <div class="home-hero-wrap" data-frame-wrap>
             <section class="hero home-hero" aria-label="Introdução" data-frame-hero>
                 <canvas class="frame-canvas" data-frame-canvas aria-hidden="true"></canvas>
@@ -107,17 +107,17 @@
                     <div class="metric-grid">
                         <article class="metric-card" data-cine="metric">
                              <p class="metric-value" data-sliding-number data-target="75" data-duration="1400"
-                                 data-suffix="%"></p>
+                                 data-suffix="%" aria-label="75 por cento">75%</p>
                             <p class="metric-description">das culturas dependem de polinizadores para prosperar.</p>
-                            <p class="metric-source">Fonte: Embrapa (embrapa.br)</p>
+                            <p class="metric-source">Fonte: <a href="https://www.embrapa.br" target="_blank" rel="noopener">Embrapa</a></p>
                         </article>
 
                         <article class="metric-card" data-cine="metric">
                              <p class="metric-value" data-sliding-number data-target="90" data-duration="1400"
-                                 data-suffix="%"></p>
-                            <p class="metric-description">dos agrotóxicos escapam da área tratada e impactam o ambiente.
+                                 data-suffix="%" aria-label="90 por cento">90%</p>
+                            <p class="metric-description">dos agrotóxicos não atingem a praga-alvo e se dispersam no ambiente.
                             </p>
-                            <p class="metric-source">Fonte: Embrapa (embrapa.br)</p>
+                            <p class="metric-source">Fonte: <a href="https://www.embrapa.br" target="_blank" rel="noopener">Embrapa</a></p>
                         </article>
                     </div>
                 </aside>
@@ -223,34 +223,40 @@
         </section>
 
         <section id="view-tela" class="view">
-            <section class="hero" aria-label="Seção principal" data-bg="bg-tela">
+            <section class="hero tela-hero" aria-label="Índice educativo AgroConsciência" data-bg="bg-tela">
                 <div class="hero-content">
-                    <h1 class="hero-title hero-title-cinematic hero-title-grande">O futuro da terra depende da nossa
+                    <p class="tela-eyebrow"><span class="material-symbols-rounded" aria-hidden="true">eco</span> Índice educativo</p>
+                    <h1 class="hero-title hero-title-cinematic hero-title-grande" tabindex="-1" data-tela-title>O futuro da terra depende da nossa
                         <span>consciência</span>.</h1>
-                    <p class="hero-copy">Transforme informação em ação com um site que apresenta os riscos dos
-                        agrotóxicos, métodos sustentáveis e orientações práticas para o campo e o consumidor.</p>
+                    <p class="hero-copy">Entenda os riscos dos agrotóxicos, aprenda o manejo seguro e conheça alternativas que protegem a saúde e a produção.</p>
                     <div class="hero-actions">
                         <a class="btn btn-primary" href="#tela-riscos">Entenda os riscos</a>
                         <a class="btn btn-secondary" href="#tela-alternativas">Ver alternativas</a>
                     </div>
+                    <nav class="tela-subnav" aria-label="Seções do índice">
+                        <a href="#tela-riscos"><span class="material-symbols-rounded" aria-hidden="true">warning</span>Riscos</a>
+                        <a href="#tela-educacao"><span class="material-symbols-rounded" aria-hidden="true">menu_book</span>Educação</a>
+                        <a href="#tela-dicas"><span class="material-symbols-rounded" aria-hidden="true">fact_check</span>Dicas</a>
+                        <a href="#tela-alternativas"><span class="material-symbols-rounded" aria-hidden="true">eco</span>Alternativas</a>
+                    </nav>
                 </div>
-                <aside class="hero-panel revelar">
+                <aside class="hero-panel">
                     <div class="overlay-panel">
                         <h3>Impacto imediato</h3>
                         <p>Perda de biodiversidade, contaminação ambiental e risco à saúde humana.</p>
                     </div>
                     <div class="metric-grid">
-                        <article class="metric-card revelar">
+                        <article class="metric-card">
                             <p class="metric-value" data-sliding-number data-target="75" data-duration="1400"
-                                data-suffix="%"></p>
+                                data-suffix="%" aria-label="75 por cento">75%</p>
                             <p class="metric-description">das culturas dependem de polinizadores.</p>
-                            <p class="metric-source">Fonte: Embrapa</p>
+                            <p class="metric-source">Fonte: <a href="https://www.embrapa.br" target="_blank" rel="noopener">Embrapa</a></p>
                         </article>
-                        <article class="metric-card revelar">
+                        <article class="metric-card">
                             <p class="metric-value" data-sliding-number data-target="90" data-duration="1400"
-                                data-suffix="%"></p>
-                            <p class="metric-description">dos agrotóxicos não atingem apenas as pragas.</p>
-                            <p class="metric-source">Fonte: Embrapa</p>
+                                data-suffix="%" aria-label="90 por cento">90%</p>
+                            <p class="metric-description">dos agrotóxicos não atingem a praga-alvo e se dispersam no ambiente.</p>
+                            <p class="metric-source">Fonte: <a href="https://www.embrapa.br" target="_blank" rel="noopener">Embrapa</a></p>
                         </article>
                     </div>
                 </aside>
@@ -261,7 +267,7 @@
                     <span class="section-badge">Impacto Crítico</span>
                     <h2 id="titulo-riscos">O custo invisível do excesso</h2>
                 </div>
-                <div class="grid-2 flex-content-layout">
+                <div class="tela-single">
                     <div class="text-glass-panel">
                         <p class="lead-text">O uso desregulado de defensivos no campo gera efeitos silenciosos que
                             atravessam solo, água e alimento, impactando saúde e ecossistemas por décadas.</p>
@@ -271,9 +277,8 @@
                             <li>Contaminação de lençóis freáticos</li>
                             <li>Colapso de polinizadores</li>
                         </ul>
-                        <a class="btn btn-secondary" href="#riscos" style="margin-top: 1.5rem;">Descobrir impactos</a>
+                        <a class="btn btn-secondary tela-cta" href="#riscos">Descobrir impactos</a>
                     </div>
-                    <div></div>
                 </div>
             </section>
 
@@ -282,15 +287,14 @@
                     <span class="section-badge">Conhecimento Prático</span>
                     <h2 id="titulo-educacao">Transformação através da informação</h2>
                 </div>
-                <div class="grid-2 flex-content-layout">
+                <div class="tela-single">
                     <div class="text-glass-panel">
                         <p class="lead-text">Capacitar o produtor e educar o consumidor são os reais motores de uma
                             transição agroecológica que preserve produtividade e proteja a vida.</p>
                         <p>O aprendizado técnico sobre toxicidade e manejo correto possibilita decisões baseadas em
                             dados e reduz danos sem prejudicar a produção.</p>
-                        <a class="btn btn-secondary" href="#educacao" style="margin-top: 1.5rem;">Explorar educação</a>
+                        <a class="btn btn-secondary tela-cta" href="#educacao">Explorar educação</a>
                     </div>
-                    <div></div>
                 </div>
             </section>
 
@@ -393,7 +397,7 @@
             </header>
             <div class="container">
                 <a href="#tela" class="back-btn revelar">
-                    <span class="material-symbols-rounded">arrow_back_ios</span> Voltar para a Home
+                    <span class="material-symbols-rounded">arrow_back_ios</span> Voltar ao índice
                 </a>
                 <section class="info-section revelar">
                     <div class="section-header">
@@ -403,6 +407,11 @@
                     <p class="lead-text">Quando pulverizados, menos de 10% dos agrotóxicos atingem efetivamente as
                         pragas-alvo. Os mais de 90% restantes são distribuídos de forma descontrolada pelo ar, solo e
                         água.</p>
+                    <ol class="contam-line" aria-label="Caminho da contaminação">
+                        <li><strong>Solo</strong>Lixiviação leva os compostos para camadas profundas e esteriliza a microbiota.</li>
+                        <li><strong>Água</strong>Lençol freático e bacias hidrográficas carregam os poluentes por quilômetros.</li>
+                        <li><strong>Cadeia alimentar</strong>Moléculas se acumulam em peixes e sobem até o prato.</li>
+                    </ol>
                     <div class="grid">
                         <div class="text-side">
                             <p>O processo de contaminação opera em efeito cascata. A chuva arrasta os compostos químicos
@@ -428,10 +437,10 @@
                         </div>
                         <div class="img-box img-parallax" aria-hidden="true">
                             <img loading="lazy" decoding="async" width="900" height="600"
-                                src="https://images.unsplash.com/photo-1560493676-04071c5f467b?auto=format&fit=crop&w=900&q=75"
-                                srcset="https://images.unsplash.com/photo-1560493676-04071c5f467b?auto=format&fit=crop&w=600&q=75 600w, https://images.unsplash.com/photo-1560493676-04071c5f467b?auto=format&fit=crop&w=900&q=75 900w"
+                                src="https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&w=900&q=75"
+                                srcset="https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&w=600&q=75 600w, https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&w=900&q=75 900w"
                                 sizes="(max-width: 900px) 100vw, 500px"
-                                alt="Plantação sendo pulverizada com defensivos agrícolas.">
+                                alt="Mãos segurando muda em solo fértil, mostrando a vida microbiana ameaçada pelo excesso de defensivos.">
                         </div>
                     </div>
                 </section>
@@ -477,12 +486,13 @@
                                 <h4>75% das culturas agrícolas</h4>
                                 <p>globais dependem diretamente da polinização animal. Sem polinizadores, enfrentaremos
                                     uma crise sem precedentes na oferta de alimentos.</p>
+                                <p class="metric-source">Fonte: <a href="https://www.embrapa.br" target="_blank" rel="noopener">Embrapa</a></p>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <section class="info-section revelar">
+                <section class="info-section video-block revelar">
                     <div class="section-header">
                         <span class="icon-wrapper"><span class="material-symbols-rounded">movie</span></span>
                         <h2>Análise em Vídeo: Entenda os Riscos</h2>
@@ -492,13 +502,14 @@
                     <div class="video-container">
                         <iframe data-src="https://www.youtube.com/embed/72AQuGiechY?si=q5LxHegM6LTR04cu"
                             loading="lazy"
-                            title="Vídeo explicativo sobre os riscos dos agrotóxicos" frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            title="Vídeo explicativo sobre os riscos dos agrotóxicos"
+                            referrerpolicy="strict-origin-when-cross-origin"
+                            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowfullscreen>
                         </iframe>
                     </div>
                     <div class="video-credits">
-                        <span class="material-symbols-rounded">person</span>
+                        <span class="material-symbols-rounded" aria-hidden="true">person</span>
                         <p>Créditos do vídeo: <strong>Ciênsinando</strong></p>
                     </div>
                 </section>
@@ -518,7 +529,7 @@
             </header>
             <div class="container">
                 <a href="#tela" class="back-btn revelar">
-                    <span class="material-symbols-rounded">arrow_back_ios</span> Voltar para a Home
+                    <span class="material-symbols-rounded">arrow_back_ios</span> Voltar ao índice
                 </a>
                 <section class="content-card revelar">
                     <div class="edu-grid">
@@ -548,10 +559,10 @@
                         </div>
                         <div class="img-box">
                             <img loading="lazy" decoding="async" width="900" height="600"
-                                src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=900&q=75"
-                                srcset="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=600&q=75 600w, https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=900&q=75 900w"
+                                src="https://images.unsplash.com/photo-1592982537447-7440770cbfc9?auto=format&fit=crop&w=900&q=75"
+                                srcset="https://images.unsplash.com/photo-1592982537447-7440770cbfc9?auto=format&fit=crop&w=600&q=75 600w, https://images.unsplash.com/photo-1592982537447-7440770cbfc9?auto=format&fit=crop&w=900&q=75 900w"
                                 sizes="(max-width: 900px) 100vw, 500px"
-                                alt="Produtor analisando folhas e aprendendo técnicas agrícolas sustentáveis">
+                                alt="Produtor em dia de campo examinando a lavoura durante capacitação técnica">
                         </div>
                     </div>
                 </section>
@@ -585,7 +596,7 @@
 
                 <section class="content-card info-blue revelar">
                     <div class="edu-summary">
-                        <span class="material-symbols-rounded large-icon">verified_user</span>
+                        <span class="material-symbols-rounded large-icon" aria-hidden="true">verified_user</span>
                         <div class="summary-text">
                             <h3>O Alvo da Sustentabilidade Compartilhada</h3>
                             <p>Uma sociedade que compreende os processos do campo exige políticas agrícolas
@@ -601,7 +612,7 @@
         <section id="view-dicas" class="view">
             <header class="dicas-header revelar">
                 <div class="header-container">
-                    <span class="dicas-badge"><span class="material-symbols-rounded">gavel</span> PROTOCOLO DE
+                    <span class="dicas-badge"><span class="material-symbols-rounded" aria-hidden="true">shield</span> PROTOCOLO DE
                         SEGURANÇA</span>
                     <h1>Manual e Dicas de Práticas Seguras</h1>
                     <p>Garantindo a máxima redução de danos e blindagem operacional no manuseio diário de insumos
@@ -610,7 +621,7 @@
             </header>
             <div class="container">
                 <a href="#tela" class="back-btn revelar">
-                    <span class="material-symbols-rounded">arrow_back_ios</span> Voltar para a Home
+                    <span class="material-symbols-rounded">arrow_back_ios</span> Voltar ao índice
                 </a>
                 <div class="section-title-wrapper revelar">
                     <span class="icon-wrapper"><span class="material-symbols-rounded">fact_check</span></span>
@@ -618,70 +629,70 @@
                 </div>
                 <div class="grid">
                     <div class="text-side revelar">
-                        <p class="lead-text">Cada etapa abaixo funciona como uma camada de proteção: dosagem correta,
-                            equipamento adequado, armazenamento seguro e atenção ao clima. Ignorar qualquer uma delas
-                            expõe trabalhadores, vizinhos e o próprio solo a riscos evitáveis.</p>
+                        <p class="lead-text">Protocolo em 4 camadas de proteção: dosagem correta,
+                            equipamento adequado, armazenamento seguro e atenção ao clima. Siga na ordem —
+                            ignorar qualquer etapa expõe trabalhadores, vizinhos e o próprio solo a riscos evitáveis.</p>
                     </div>
                     <div class="img-box revelar">
                         <img loading="lazy" decoding="async" width="900" height="600"
-                            src="https://images.unsplash.com/photo-1495107334309-fcf20504a5ab?auto=format&fit=crop&w=900&q=75"
-                            srcset="https://images.unsplash.com/photo-1495107334309-fcf20504a5ab?auto=format&fit=crop&w=600&q=75 600w, https://images.unsplash.com/photo-1495107334309-fcf20504a5ab?auto=format&fit=crop&w=900&q=75 900w"
+                            src="https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=900&q=75"
+                            srcset="https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=600&q=75 600w, https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=900&q=75 900w"
                             sizes="(max-width: 900px) 100vw, 500px"
-                            alt="Campo agrícola amplo, representando o ambiente onde os protocolos de segurança no manuseio de defensivos são aplicados.">
+                            alt="Trabalhador rural com equipamento de proteção aplicando defensivo com pulverizador costal.">
                     </div>
                 </div>
-                <div class="steps-grid">
-                    <div class="step-card revelar">
+                <ol class="protocol-list">
+                    <li class="step-card revelar">
                         <div class="card-top">
                             <span class="step-num">01</span>
                             <span class="card-apple-icon"><span
-                                    class="material-symbols-rounded">monitoring</span></span>
+                                    class="material-symbols-rounded" aria-hidden="true">monitoring</span></span>
                         </div>
                         <h3>Uso Sob Demanda Exata</h3>
                         <p>Nunca aplique defensivos por calendário fixo ou rotina pré-estruturada. Realize amostragens
                             sistemáticas na lavoura. A pulverização química só deve ocorrer se a população da praga
                             atingir o <strong>Nível de Dano Econômico (NDE)</strong>, poupando recursos e evitando a
                             superdosagem do solo.</p>
-                    </div>
-                    <div class="step-card revelar">
+                    </li>
+                    <li class="step-card revelar">
                         <div class="card-top">
                             <span class="step-num">02</span>
                             <span class="card-apple-icon"><span
-                                    class="material-symbols-rounded">health_and_safety</span></span>
+                                    class="material-symbols-rounded" aria-hidden="true">health_and_safety</span></span>
                         </div>
                         <h3>Equipamento de Proteção (EPI)</h3>
                         <p>O uso do EPI completo é obrigatório por lei (NR 31). Trajes impermeáveis, viseiras de
                             policarbonato, luvas de nitrila espessa, botas de cano longo e respiradores com filtros de
                             carvão ativado classe P2/P3 devem ser vestidos antes do contato com o concentrado técnico e
                             higienizados de forma separada de outras roupas.</p>
-                    </div>
-                    <div class="step-card revelar">
+                    </li>
+                    <li class="step-card revelar">
                         <div class="card-top">
                             <span class="step-num">03</span>
-                            <span class="card-apple-icon"><span class="material-symbols-rounded">lock</span></span>
+                            <span class="card-apple-icon"><span class="material-symbols-rounded" aria-hidden="true">lock</span></span>
                         </div>
                         <h3>Armazenamento Blindado</h3>
                         <p>Estoque os defensivos unicamente em suas embalagens originais lacradas. O depósito deve ser
                             construído em alvenaria, possuir piso impermeável com canaletas de contenção de vazamentos,
                             ventilação cruzada permanente e acesso trancado à chave, isolando os produtos quimicamente.
                         </p>
-                    </div>
-                    <div class="step-card revelar">
+                    </li>
+                    <li class="step-card revelar">
                         <div class="card-top">
                             <span class="step-num">04</span>
                             <span class="card-apple-icon"><span
-                                    class="material-symbols-rounded">thunderstorm</span></span>
+                                    class="material-symbols-rounded" aria-hidden="true">thunderstorm</span></span>
                         </div>
                         <h3>Condições Meteorológicas</h3>
                         <p>Monitore rigorosamente o clima no momento da aplicação. Evite pulverizar sob ventos fortes
                             (acima de 10 km/h) para impedir a <strong>deriva do produto</strong> para propriedades
                             vizinhas, ou sob sol escaldante (temperaturas acima de 30°C), que acelera a evaporação
                             tóxica do composto.</p>
-                    </div>
-                </div>
-                <div class="banner-info revelar">
+                    </li>
+                </ol>
+                <div class="banner-info revelar" role="alert">
                     <div class="banner-icon-box">
-                        <span class="material-symbols-rounded">lightbulb</span>
+                        <span class="material-symbols-rounded" aria-hidden="true">lightbulb</span>
                     </div>
                     <div class="banner-text">
                         <strong>Atenção Crítica ao Descarte:</strong> Realize rigorosamente a técnica da tríplice
@@ -692,23 +703,24 @@
                     </div>
                 </div>
 
-                <section class="info-section revelar">
+                <section class="info-section video-block revelar">
                     <div class="section-header">
-                        <span class="icon-wrapper"><span class="material-symbols-rounded">movie</span></span>
-                        <h2>Análise em Vídeo: Dicas de Uso Seguro </h2>
+                        <span class="icon-wrapper"><span class="material-symbols-rounded" aria-hidden="true">movie</span></span>
+                        <h2>Análise em Vídeo: Dicas de Uso Seguro</h2>
                     </div>
-                    <p class="lead-text">Assista ao documentário explicativo e entenda de forma didática os
-                        desdobramentos causados pelo uso severo de defensivos químicos sintéticos.</p>
+                    <p class="lead-text">Assista ao guia prático e aprenda a aplicar defensivos com segurança:
+                        dosagem correta, EPI completo, atenção ao clima e descarte responsável das embalagens.</p>
                     <div class="video-container">
                         <iframe data-src="https://www.youtube.com/embed/689Lx-o_UMk?si=RaBl16ulxVWr692r"
                             loading="lazy"
-                            title="Vídeo explicativo sobre uso de defensivos agrícolas com segurança" frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            title="Vídeo explicativo sobre uso de defensivos agrícolas com segurança"
+                            referrerpolicy="strict-origin-when-cross-origin"
+                            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowfullscreen>
                         </iframe>
                     </div>
                     <div class="video-credits">
-                        <span class="material-symbols-rounded">person</span>
+                        <span class="material-symbols-rounded" aria-hidden="true">person</span>
                         <p>Créditos do vídeo: <strong>RuralCampoCast</strong></p>
                     </div>
                 </section>
@@ -728,10 +740,10 @@
             </header>
             <div class="container">
                 <a href="#tela" class="back-btn revelar">
-                    <span class="material-symbols-rounded">arrow_back_ios</span> Voltar para a Home
+                    <span class="material-symbols-rounded">arrow_back_ios</span> Voltar ao índice
                 </a>
                 <div class="section-title-wrapper">
-                    <span class="icon-wrapper"><span class="material-symbols-rounded">psychology_alt</span></span>
+                    <span class="icon-wrapper"><span class="material-symbols-rounded" aria-hidden="true">psychology_alt</span></span>
                     <h2>A Engenharia do Cultivo Moderno</h2>
                 </div>
                 <div class="grid">
@@ -743,16 +755,16 @@
                     </div>
                     <div class="img-box revelar">
                         <img loading="lazy" decoding="async" width="900" height="600"
-                            src="https://images.unsplash.com/photo-1518994603110-1912b3272afd?auto=format&fit=crop&w=900&q=75"
-                            srcset="https://images.unsplash.com/photo-1518994603110-1912b3272afd?auto=format&fit=crop&w=600&q=75 600w, https://images.unsplash.com/photo-1518994603110-1912b3272afd?auto=format&fit=crop&w=900&q=75 900w"
+                            src="https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?auto=format&fit=crop&w=900&q=75"
+                            srcset="https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?auto=format&fit=crop&w=600&q=75 600w, https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?auto=format&fit=crop&w=900&q=75 900w"
                             sizes="(max-width: 900px) 100vw, 500px"
-                            alt="Muda verde crescendo em estufa, representando o cultivo sustentável e alternativas biológicas ao uso de agrotóxicos.">
+                            alt="Drone sobrevoando lavoura verde em agricultura de precisão, alternativa limpa aos agrotóxicos.">
                     </div>
                 </div>
                 <div class="alt-grid">
                     <div class="alt-card revelar">
                         <div class="card-header-ios">
-                            <div class="alt-icon-box"><span class="material-symbols-rounded">eco</span></div>
+                            <div class="alt-icon-box"><span class="material-symbols-rounded" aria-hidden="true">eco</span></div>
                             <span class="tech-tag">Solo</span>
                         </div>
                         <h3>Agricultura Orgânica</h3>
@@ -797,13 +809,30 @@
                     </div>
                     <div class="alt-card revelar">
                         <div class="card-header-ios">
-                            <div class="alt-icon-box"><span class="material-symbols-rounded">flight</span></div>
+                            <div class="alt-icon-box"><span class="material-symbols-rounded" aria-hidden="true">flight</span></div>
                             <span class="tech-tag">Precisão</span>
                         </div>
                         <h3>Agricultura de Precisão</h3>
                         <p>Uso de sensores e drones para mapear infestações exatas. Permite tratar focos isolados ao
                             invés de aplicar produtos químicos em 100% da área da fazenda.</p>
                     </div>
+                </div>
+                <div class="decision-guide revelar">
+                    <h3>Por onde começar a transição</h3>
+                    <p>As seis frentes acima se combinam. Uma ordem prática de adoção, do menor custo ao maior investimento:</p>
+                    <ol>
+                        <li><strong>Solo vivo primeiro:</strong> rotação de culturas e adubação verde (Agricultura Orgânica).</li>
+                        <li><strong>Proteção natural:</strong> controle biológico e extratos botânicos como o óleo de Neem.</li>
+                        <li><strong>Desenho do sistema:</strong> agroecologia integrada e feromônios para quebrar ciclos de praga.</li>
+                        <li><strong>Precisão sob medida:</strong> sensores e drones para tratar só os focos, sem pulverizar 100% da área.</li>
+                    </ol>
+                </div>
+                <div class="alt-cta revelar">
+                    <div>
+                        <h3>Voltar ao índice educativo</h3>
+                        <p>Revisite riscos, educação e manejo seguro antes de escolher a alternativa ideal.</p>
+                    </div>
+                    <a class="btn btn-primary" href="#tela">Voltar ao índice</a>
                 </div>
             </div>
         </section>
@@ -863,6 +892,22 @@
 
     </main>
 
+    <footer class="footer" aria-label="Rodapé AgroConsciência">
+        <div class="footer-inner">
+            <p class="footer-brand">Agro<span>Consciência</span> — Projeto Educativo 2026 · PMD E.E Prof Amilcare Mattei</p>
+            <nav class="footer-nav" aria-label="Links do rodapé">
+                <a href="#home">Home Principal</a>
+                <a href="#tela">Início</a>
+                <a href="#riscos">Riscos</a>
+                <a href="#educacao">Educação</a>
+                <a href="#dicas">Dicas</a>
+                <a href="#alternativas">Alternativas</a>
+                <a href="#sos">SOS</a>
+            </nav>
+            <button id="footer-scroll-top" type="button" class="footer-top">Voltar ao topo ↑</button>
+        </div>
+    </footer>
+
     <!-- ============ CHATBOT IA — Assistente de Segurança na Agricultura ============ -->
     <div class="chatbot-widget" data-chatbot>
         <button class="chatbot-toggle" type="button" data-chatbot-toggle aria-expanded="false"
@@ -915,9 +960,8 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/SplitText.min.js" defer></script>
-    <script src="script.js?v=5" defer></script>
-    <script src="js/frame-sequence.js?v=5" defer></script>
+    <script src="script.js?v=15" defer></script>
+    <script src="js/frame-sequence.js?v=15" defer></script>
 </body>
 
 </html>

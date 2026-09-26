@@ -1,6 +1,4 @@
 {
-  "buildCommand": "bundle exec jekyll build",
-  "installCommand": "bundle install",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ],
@@ -10,7 +8,7 @@
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
     },
     {
-      "source": "/js/(.*)",
+      "source": "/images/frames/(.*)",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
     }
   ]

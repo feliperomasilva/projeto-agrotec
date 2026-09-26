@@ -1,9 +1,99 @@
-/* Remove o estado "sem JS" assim que o script carrega.
-   Em CSS, .no-js .revelar mantém o conteúdo visível caso o JS falhe. */
-document.documentElement.classList.remove('no-js');
+/* O estado "sem JS" só é removido após o roteador pronto (evita ponto único de falha).
+   Em CSS, .no-js .revelar e .no-js .view mantêm o conteúdo visível caso o JS falhe. */
 
 document.addEventListener("DOMContentLoaded", () => {
     const prefereReduzirMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const scrollSuave = prefereReduzirMovimento ? 'auto' : 'smooth';
+
+    // SPA: o navegador nunca deve restaurar a posição de rolagem da página anterior.
+    if ('scrollRestoration' in history) {
+        try { history.scrollRestoration = 'manual'; } catch (e) {}
+    }
+
+    /* ============================================================
+       SISTEMA DE REVEAL — anima a entrada das views
+       riscos/educacao/dicas/alternativas re-animam TODA vez que abrem
+       ============================================================ */
+    const REANIMAR_VIEWS = new Set(['riscos', 'educacao', 'dicas', 'alternativas']);
+    const revealReduzido = prefereReduzirMovimento || !('IntersectionObserver' in window);
+
+    function revelarElemento(el) {
+        el.style.willChange = 'opacity, transform';
+        el.classList.add('ativo');
+        setTimeout(() => {
+            el.style.willChange = 'auto';
+            // Entrada concluída: remove o stagger para o hover/magnético
+            // dos cards 2+ responderem na hora (pareciam "mortos").
+            el.classList.add('reveal-done');
+        }, 1200);
+    }
+
+    const observadorReveal = revealReduzido ? null : new IntersectionObserver((entradas) => {
+        entradas.forEach(entrada => {
+            if (entrada.isIntersecting) {
+                revelarElemento(entrada.target);
+                observadorReveal.unobserve(entrada.target);
+            }
+        });
+    }, { root: null, rootMargin: '0px', threshold: 0.12 });
+
+    function observarReveals(raiz) {
+        const els = (raiz || document).querySelectorAll('.revelar:not(.ativo)');
+        if (revealReduzido || !observadorReveal) {
+            els.forEach(el => {
+                el.classList.add('ativo');
+                el.style.transitionDelay = '0s';
+            });
+            return;
+        }
+        els.forEach(el => observadorReveal.observe(el));
+    }
+
+    // Reseta a animação de entrada de uma view para tocar de novo.
+    // Chamada a cada troca de view nas 4 páginas de conteúdo.
+    function reiniciarRevealsDaView(viewEl) {
+        if (!viewEl || revealReduzido || !observadorReveal) return;
+        viewEl.querySelectorAll('.revelar').forEach(el => {
+            try { observadorReveal.unobserve(el); } catch (e) {}
+            el.classList.remove('ativo', 'reveal-done');
+            el.style.willChange = '';
+        });
+        // Reflow: garante que a remoção da classe seja pintada antes
+        // de re-observar, senão a transição não reinicia.
+        void viewEl.offsetHeight;
+        observarReveals(viewEl);
+    }
+
+    // Toda troca de view começa no topo — sem herdar a rolagem da página anterior.
+    // Usa rolagem 'instant' (objeto) para ignorar o `scroll-behavior: smooth` global;
+    // a forma `scrollTo(0, 0)` herdaria o smooth e "viajaria" pelo conteúdo antigo.
+    // Reafirma no próximo frame porque ScrollTrigger.refresh/imagens podem deslocar a rolagem.
+    function rolarParaTopoInstantaneo() {
+        const root = document.documentElement;
+        const corpo = document.body;
+        const prevRoot = root.style.scrollBehavior;
+        const prevBody = corpo ? corpo.style.scrollBehavior : '';
+        root.style.scrollBehavior = 'auto';
+        if (corpo) corpo.style.scrollBehavior = 'auto';
+        try {
+            window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        } catch (e) {
+            window.scrollTo(0, 0);
+        }
+        root.scrollTop = 0;
+        if (corpo) corpo.scrollTop = 0;
+        requestAnimationFrame(() => {
+            try {
+                window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+            } catch (e2) {
+                window.scrollTo(0, 0);
+            }
+            root.scrollTop = 0;
+            if (corpo) corpo.scrollTop = 0;
+            root.style.scrollBehavior = prevRoot;
+            if (corpo) corpo.style.scrollBehavior = prevBody;
+        });
+    }
 
     /* ============================================================
        ROTEADOR SPA — troca de "página" via hash, com transição suave
@@ -39,10 +129,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const alvo = viewsCache.get(nome);
         if (!alvo) return;
 
-        if (viewAtiva !== alvo) {
+        const trocouDeView = viewAtiva !== alvo;
+        if (trocouDeView) {
             if (viewAtiva) viewAtiva.classList.remove('is-active-view');
             alvo.classList.add('is-active-view');
             viewAtiva = alvo;
+            // riscos/educacao/dicas/alternativas: re-tocam a animação de entrada a cada visita
+            if (REANIMAR_VIEWS.has(nome)) reiniciarRevealsDaView(alvo);
         }
         hidratarIframes(alvo);
 
@@ -59,11 +152,44 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (mobileMenuCache && mobileMenuCache.classList.contains('is-open')) {
             mobileMenuCache.classList.remove('is-open');
-            if (menuToggleCache) menuToggleCache.setAttribute('aria-expanded', 'false');
+            if (menuToggleCache) {
+                menuToggleCache.setAttribute('aria-expanded', 'false');
+                menuToggleCache.focus({ preventScroll: true });
+            }
+        }
+
+        // Background sob demanda da view ativa (C4). Home usa canvas próprio — sem download.
+        // 1+5 LUXO/CINEMÁTICO: além de carregar, ATIVA o bg correspondente.
+        // Sem isso o bg-XYZ baixava mas nunca ganhava .active (ficava opacity:0)
+        // e os headers das 4 páginas perdiam a foto após removermos o bg local.
+        const bgPorView = { home: 'bg-home', tela: 'bg-tela', riscos: 'bg-riscos', educacao: 'bg-educacao', dicas: 'bg-dicas', alternativas: 'bg-alternativas' };
+        const bgId = bgPorView[nome];
+        if (bgId) {
+            try { if (typeof carregarBg === 'function') carregarBg(bgId); } catch (e) {}
+            try {
+                document.querySelectorAll('.bg-image').forEach(img => {
+                    img.classList.toggle('active', img.id === bgId);
+                });
+            } catch (e2) {}
+        } else if (nome === 'sos') {
+            // SOS esconde o container via CSS; limpa .active para não vazar foto ao sair
+            try { document.querySelectorAll('.bg-image.active').forEach(img => img.classList.remove('active')); } catch (e3) {}
+        }
+
+        // Acessibilidade SPA: troca de view sempre começa no topo + move o foco ao h1
+        if (trocouDeView && !ancoraId) {
+            rolarParaTopoInstantaneo();
+            const titulo = alvo.querySelector('h1');
+            if (titulo) {
+                if (!titulo.hasAttribute('tabindex')) titulo.setAttribute('tabindex', '-1');
+                titulo.focus({ preventScroll: true });
+            }
         }
 
         if (!ancoraId) {
-            window.scrollTo(0, 0);
+            // Mesma view re-clicada (ex.: já estou em #riscos e clico em Riscos):
+            // também volta ao topo. Na troca de view o topo já foi aplicado acima.
+            if (!trocouDeView) rolarParaTopoInstantaneo();
             return;
         }
         const destino = document.getElementById(ancoraId);
@@ -90,11 +216,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.addEventListener('hashchange', rotear);
     rotear();
-    hidratarIframes(viewAtiva);
+    // Iframes só hidratam na ativação da view (lazy real). Nada de hidratação no boot.
+    if (viewAtiva) hidratarIframes(viewAtiva);
+    // JS pronto: remove estado sem-JS após o roteador (evita ponto único de falha).
+    document.documentElement.classList.remove('no-js');
 
     /* ============================================================
-       WARM-UP 4 VIEWS — prefetch no hover + preload no idle
-       Mantém q=75: mesma nitidez, entrada instantânea
+       BACKGROUNDS SOB DEMANDA — só a view ativa baixa a foto
+       ============================================================ */
+    function carregarBg(id) {
+        const el = document.getElementById(id);
+        if (!el || el.dataset.bgLoaded) return;
+        const src = el.getAttribute('data-bg-src');
+        if (!src) return;
+        el.style.backgroundImage = `url('${src}')`;
+        el.dataset.bgLoaded = '1';
+    }
+
+    /* ============================================================
+       WARM-UP 4 VIEWS — prefetch de imagem sob demanda (sem iframe)
+       Lazy real: nunca hidrata YouTube no idle/hover
        ============================================================ */
     (function warmupViews() {
         const aquecidas = new Set();
@@ -103,15 +244,19 @@ document.addEventListener("DOMContentLoaded", () => {
             aquecidas.add(nome);
             const view = viewsCache.get(nome);
             if (!view) return;
-            view.querySelectorAll('img[srcset], img[src]').forEach(img => {
+            // Prefetch leve: só a primeira imagem da view futura
+            const img = view.querySelector('img[srcset], img[src]');
+            if (img) {
                 const url = (img.currentSrc || img.src || '').split(' ')[0];
-                if (url && !document.querySelector(`link[rel="preload"][href="${url}"]`)) {
+                if (url && !document.querySelector(`link[rel="prefetch"][href="${url}"]`)) {
                     const l = document.createElement('link');
-                    l.rel = 'preload'; l.as = 'image'; l.href = url;
+                    l.rel = 'prefetch'; l.as = 'image'; l.href = url;
                     document.head.appendChild(l);
                 }
-            });
-            hidratarIframes(view);
+            }
+            // Pré-carrega o background da view futura (sem exibir)
+            const bgMap = { riscos: 'bg-riscos', educacao: 'bg-educacao', dicas: 'bg-dicas', alternativas: 'bg-alternativas' };
+            if (bgMap[nome]) carregarBg(bgMap[nome]);
         }
         document.querySelectorAll('.nav-link').forEach(link => {
             const nome = (link.getAttribute('href') || '').slice(1);
@@ -119,44 +264,15 @@ document.addEventListener("DOMContentLoaded", () => {
             link.addEventListener('pointerenter', () => aquecer(nome), { passive: true });
             link.addEventListener('focus', () => aquecer(nome), { passive: true });
         });
-        const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 1500));
-        idle(() => ['riscos', 'educacao', 'dicas', 'alternativas'].forEach(aquecer));
+        // Sem prefetch em massa no idle: preserva dados móveis e o lazy dos iframes.
     })();
 
     /* ============================================================
-       REVEAL-ON-SCROLL APRIMORADO
+       REVEAL INICIAL — observa os reveals existentes.
+       A re-animação das 4 views de conteúdo é feita por
+       reiniciarRevealsDaView() a cada troca de view (acima).
        ============================================================ */
-    const elementosParaRevelar = document.querySelectorAll('.revelar');
-
-    if (prefereReduzirMovimento) {
-        elementosParaRevelar.forEach(el => {
-            el.classList.add('ativo');
-            el.style.transitionDelay = '0s';
-        });
-    } else {
-        const observador = new IntersectionObserver((entradas) => {
-            entradas.forEach(entrada => {
-                if (entrada.isIntersecting) {
-                    revelarElemento(entrada.target);
-                    observador.unobserve(entrada.target);
-                }
-            });
-        }, {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.12  // Reduzido de 0.15 para trigger mais natural
-        });
-
-        function revelarElemento(el) {
-            el.style.willChange = 'opacity, transform';
-            el.classList.add('ativo');
-            setTimeout(() => {
-                el.style.willChange = 'auto';
-            }, 1200);
-        }
-
-        elementosParaRevelar.forEach(el => observador.observe(el));
-    }
+    observarReveals(document);
 
    /* ============================================================
    SLIDING NUMBERS — Vanilla JS
@@ -257,13 +373,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!prefereReduzirMovimento) {
         const isHomeHero = (el) => !!(el && el.closest && el.closest('#view-home .home-hero'));
+        const animados = new WeakSet();
         const slidingObs = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 const instance = instances.get(entry.target);
                 if (!instance) return;
                 if (isHomeHero(entry.target)) return;
-                if (entry.isIntersecting) animateInstance(instance);
-                else resetInstance(instance);
+                // #tela e demais views: anima uma vez, sem reset (evita piscar 00%)
+                if (entry.isIntersecting && !animados.has(entry.target)) {
+                    animados.add(entry.target);
+                    animateInstance(instance);
+                    slidingObs.unobserve(entry.target);
+                }
             });
         }, { threshold: 0.4 });
         containers.forEach(container => slidingObs.observe(container));
@@ -276,54 +397,58 @@ document.addEventListener("DOMContentLoaded", () => {
        ============================================================ */
     if (!prefereReduzirMovimento && window.matchMedia('(hover: hover)').matches) {
         const seletorGlow = '.card, .metric-card, .alt-card, .step-card, .pillar-card, .data-card, .alert-card, .faq-item';
-        const seletorMagnetico = '.card, .metric-card, .alert-card, .data-card, .pillar-card, .step-card, .alt-card';
-        let pendingEvent = null;
-        let glowMagRaf = 0;
-        let lastMag = null;
+        // Sem efeito magnético nos .metric-card (75%/90%): o translate mexia nos dígitos do sliding-number
+        const seletorMagnetico = '.card, .alert-card, .data-card, .pillar-card, .step-card, .alt-card';
+        document.querySelectorAll('.metric-card').forEach(el => { el.style.translate = ''; });
 
-        function flushGlowMag() {
-            glowMagRaf = 0;
+        // Magnético com listeners por card (mouseenter/move/leave): o modelo
+        // anterior com delegation global + lastMag travava no primeiro card —
+        // a troca de alvo e o mouseout limpavam o translate do card novo.
+        document.querySelectorAll(seletorMagnetico).forEach((card) => {
+            if (card.dataset.magInit) return;
+            if (card.closest('#view-sos') || card.closest('#view-home .home-hero')) return;
+            card.dataset.magInit = '1';
+            const forca = 0.015;
+            const maxDesloc = 3;
+            function garantirTransicao() {
+                if (card.dataset.magSuave) return;
+                card.dataset.magSuave = '1';
+                const base = (card.style.transition || '').trim().replace(/,?\s*translate[^,;]*/g, '').replace(/^,|,$/g, '').trim();
+                card.style.transition = (base ? base + ', ' : '') + 'translate 0.35s cubic-bezier(0.16, 1, 0.3, 1)';
+            }
+            card.addEventListener('mouseenter', () => { garantirTransicao(); }, { passive: true });
+            card.addEventListener('mousemove', (e) => {
+                garantirTransicao();
+                const rect = card.getBoundingClientRect();
+                const x = Math.max(-maxDesloc, Math.min(maxDesloc, (e.clientX - rect.left - rect.width / 2) * forca));
+                const y = Math.max(-maxDesloc, Math.min(maxDesloc, (e.clientY - rect.top - rect.height / 2) * forca));
+                card.style.translate = `${x.toFixed(1)}px ${y.toFixed(1)}px`;
+            }, { passive: true });
+            card.addEventListener('mouseleave', () => {
+                card.style.translate = '';
+            }, { passive: true });
+        });
+
+        let pendingEvent = null;
+        let glowRaf = 0;
+
+        function flushGlow() {
+            glowRaf = 0;
             const e = pendingEvent;
             pendingEvent = null;
             if (!e || !(e.target instanceof Element)) return;
-            const cx = e.clientX;
-            const cy = e.clientY;
-
             const card = e.target.closest(seletorGlow);
             if (card && !card.closest('#view-home')) {
                 const rect = card.getBoundingClientRect();
-                card.style.setProperty('--mx', `${cx - rect.left}px`);
-                card.style.setProperty('--my', `${cy - rect.top}px`);
-            }
-
-            const found = e.target.closest(seletorMagnetico);
-            const mag = (found && !found.closest('#view-sos') && !found.closest('#view-home .home-hero')) ? found : null;
-            if (mag !== lastMag) {
-                if (lastMag) lastMag.style.translate = '';
-                lastMag = mag;
-            }
-            if (mag) {
-                const rect = mag.getBoundingClientRect();
-                const forca = 0.04;
-                const maxDesloc = 8;
-                const x = Math.max(-maxDesloc, Math.min(maxDesloc, (cx - rect.left - rect.width / 2) * forca));
-                const y = Math.max(-maxDesloc, Math.min(maxDesloc, (cy - rect.top - rect.height / 2) * forca));
-                mag.style.translate = `${x.toFixed(1)}px ${y.toFixed(1)}px`;
+                card.style.setProperty('--mx', `${e.clientX - rect.left}px`);
+                card.style.setProperty('--my', `${e.clientY - rect.top}px`);
             }
         }
 
+        // Glow segue só com delegation de leitura (sem escrita de translate)
         document.body.addEventListener('mousemove', (e) => {
             pendingEvent = e;
-            if (!glowMagRaf) glowMagRaf = requestAnimationFrame(flushGlowMag);
-        }, { passive: true });
-
-        document.body.addEventListener('mouseout', (e) => {
-            if (!(e.target instanceof Element)) return;
-            const el = e.target.closest(seletorMagnetico);
-            if (el && (!e.relatedTarget || !el.contains(e.relatedTarget))) {
-                el.style.translate = '';
-                if (lastMag === el) lastMag = null;
-            }
+            if (!glowRaf) glowRaf = requestAnimationFrame(flushGlow);
         }, { passive: true });
     }
 
@@ -333,24 +458,32 @@ document.addEventListener("DOMContentLoaded", () => {
     const menuToggle = document.querySelector('[data-menu-toggle]');
     const mobileMenu = document.querySelector('[data-mobile-menu]');
 
-    const fecharMenu = () => {
+    const fecharMenu = (devolverFoco) => {
+        if (!mobileMenu || !menuToggle) return;
         menuToggle.setAttribute('aria-expanded', 'false');
+        menuToggle.setAttribute('aria-label', 'Abrir menu');
         mobileMenu.classList.remove('is-open');
+        if (devolverFoco) menuToggle.focus({ preventScroll: true });
     };
 
     if (menuToggle && mobileMenu) {
         menuToggle.addEventListener('click', () => {
             const expanded = menuToggle.getAttribute('aria-expanded') === 'true';
             menuToggle.setAttribute('aria-expanded', String(!expanded));
+            menuToggle.setAttribute('aria-label', expanded ? 'Abrir menu' : 'Fechar menu');
             mobileMenu.classList.toggle('is-open', !expanded);
+            if (!expanded) {
+                const primeiro = mobileMenu.querySelector('a');
+                if (primeiro) primeiro.focus({ preventScroll: true });
+            }
         });
 
         mobileMenu.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', fecharMenu);
+            link.addEventListener('click', () => fecharMenu(false));
         });
 
         document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape') fecharMenu();
+            if (event.key === 'Escape' && mobileMenu.classList.contains('is-open')) fecharMenu(true);
         });
     }
 
@@ -359,9 +492,84 @@ document.addEventListener("DOMContentLoaded", () => {
     const footerTopBtn = document.getElementById('footer-scroll-top');
     if (footerTopBtn) {
         footerTopBtn.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: scrollSuave });
         });
     }
+
+    /* ============================================================
+       #TELA MOTION — fundo inicial, prefetch, stagger e scrub
+       ============================================================ */
+    (function telaMotion() {
+        const viewTela = document.getElementById('view-tela');
+        if (!viewTela) return;
+
+        // Garante fundo ativo ao entrar direto em #tela (sem flash preto)
+        function garantirFundoTela() {
+            if (document.body.dataset.view !== 'tela') return;
+            const bgTela = document.getElementById('bg-tela');
+            if (!bgTela) return;
+            const algumaAtiva = document.querySelector('.bg-image.active');
+            if (!algumaAtiva || !viewTela.contains(document.querySelector('[data-bg].active'))) {
+                document.querySelectorAll('.bg-image').forEach(img => {
+                    img.classList.toggle('active', img === bgTela);
+                });
+            }
+        }
+
+        // Prefetch dos backgrounds da #tela sob demanda (usa data-bg-src, nunca força download)
+        function prefetchTela() {
+            ['tela', 'riscos', 'educacao', 'dicas', 'alternativas'].forEach(id => {
+                const el = document.getElementById('bg-' + id);
+                if (!el) return;
+                const url = el.getAttribute('data-bg-src') || (el.getAttribute('style') || '').match(/url\('([^']+)'\)/)?.[1];
+                if (!url) return;
+                if (!document.querySelector(`link[rel="prefetch"][href="${url}"]`)) {
+                    const l = document.createElement('link');
+                    l.rel = 'prefetch'; l.as = 'image'; l.href = url;
+                    document.head.appendChild(l);
+                }
+            });
+        }
+
+        // Sem prefetch em massa: só após interação real com a #tela
+        viewTela.addEventListener('pointerenter', prefetchTela, { once: true, passive: true });
+        window.addEventListener('hashchange', () => setTimeout(garantirFundoTela, 60), { passive: true });
+        garantirFundoTela();
+
+        if (prefereReduzirMovimento || !window.gsap || !window.ScrollTrigger) return;
+        try {
+            gsap.registerPlugin(ScrollTrigger);
+            const hero = viewTela.querySelector('.tela-hero');
+            const titulo = viewTela.querySelector('[data-tela-title]');
+            const cards = viewTela.querySelectorAll('#tela-dicas .card, #tela-alternativas .card');
+            const ctx = gsap.context(() => {
+                if (titulo) {
+                    gsap.to(titulo, {
+                        y: -40,
+                        opacity: 0.25,
+                        ease: 'none',
+                        scrollTrigger: {
+                            trigger: hero,
+                            start: 'top top',
+                            end: 'bottom 30%',
+                            scrub: 0.6
+                        }
+                    });
+                }
+                if (cards.length) {
+                    ScrollTrigger.batch(cards, {
+                        start: 'top 88%',
+                        once: true,
+                        onEnter: (batch) => gsap.fromTo(batch,
+                            { y: 26, opacity: 0 },
+                            { y: 0, opacity: 1, duration: 0.7, stagger: 0.08, ease: 'power3.out', overwrite: true })
+                    });
+                }
+            }, viewTela);
+            window.addEventListener('hashchange', () => setTimeout(() => ScrollTrigger.refresh(), 120), { passive: true });
+            if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => ScrollTrigger.refresh());
+        } catch (e) { /* fallback: reveal padrão segue funcionando */ }
+    })();
 });
 
 /* ============================================================
@@ -566,7 +774,15 @@ document.querySelectorAll('.faq-item:not([data-faq-init])').forEach(details => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 const targetBgId = entry.target.getAttribute('data-bg');
-                
+                const alvo = document.getElementById(targetBgId);
+                // Carrega a foto sob demanda antes de exibir (C4)
+                if (alvo && !alvo.dataset.bgLoaded) {
+                    const src = alvo.getAttribute('data-bg-src');
+                    if (src) {
+                        alvo.style.backgroundImage = `url('${src}')`;
+                        alvo.dataset.bgLoaded = '1';
+                    }
+                }
                 // Ativa apenas a imagem de fundo correspondente à seção visível
                 bgImages.forEach(img => {
                     if (img.id === targetBgId) {
@@ -685,6 +901,7 @@ document.querySelectorAll('.faq-item:not([data-faq-init])').forEach(details => {
     function mostrarDigitando() {
         const digitando = document.createElement('div');
         digitando.className = 'chatbot-typing';
+        digitando.setAttribute('aria-hidden', 'true');
         digitando.innerHTML = '<span></span><span></span><span></span>';
         messagesEl.appendChild(digitando);
         rolarParaFinal();

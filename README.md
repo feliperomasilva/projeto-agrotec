@@ -8,7 +8,7 @@
 
 ---
 
-![Prévia](images/projeto.png)
+![Prévia](https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=70)
 
 ## Sobre o Projeto
 

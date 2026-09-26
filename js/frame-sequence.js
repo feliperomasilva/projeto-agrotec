@@ -1,4 +1,4 @@
-/* FRAME SEQUENCE — planta.mp4 como sequência controlada por ScrollTrigger.
+/* FRAME SEQUENCE — sequência de frames controlada por ScrollTrigger.
    Módulos: FrameLoader (progressivo) + FrameRenderer (canvas cover) +
    ScrollController (GSAP pin/scrub) + ResponsiveController (DPR/resize).
    Trocar vídeo: gerar images/frames/frame_%04d.webp e ajustar FRAMES.count. */
@@ -211,23 +211,11 @@
     function ensureSplit() {
         if (splitDone || !titleEl) return;
         splitDone = true;
-        var hasHl = !!titleEl.querySelector('.hl');
+        // SplitText é plugin Club pago — CDN pode 403/404. Fallback próprio
+        // sempre disponível garante o anúncio SR do título (aria-label).
         try {
-            if (!hasHl && window.SplitText && window.gsap) {
-                gsap.registerPlugin(SplitText);
-                splitInstance = SplitText.create(titleEl, {
-                    type: 'words',
-                    aria: 'auto',
-                    smartWrap: true,
-                    wordsClass: 'cine-word'
-                });
-                wordEls = splitInstance.words || Array.prototype.slice.call(titleEl.querySelectorAll('.cine-word'));
-            } else {
-                fallbackSplit();
-            }
-        } catch (e) {
             fallbackSplit();
-        }
+        } catch (e) {}
         if (!wordEls.length && titleEl) fallbackSplit();
         wordEls.forEach(function (w) {
             if (w.closest && w.closest('.hl')) w.classList.add('in-hl');
@@ -530,7 +518,6 @@
     function buildTrigger() {
         if (!window.gsap || !window.ScrollTrigger) return;
         gsap.registerPlugin(ScrollTrigger);
-        if (window.SplitText) gsap.registerPlugin(SplitText);
         if (mm) mm.revert();
         mm = gsap.matchMedia();
         mm.add(

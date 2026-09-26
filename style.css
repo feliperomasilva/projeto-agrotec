@@ -123,6 +123,8 @@
 .no-js .revelar {
     opacity: 1;
     transform: none;
+    filter: none;
+    transition: none;
 }
 
 .revelar.ativo {
@@ -221,6 +223,12 @@
     transition-delay: var(--stagger-delay, 0s) !important;
 }
 
+/* Entrada concluída (classe adicionada via JS após ~1.2s): zera o stagger
+   para que o hover e o magnético dos cards 2+ respondam na hora. */
+.revelar.ativo.reveal-done {
+    transition-delay: 0s !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
     .revelar {
         opacity: 1 !important;
@@ -233,6 +241,37 @@
 
 html {
     scroll-behavior: smooth;
+}
+
+html, body {
+    overflow-x: clip;
+}
+
+.no-js .view {
+    display: block;
+}
+
+.no-js .view:not(#view-home) {
+    border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Skip-link acessível */
+.skip-link {
+    position: absolute;
+    left: 16px;
+    top: -60px;
+    z-index: 3000;
+    background: var(--accent);
+    color: #04140c;
+    font-weight: 800;
+    padding: 0.7rem 1.1rem;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: top 0.25s ease;
+}
+
+.skip-link:focus-visible {
+    top: 12px;
 }
 
 section[id],
@@ -291,7 +330,6 @@ button, a { font: inherit; }
     height: 120%;
     object-fit: cover;
     will-change: transform;
-    transition: transform 0.1s linear;
 }
 
 /* ============================================================
@@ -624,7 +662,50 @@ button, a { font: inherit; }
     color: var(--muted);
     text-align: center;
     font-size: 0.92rem;
+    /* Footer único translúcido: mesma leitura em #tela #dicas #alternativas #riscos #educacao */
+    background: rgba(5, 7, 12, 0.28);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .footer {
+        background: rgba(5, 7, 12, 0.88);
+    }
+}
+
+.footer-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    display: grid;
+    gap: 1rem;
+    justify-items: center;
+}
+
+.footer-brand span { color: var(--accent); }
+
+.footer-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.1rem;
+    justify-content: center;
+}
+
+.footer-top {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: var(--text);
+    border-radius: 999px;
+    padding: 0.6rem 1.3rem;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.footer-top:hover { background: rgba(255,255,255,0.12); }
 
 .footer a {
     color: var(--accent);
@@ -1050,6 +1131,8 @@ body[data-view="sos"] {
     border-radius: var(--radius-sm);
     padding: 2rem 2.2rem;
     transition: transform 0.4s var(--ease-out-expo), border-color 0.3s ease;
+    /* Sem efeito magnético: o translate do JS deslocava os dígitos do sliding-number */
+    translate: none !important;
 }
 
 .metric-value {
@@ -1274,7 +1357,9 @@ body[data-view="sos"] {
     --radius-md: 14px;
 
     font-family: 'Inter', sans-serif;
-    background-color: var(--bg-main);
+    /* 1+5 LUXO/CINEMÁTICO: view transparente para o .bg-image global
+       (bg-riscos) aparecer atrás do header; cards internos seguem sólidos */
+    background-color: transparent;
     color: var(--text-primary);
     line-height: 1.7;
     -webkit-font-smoothing: antialiased;
@@ -1286,8 +1371,8 @@ body[data-view="sos"] {
 #view-riscos .data-grid .revelar:nth-child(2) { transition-delay: 0.1s; }
 
 .riscos-header {
-    background: linear-gradient(to bottom, rgba(10, 13, 16, 0.4), #0a0d10),
-                url('https://images.unsplash.com/photo-1615811361523-6bd03d7748e7?auto=format&fit=crop&w=1600&q=75') center/cover no-repeat;
+    /* 1+5: fundo vem do .bg-image global sob demanda; header local só dá ritmo */
+    background: none;
     padding: 97px 24px 50px 24px;
     text-align: center;
 }
@@ -1417,17 +1502,17 @@ body[data-view="sos"] {
 
 #view-riscos .alert-card {
     background-color: var(--bg-inner);
-    border: 1px solid rgba(255, 255, 255, 0.03);
-    border-radius: var(--radius-sm);
+    border: 1px solid var(--lux-line);
+    border-radius: var(--lux-card);
     padding: 24px;
     transition: transform 0.4s var(--ease-out-expo), border-color 0.3s ease;
     --glow-color: rgba(255, 23, 63, 0.2);
 }
 
 #view-riscos .alert-card:hover {
-    border-color: var(--danger);
-    transform: scale(1.01);
-    box-shadow: 0 0 0 1px var(--danger), 0 20px 46px rgba(255, 23, 63, 0.18);
+    border-color: color-mix(in srgb, var(--page-accent) 65%, transparent);
+    transform: translateY(-3px);
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.35);
 }
 
 #view-riscos .card-title {
@@ -1452,7 +1537,7 @@ body[data-view="sos"] {
 
 #view-riscos .data-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
     gap: 24px;
 }
 
@@ -1465,7 +1550,7 @@ body[data-view="sos"] {
     transition: transform 0.4s var(--ease-out-expo);
 }
 
-#view-riscos .data-card:hover { transform: scale(1.01); }
+#view-riscos .data-card:hover { transform: translateY(-3px); }
 
 #view-riscos .data-tag {
     font-size: 0.75rem;
@@ -1543,7 +1628,8 @@ body[data-view="sos"] {
     --radius-md: 14px;
 
     font-family: 'Inter', sans-serif;
-    background-color: var(--bg-main);
+    /* 1+5 LUXO/CINEMÁTICO: transparente para o bg-educacao global aparecer */
+    background-color: transparent;
     color: var(--text-primary);
     line-height: 1.7;
     -webkit-font-smoothing: antialiased;
@@ -1553,8 +1639,8 @@ body[data-view="sos"] {
 .pillars-grid .revelar:nth-child(2) { transition-delay: 0.1s; }
 
 .edu-header {
-    background: linear-gradient(to bottom, rgba(9, 12, 15, 0.3), #090c0f),
-                url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1600&q=75') center/cover no-repeat;
+    /* 1+5: fundo vem do .bg-image global sob demanda; header local só dá ritmo */
+    background: none;
     padding: 90px 24px 50px 24px;
     text-align: center;
 }
@@ -1661,7 +1747,7 @@ body[data-view="sos"] {
 
 #view-educacao .img-box img { width: 100%; height: 100%; object-fit: cover; aspect-ratio: 3 / 2; }
 
-#view-educacao .pillars-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+#view-educacao .pillars-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 24px; }
 
 #view-educacao .pillar-card {
     background: rgba(255, 255, 255, 0.01);
@@ -1673,10 +1759,9 @@ body[data-view="sos"] {
 }
 
 #view-educacao .pillar-card:hover {
-    border-color: var(--info-cyan);
-    background: var(--bg-inner);
-    transform: translateY(-3px) scale(1.01);
-    box-shadow: 0 0 0 1px var(--info-cyan), 0 20px 46px rgba(0, 229, 255, 0.16);
+    border-color: color-mix(in srgb, var(--page-accent) 55%, transparent);
+    background: var(--lux-surface-2);
+    transform: translateY(-3px);
 }
 
 #view-educacao .pillar-tag {
@@ -1714,15 +1799,16 @@ body[data-view="sos"] {
     --bg-inner: #1a222a;
     --text-primary: #f8fafc;
     --text-secondary: #94a3b8;
-    --success-mint: #eeff009a;
-    --glow-color: rgba(237, 255, 0, 0.15); 
-    --success-glow: rgba(217, 255, 0, 0.1);
-    --success-border: rgba(217, 255, 0, 0.4);
+    --success-mint: #f4ff7a;
+    --glow-color: rgba(244, 255, 122, 0.15);
+    --success-glow: rgba(244, 255, 122, 0.1);
+    --success-border: rgba(244, 255, 122, 0.4);
     --radius-lg: 24px;
     --radius-md: 16px;
 
     font-family: 'Inter', sans-serif;
-    background-color: var(--bg-main);
+    /* 1+5 LUXO/CINEMÁTICO: transparente para o bg-dicas global aparecer */
+    background-color: transparent;
     color: var(--text-primary);
     line-height: 1.7;
     -webkit-font-smoothing: antialiased;
@@ -1734,8 +1820,8 @@ body[data-view="sos"] {
 .steps-grid .revelar:nth-child(4) { transition-delay: 0.3s; }
 
 .dicas-header {
-    background: linear-gradient(to bottom, rgba(11, 14, 17, 0.4), #0b0e11),
-                url('https://images.unsplash.com/photo-1582586131076-6c308a437385?auto=format&fit=crop&w=1600&q=75') center/cover no-repeat;
+    /* 1+5: fundo vem do .bg-image global sob demanda; header local só dá ritmo */
+    background: none;
     padding: 90px 24px 50px 24px;
     text-align: center;
 }
@@ -1743,7 +1829,7 @@ body[data-view="sos"] {
 .dicas-badge {
     background: var(--success-glow);
     border: 1px solid var(--success-border);
-    color: #edff00;
+    color: #f4ff7a;
     padding: 6px 14px;
     border-radius: 50px;
     font-size: 0.8rem;
@@ -1790,7 +1876,7 @@ body[data-view="sos"] {
     width: 46px; height: 46px;
     border-radius: 12px;
     display: flex; align-items: center; justify-content: center;
-    color: #edff00;
+    color: #f4ff7a;
 }
 
 #view-dicas h2 {
@@ -1813,7 +1899,7 @@ body[data-view="sos"] {
 
 #view-dicas .img-box img { width: 100%; height: 100%; object-fit: cover; aspect-ratio: 3 / 2; }
 
-#view-dicas .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 24px; margin-bottom: 40px; }
+#view-dicas .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 450px), 1fr)); gap: 24px; margin-bottom: 40px; }
 
 #view-dicas .step-card {
     background-color: var(--bg-card);
@@ -1824,10 +1910,9 @@ body[data-view="sos"] {
 }
 
 #view-dicas .step-card:hover {
-    border-color: var(--success-mint);
-    background: linear-gradient(145deg, var(--bg-card), rgba(46, 169, 104, 0.01));
-    transform: translateY(-4px);
-    box-shadow: 0 0 0 1px var(--success-mint), 0 20px 46px rgba(46, 169, 104, 0.16);
+    border-color: color-mix(in srgb, var(--page-accent) 55%, transparent);
+    background: var(--lux-surface-2);
+    transform: translateY(-3px);
 }
 
 #view-dicas .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
@@ -1840,7 +1925,7 @@ body[data-view="sos"] {
 }
 
 #view-dicas .card-apple-icon {
-    color: #edff00;
+    color: #f4ff7a;
     background: rgba(255, 255, 255, 0.02);
     width: 40px; height: 40px;
     border-radius: 10px;
@@ -1887,7 +1972,7 @@ body[data-view="sos"] {
 #view-dicas .banner-icon-box .material-symbols-rounded { font-size: 1.4rem; font-variation-settings: 'FILL' 1; }
 #view-dicas .banner-text { color: var(--text-secondary); font-size: 1rem; line-height: 1.6; }
 #view-dicas .banner-text strong { color: #ffffff; display: block; margin-bottom: 4px; font-size: 1.1rem; }
-#view-dicas .banner-text span { color: #ff453a; font-weight: 500; }
+#view-dicas .banner-text span { color: #ff8a7a; font-weight: 600; }
 
 /* ============ Bloco de vídeo (mesmo padrão visual do #view-riscos) ============ */
 #view-dicas .info-section {
@@ -1963,7 +2048,8 @@ body[data-view="sos"] {
     --radius-md: 12px;
 
     font-family: 'Inter', sans-serif;
-    background-color: var(--bg-main);
+    /* 1+5 LUXO/CINEMÁTICO: transparente para o bg-alternativas global aparecer */
+    background-color: transparent;
     color: var(--text-primary);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
@@ -1977,8 +2063,8 @@ body[data-view="sos"] {
 .alt-grid .revelar:nth-child(6) { transition-delay: 0.4s; }
 
 .alt-header {
-    background: linear-gradient(to bottom, rgba(8, 11, 13, 0.5), #080b0d),
-                url('https://images.unsplash.com/photo-1533062618053-d51e617307ec?auto=format&fit=crop&w=1600&q=75') center/cover no-repeat;
+    /* 1+5: fundo vem do .bg-image global sob demanda; header local só dá ritmo */
+    background: none;
     padding: 80px 24px 40px 24px;
     text-align: center;
 }
@@ -2056,7 +2142,7 @@ body[data-view="sos"] {
 
 #view-alternativas .img-box img { width: 100%; height: 100%; object-fit: cover; aspect-ratio: 3 / 2; }
 
-#view-alternativas .alt-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+#view-alternativas .alt-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 20px; }
 
 #view-alternativas .alt-card {
     background-color: var(--bg-card);
@@ -2069,10 +2155,9 @@ body[data-view="sos"] {
 }
 
 #view-alternativas .alt-card:hover {
-    border-color: var(--apple-green);
-    transform: translateY(-4px);
-    background: linear-gradient(165deg, var(--bg-card), rgba(46, 169, 104, 0.01));
-    box-shadow: 0 0 0 1px var(--apple-green), 0 20px 46px rgba(46, 169, 104, 0.16);
+    border-color: color-mix(in srgb, var(--page-accent) 55%, transparent);
+    transform: translateY(-3px);
+    background: var(--lux-surface-2);
 }
 
 #view-alternativas .card-header-ios { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
@@ -2184,7 +2269,7 @@ body[data-view="sos"] .background-container {
 
 .call-number-btn.emergency { background: #ff3b30; }
 .call-number-btn:active { opacity: 0.8; transform: scale(0.98); }
-.call-sub { font-size: 0.8rem; color: #64748b; margin-top: 8px; }
+.call-sub { font-size: 0.8rem; color: #b6c2d1; margin-top: 8px; }
 
 .action-sheet { background: #1c1c1e; border-radius: 18px; padding: 20px; margin-bottom: 24px; }
 .action-sheet h3 { font-size: 1rem; font-weight: 700; margin-bottom: 14px; color: #ff9500; }
@@ -2218,7 +2303,7 @@ body[data-view="sos"] .background-container {
     align-items: center;
     justify-content: center;
     gap: 6px;
-    color: #64748b;
+    color: #a8b3c2;
     text-decoration: none;
     font-size: 0.9rem;
     font-weight: 500;
@@ -2291,7 +2376,7 @@ body[data-view="sos"] .background-container {
 .background-container {
     position: fixed;
     inset: 0;
-    width: 100vw;
+    width: 100%;
     height: 100vh;
     height: 100dvh;
     z-index: -2; 
@@ -2317,7 +2402,11 @@ body[data-view="sos"] .background-container {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, rgba(5, 7, 12, 0.32) 0%, rgba(5, 7, 12, 0.62) 100%);
+    /* Scrim escuro para leitura dos cards: base mais densa no miolo/base,
+       mas com fade suave sem corte duro */
+    background:
+        radial-gradient(120% 80% at 50% 20%, transparent 45%, rgba(3, 5, 9, 0.45) 100%),
+        linear-gradient(180deg, rgba(5, 7, 12, 0.55) 0%, rgba(5, 7, 12, 0.38) 38%, rgba(5, 7, 12, 0.42) 62%, rgba(5, 7, 12, 0.62) 100%);
 }
 
 .bg-image.active {
@@ -2494,7 +2583,8 @@ body[data-view="home"] .background-container #bg-home {
     position: absolute;
     right: 0;
     bottom: 82px;
-    width: min(380px, calc(100vw - 32px));
+    width: min(380px, calc(100vw - 48px));
+    width: min(380px, calc(100dvw - 48px));
     height: min(560px, calc(100vh - 140px));
     background: var(--surface-strong);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -2782,12 +2872,12 @@ body[data-view="sos"] .chatbot-widget { display: none; }
 
 @media (max-width: 480px) {
     .chatbot-widget { right: 16px; bottom: 16px; }
-    .chatbot-window { width: calc(100vw - 24px); height: min(72vh, 560px); }
+    .chatbot-window { width: calc(100dvw - 24px); height: min(72vh, 560px); }
     .chatbot-toggle { width: 58px; height: 58px; }
 }
 
 /* ============================================================
-   FRAME SEQUENCE — canvas da home (planta.mp4 em frames)
+   FRAME SEQUENCE — canvas da home (frames em images/frames)
    ============================================================ */
 /* Frames = background fixo de toda a #view-home (frame 96 congelado ao fim) */
 .home-hero-wrap {
@@ -2798,7 +2888,7 @@ body[data-view="sos"] .chatbot-widget { display: none; }
 body[data-view="home"] .frame-canvas {
     position: fixed;
     inset: 0;
-    width: 100vw;
+    width: 100%;
     height: 100vh;
     height: 100svh;
     height: 100dvh;
@@ -2950,7 +3040,7 @@ body[data-view="home"] .background-container {
     body[data-view="home"] .frame-canvas {
         position: fixed;
         inset: 0;
-        width: 100vw;
+        width: 100%;
         height: 100vh;
         height: 100svh;
         opacity: 0;
@@ -3621,5 +3711,478 @@ body[data-view="home"] #view-home .home-hero.has-frames::after {
     #view-home .faq-item,
     #view-home .cta-panel {
         background: rgba(15,23,34,0.82) !important;
+    }
+}
+
+/* ============================================================
+   #VIEW-TELA — correções escopadas (não afetam #home/#riscos)
+   ============================================================ */
+body[data-view="tela"] main { margin-top: 0; }
+
+#view-tela .tela-hero {
+    min-height: auto;
+    padding: 112px 24px 48px;
+    gap: 2rem;
+}
+
+#view-tela .tela-hero .hero-content {
+    max-width: 680px;
+    text-align: left;
+    margin: 0;
+}
+
+#view-tela .tela-hero .hero-title,
+#view-tela .tela-hero .hero-copy { text-align: left; }
+
+#view-tela .tela-hero .hero-actions { justify-content: flex-start; }
+
+#view-tela .tela-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 1rem;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--accent);
+}
+
+#view-tela .tela-eyebrow .material-symbols-rounded { font-size: 1rem; }
+
+/* foco programático no h1 da SPA não deve mostrar contorno */
+#view-tela [data-tela-title]:focus,
+#view-tela [data-tela-title]:focus-visible {
+    outline: none;
+}
+
+/* badge global fixo colidia com o eyebrow da #tela — esconde só nesta view */
+body[data-view="tela"] .global-project-badge {
+    display: none;
+}
+
+#view-tela .tela-hero .hero-copy {
+    color: #e2e8f0;
+    text-shadow: 0 1px 12px rgba(0,0,0,0.6);
+}
+
+#view-tela .tela-hero .btn-secondary {
+    background: rgba(5,7,12,0.55);
+    border-color: rgba(255,255,255,0.22);
+}
+
+#view-tela .tela-subnav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1.6rem;
+}
+
+#view-tela .tela-subnav a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.55rem 0.95rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.14);
+    background: rgba(5,7,12,0.5);
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: transform 0.3s var(--ease-out-expo), background-color 0.25s ease, border-color 0.25s ease;
+}
+
+#view-tela .tela-subnav a:hover {
+    transform: translateY(-2px);
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.25);
+}
+
+#view-tela .tela-subnav .material-symbols-rounded { font-size: 1rem; }
+
+#view-tela .tela-single { max-width: 680px; }
+
+#view-tela .tela-cta { margin-top: 1.5rem; }
+
+#view-tela .metric-source a { color: var(--accent); }
+
+/* transition base do revelar (antes só existia no .ativo) */
+#view-tela .revelar {
+    transition: opacity 1s var(--ease-out-expo), transform 1s var(--ease-out-expo);
+}
+
+/* botões dos painéis: inline com limite, não full-width no desktop */
+#tela-alternativas .section-panel .btn,
+#tela-dicas .section-panel .btn {
+    width: auto;
+    min-width: 240px;
+    max-width: 340px;
+    margin-top: 0.5rem;
+}
+
+@media (max-width: 720px) {
+    #view-tela .tela-hero { padding-top: 104px; }
+    #tela-alternativas .section-panel .btn,
+    #tela-dicas .section-panel .btn { width: 100%; max-width: none; }
+}
+
+/* ============================================================
+   PLANO_IMPLEMENTACAO — Sistema unificado das 4 páginas
+   Tokens + reduced-motion total + correções AA + layouts
+   ============================================================ */
+:root {
+    --lux-line: rgba(255, 255, 255, 0.08);
+    --lux-surface: rgba(255, 255, 255, 0.02);
+    --lux-surface-2: rgba(255, 255, 255, 0.04);
+    --lux-kicker: 0.72rem;
+    --lux-kicker-track: 0.16em;
+    --lux-h1: clamp(2.1rem, 4vw, 2.8rem);
+    --lux-lead: 1.06rem;
+    --lux-card: 14px;
+    --lux-pad: 1.8rem;
+}
+#view-riscos, #view-educacao, #view-dicas, #view-alternativas {
+    --page-max: 1100px;
+}
+#view-riscos { --page-accent: #ff173f; }
+#view-educacao { --page-accent: #00e5ff; }
+#view-dicas { --page-accent: #f4ff7a; }
+#view-alternativas { --page-accent: #2ea968; }
+
+/* ——— 1 AGRO-LUXO: kickers, h1/h2, leads, superfícies finas ——— */
+#view-riscos .danger-badge, #view-educacao .edu-badge,
+#view-dicas .dicas-badge, #view-alternativas .alt-badge {
+    font-size: var(--lux-kicker);
+    letter-spacing: var(--lux-kicker-track);
+    text-transform: uppercase;
+    border-color: color-mix(in srgb, var(--page-accent) 38%, transparent);
+    background: color-mix(in srgb, var(--page-accent) 10%, transparent);
+    color: var(--page-accent);
+}
+#view-riscos .danger-badge .material-symbols-rounded,
+#view-educacao .edu-badge .material-symbols-rounded,
+#view-dicas .dicas-badge .material-symbols-rounded,
+#view-alternativas .alt-badge .material-symbols-rounded {
+    font-size: 1rem;
+}
+
+/* Headers das 4 páginas: mesmo ritmo */
+.riscos-header, .edu-header, .dicas-header, .alt-header {
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+    padding: 112px 24px 64px 24px;
+    text-align: center;
+    /* Sem border-bottom: a linha criava o corte duro da "faixa preta" sobre o bg fixo */
+    border-bottom: none;
+    background: none;
+}
+/* 1 LUXO: coluna editorial contida */
+.riscos-header .header-container, .edu-header .header-container,
+.dicas-header .header-container, .alt-header .header-container {
+    max-width: var(--page-max, 1100px);
+    margin: 0 auto;
+}
+@media (max-width: 720px) {
+    .riscos-header, .edu-header, .dicas-header, .alt-header {
+        padding: 96px 20px 48px 20px;
+    }
+}
+/* 5 CINEMÁTICO: véu escuro + vinheta para legibilidade sobre o bg global */
+.riscos-header::before, .edu-header::before, .dicas-header::before, .alt-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    /* Sombreado suave só atrás do texto: topo leve para a navbar,
+       miolo quase limpo para a foto respirar, fade total embaixo sem corte */
+    background:
+        radial-gradient(90% 65% at 50% 32%, rgba(3, 5, 9, 0.28) 0%, transparent 70%),
+        linear-gradient(180deg, rgba(3, 5, 9, 0.38) 0%, rgba(3, 5, 9, 0.10) 55%, transparent 100%);
+}
+/* 5 CINEMÁTICO: linha de acento sob o header */
+.riscos-header::after, .edu-header::after, .dicas-header::after, .alt-header::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: min(560px, 72%);
+    height: 1px;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, transparent, var(--page-accent), transparent);
+    opacity: 0.7;
+}
+.riscos-header h1, .edu-header h1, .dicas-header h1, .alt-header h1 {
+    font-size: var(--lux-h1);
+    font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+    text-wrap: balance;
+    max-width: 20ch;
+    margin: 0 auto 14px auto;
+    text-shadow: 0 2px 24px rgba(0, 0, 0, 0.55);
+}
+.riscos-header p, .edu-header p, .dicas-header p, .alt-header p {
+    font-size: var(--lux-lead);
+    line-height: 1.65;
+    color: var(--muted-soft, #cbd5e1);
+    max-width: 62ch;
+    margin: 0 auto;
+    text-shadow: 0 1px 12px rgba(0, 0, 0, 0.6);
+}
+/* 5 CINEMÁTICO: entrada do header — fade + subida, re-toca via .revelar */
+.riscos-header.revelar, .edu-header.revelar, .dicas-header.revelar, .alt-header.revelar {
+    transform: translateY(18px);
+}
+.riscos-header.revelar.ativo, .edu-header.revelar.ativo,
+.dicas-header.revelar.ativo, .alt-header.revelar.ativo {
+    transform: translateY(0);
+    transition: opacity 0.7s var(--ease-out-expo), transform 0.7s var(--ease-out-expo);
+}
+/* 1 LUXO: containers com mesmo teto */
+#view-riscos .container, #view-educacao .container,
+#view-dicas .container, #view-alternativas .container {
+    max-width: var(--page-max);
+}
+
+/* 1 LUXO: seções e títulos internos */
+#view-riscos .info-section, #view-educacao .content-card {
+    border-color: var(--lux-line);
+}
+#view-riscos h2, #view-educacao h2, #view-dicas h2, #view-alternativas h2 {
+    font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+}
+#view-riscos .lead-text, #view-educacao .lead-text,
+#view-dicas .lead-text, #view-alternativas .lead-text {
+    font-size: 1.06rem;
+    line-height: 1.7;
+    color: var(--text-primary, #f1f5f9);
+    max-width: 68ch;
+}
+/* ícones internos tingidos pelo acento da página */
+#view-riscos .icon-wrapper { color: var(--page-accent); }
+#view-educacao .icon-wrapper { color: var(--page-accent); }
+#view-dicas .icon-wrapper { color: var(--page-accent); }
+#view-alternativas .icon-wrapper { color: var(--page-accent); }
+
+/* GLASS SUAVE: cards internos das 4 páginas — leitura sobre o bg fixo */
+#view-riscos .alert-card, #view-riscos .data-card,
+#view-educacao .pillar-card,
+#view-dicas .step-card,
+#view-alternativas .alt-card,
+#view-riscos .stat-highlight,
+#view-educacao .highlight-box,
+#view-dicas .banner-info,
+.contam-line li {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.04)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    border-radius: var(--lux-card);
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+/* Seções grandes: mesmo glass com base escura para hierarquia */
+#view-riscos .info-section, #view-educacao .content-card,
+#view-dicas .info-section {
+    background: linear-gradient(135deg, rgba(10, 15, 22, 0.62), rgba(10, 15, 22, 0.48)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.10);
+}
+
+/* Texto claro dentro do glass */
+#view-riscos .alert-card p, #view-riscos .data-card p,
+#view-educacao .pillar-card p,
+#view-dicas .step-card p,
+#view-alternativas .alt-card p,
+#view-dicas .banner-text,
+#view-educacao .highlight-box p,
+.contam-line li {
+    color: #dbe4ef;
+}
+#view-dicas .banner-text strong,
+#view-riscos .stat-highlight h4 { color: #f0f4f8; }
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    #view-riscos .alert-card, #view-riscos .data-card,
+    #view-educacao .pillar-card, #view-dicas .step-card,
+    #view-alternativas .alt-card, #view-riscos .stat-highlight,
+    #view-educacao .highlight-box, #view-dicas .banner-info,
+    .contam-line li { background: rgba(15, 23, 34, 0.72) !important; }
+    #view-riscos .info-section, #view-educacao .content-card,
+    #view-dicas .info-section { background: rgba(10, 15, 22, 0.88) !important; }
+}
+#view-riscos .alert-card h3, #view-riscos .data-card h3,
+#view-educacao .pillar-card h3,
+#view-dicas .step-card h3,
+#view-alternativas .alt-card h3 {
+    font-size: 1.15rem;
+    letter-spacing: -0.01em;
+}
+#view-riscos .alert-card p, #view-riscos .data-card p,
+#view-educacao .pillar-card p,
+#view-dicas .step-card p,
+#view-alternativas .alt-card p {
+    font-size: 0.95rem;
+    line-height: 1.65;
+}
+/* numerais tabulares: contam, protocolo, metricas */
+.contam-line li::before, #view-dicas .step-num,
+.metric-value, .stat-highlight h4 {
+    font-variant-numeric: tabular-nums;
+}
+/* 1 LUXO: stat 75% como metric-card */
+#view-riscos .stat-highlight {
+    border: 1px solid var(--lux-line);
+    border-radius: var(--lux-card);
+    background: var(--lux-surface);
+    padding: var(--lux-pad);
+}
+#view-riscos .stat-highlight h4 {
+    font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+    font-size: clamp(1.6rem, 3vw, 2.1rem);
+    letter-spacing: -0.02em;
+}
+/* 1 LUXO: video-block unificado */
+#view-riscos .video-block .video-container,
+#view-dicas .video-block .video-container {
+    border: 1px solid var(--lux-line);
+    border-radius: var(--lux-card);
+    overflow: hidden;
+    background: #000;
+}
+#view-riscos .video-credits, #view-dicas .video-credits {
+    color: var(--muted);
+    font-size: 0.82rem;
+}
+/* 1 LUXO: back-btn com ritmo */
+#view-riscos .back-btn, #view-educacao .back-btn,
+#view-dicas .back-btn, #view-alternativas .back-btn {
+    margin: 28px 0 26px 0;
+}
+/* 1 LUXO: imagens internas com borda fina */
+#view-riscos .img-box, #view-educacao .img-box,
+#view-dicas .img-box, #view-alternativas .img-box {
+    border: 1px solid var(--lux-line);
+    border-radius: var(--lux-card);
+}
+
+/* Linha de contaminação — dossiê #riscos */
+.contam-line {
+    list-style: none;
+    margin: 0 0 2rem;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    counter-reset: etapa;
+}
+.contam-line li {
+    position: relative;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 1rem 1rem 1rem 3.2rem;
+    background: rgba(255,255,255,0.02);
+    color: var(--text-secondary, #94a3b8);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+.contam-line li::before {
+    counter-increment: etapa;
+    content: counter(etapa, decimal-leading-zero);
+    position: absolute;
+    left: 1rem;
+    top: 1rem;
+    font-weight: 800;
+    color: var(--page-accent, #fff);
+    font-variant-numeric: tabular-nums;
+}
+.contam-line li strong { display: block; color: #fff; margin-bottom: 0.2rem; }
+@media (max-width: 720px) { .contam-line { grid-template-columns: 1fr; } }
+
+/* Protocolo ordenado — manual #dicas */
+ol.protocol-list {
+    list-style: none;
+    counter-reset: passo;
+    margin: 0 0 40px;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 450px), 1fr));
+    gap: 24px;
+}
+ol.protocol-list > li { counter-increment: passo; }
+#view-dicas .banner-info[role="alert"] {
+    border-color: rgba(255,149,0,0.45);
+}
+
+/* Leitura dos cards da #tela sobre o bg fixo */
+#view-tela .grid-cards .card-copy,
+#view-tela .text-glass-panel .lead-text,
+#view-tela .text-glass-panel p {
+    color: #dbe4ef;
+}
+
+#view-tela .text-glass-panel .feature-list li {
+    color: #e6edf5;
+}
+
+/* Guia de decisão + CTA — catálogo #alternativas */
+.decision-guide {
+    border: 1px solid rgba(46,169,104,0.35);
+    background: linear-gradient(135deg, rgba(46,169,104,0.08), rgba(255,255,255,0.02));
+    border-radius: 14px;
+    padding: 1.8rem;
+    margin: 2rem 0;
+}
+.decision-guide h3 { color: #fff; margin: 0 0 0.6rem; font-size: 1.25rem; }
+.decision-guide p { color: var(--text-secondary); margin: 0 0 1rem; }
+.decision-guide ol { margin: 0; padding-left: 1.2rem; color: var(--text-secondary); display: grid; gap: 0.4rem; }
+.decision-guide strong { color: #fff; }
+.alt-cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    padding: 1.6rem;
+    margin-bottom: 8px;
+}
+.alt-cta h3 { color: #fff; margin: 0; }
+.alt-cta p { color: var(--text-secondary); margin: 0.3rem 0 0; }
+
+/* Bloco de vídeo unificado */
+.video-block .video-container { margin-bottom: 16px; }
+
+/* Chatbot: evita overflow em telas estreitas */
+.chatbot-window {
+    width: min(380px, calc(100vw - 48px));
+    max-width: calc(100vw - 48px);
+}
+
+/* Reduced-motion total (C5) */
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .sos-icon-alert, .chatbot-toggle::before,
+    .chatbot-status-dot, .chatbot-typing span { animation: none !important; }
+    .chatbot-toggle, .chatbot-toggle:hover, .chatbot-toggle:focus-visible,
+    .chatbot-msg, .chatbot-window { transition: none !important; transform: none !important; }
+    .frame-progress { display: none; }
+    /* 1+5 LUXO/CINEMÁTICO: fundo global estático nas 4 páginas (sem zoom 1.06→1.0) */
+    .bg-image { transition: opacity 0.01ms !important; transform: none !important; }
+    /* 1+5 LUXO/CINEMÁTICO: headers das 4 páginas estáticos (sem fade+subida) */
+    .riscos-header.revelar, .edu-header.revelar, .dicas-header.revelar, .alt-header.revelar {
+        transform: none !important;
+        transition: none !important;
+    }
+    .riscos-header::after, .edu-header::after, .dicas-header::after, .alt-header::after {
+        opacity: 0.4;
     }
 }
