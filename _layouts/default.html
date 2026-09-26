@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="no-js">
+<head>
+  {% include head.html %}
+</head>
+<body data-view="home">
+  <a class="skip-link" href="#main-content">Pular para o conteúdo</a>
+  {% include backgrounds.html %}
+  {% include header.html %}
+  {% include badge.html %}
+  <main id="main-content" tabindex="-1">
+    {{ content }}
+  </main>
+  {% include footer.html %}
+  {% include chatbot.html %}
+  {% include scripts.html %}
+</body>
+</html>

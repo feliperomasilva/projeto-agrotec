@@ -1,0 +1,49 @@
+    <!-- ============ CHATBOT IA — Assistente de Segurança na Agricultura ============ -->
+    <div class="chatbot-widget" data-chatbot>
+        <button class="chatbot-toggle" type="button" data-chatbot-toggle aria-expanded="false"
+            aria-controls="chatbot-window" aria-label="Abrir assistente virtual AgroConsciência">
+            <span class="material-symbols-rounded chatbot-toggle-icon-open">smart_toy</span>
+            <span class="material-symbols-rounded chatbot-toggle-icon-close">close</span>
+        </button>
+
+        <div class="chatbot-window" id="chatbot-window" data-chatbot-window role="dialog" aria-modal="false"
+            aria-label="Assistente virtual AgroConsciência">
+            <header class="chatbot-header">
+                <div class="chatbot-avatar">
+                    <span class="material-symbols-rounded">smart_toy</span>
+                </div>
+                <div class="chatbot-header-info">
+                    <strong class="chatbot-name">AgroBot <span class="chatbot-beta">BETA</span></strong>
+                    <span class="chatbot-status"><span class="chatbot-status-dot"></span> Segurança na
+                        Agricultura</span>
+                </div>
+                <button class="chatbot-close" type="button" data-chatbot-close aria-label="Fechar chat">
+                    <span class="material-symbols-rounded">close</span>
+                </button>
+            </header>
+
+            <div class="chatbot-messages" data-chatbot-messages aria-live="polite"></div>
+
+            <div class="chatbot-suggestions" data-chatbot-suggestions>
+                <button type="button" class="chatbot-chip"
+                    data-question="Quais EPIs devo usar ao aplicar agrotóxicos?">Quais EPIs usar?</button>
+                <button type="button" class="chatbot-chip"
+                    data-question="Como descartar corretamente as embalagens de agrotóxicos?">Descarte de
+                    embalagens</button>
+                <button type="button" class="chatbot-chip"
+                    data-question="O que fazer em caso de intoxicação por agrotóxicos?">Caso de intoxicação</button>
+                <button type="button" class="chatbot-chip"
+                    data-question="Quais alternativas sustentáveis existem aos agrotóxicos?">Alternativas
+                    sustentáveis</button>
+            </div>
+
+            <form class="chatbot-input-area" data-chatbot-form>
+                <input type="text" class="chatbot-input" data-chatbot-input
+                    placeholder="Digite sua dúvida sobre agricultura..." autocomplete="off"
+                    aria-label="Escreva sua pergunta">
+                <button type="submit" class="chatbot-send" aria-label="Enviar pergunta">
+                    <span class="material-symbols-rounded">send</span>
+                </button>
+            </form>
+        </div>
+    </div>

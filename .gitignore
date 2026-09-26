@@ -140,3 +140,11 @@ vite.config.ts.timestamp-*
 /.codegraph
 /.impeccable
 /.playwright-mcp
+# Jekyll
+_site/
+.jekyll-cache/
+.jekyll-metadata
+.bundle/
+vendor/
+bundle/
+

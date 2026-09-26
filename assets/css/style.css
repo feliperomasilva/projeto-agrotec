@@ -2902,7 +2902,7 @@ body[data-view="home"] #view-home .home-hero.has-frames {
 
 /* Poster anti-fundo-preto: frame 96 atrás do canvas em todas as larguras */
 body[data-view="home"] #view-home {
-    background: #05070c url('images/frames/frame_0096.webp') center 35% / cover no-repeat;
+    background: #05070c url('/images/frames/frame_0096.webp') center 35% / cover no-repeat;
 }
 
 body[data-view="home"] #view-home .section,
@@ -3050,7 +3050,7 @@ body[data-view="home"] .background-container {
         opacity: 1;
     }
     body[data-view="home"] #view-home {
-        background: #05070c url('images/frames/frame_0096.webp') center 35% / cover no-repeat fixed;
+        background: #05070c url('/images/frames/frame_0096.webp') center 35% / cover no-repeat fixed;
     }
     body[data-view="home"] #view-home .home-hero.has-frames::after {
         position: absolute;

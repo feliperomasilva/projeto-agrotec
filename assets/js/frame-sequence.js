@@ -6,7 +6,7 @@
     'use strict';
 
     var FRAMES = {
-        base: 'images/frames',
+        base: '/images/frames',
         prefix: 'frame_',
         digits: 4,
         ext: 'webp',

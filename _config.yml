@@ -1,0 +1,29 @@
+title: AgroConsciência
+description: Projeto educativo sobre agrotóxicos com soluções sustentáveis, boas práticas e conscientização para o campo e a cidade.
+url: ""
+baseurl: ""
+lang: pt-BR
+markdown: kramdown
+
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+exclude:
+  - README.md
+  - LICENSE
+  - .codegraph
+  - .impeccable
+  - .playwright-mcp
+  - .vscode
+  - Gemfile
+  - Gemfile.lock
+  - vendor
+  - bundle
+  - vercel.json
+
+keep_files:
+  - images
+
+sass:
+  style: compressed
