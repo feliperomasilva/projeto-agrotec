@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
        SISTEMA DE REVEAL — anima a entrada das views
        riscos/educacao/dicas/alternativas re-animam TODA vez que abrem
        ============================================================ */
-    const REANIMAR_VIEWS = new Set(['riscos', 'educacao', 'dicas', 'alternativas']);
+    const REANIMAR_VIEWS = new Set(['riscos', 'educacao', 'dicas', 'alternativas', 'clima']);
     const revealReduzido = prefereReduzirMovimento || !('IntersectionObserver' in window);
 
     function revelarElemento(el) {
@@ -98,7 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
     /* ============================================================
        ROTEADOR SPA — troca de "página" via hash, com transição suave
        ============================================================ */
-    const VIEWS = ['home', 'tela', 'riscos', 'educacao', 'dicas', 'alternativas', 'sos'];
+    const VIEWS = ['home', 'tela', 'riscos', 'educacao', 'dicas', 'alternativas', 'clima', 'sos'];
 
     const TITULOS = {
         home: 'Cultivar o Amanhã | AgroConsciência',
@@ -107,6 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
         educacao: 'Educação Ambiental | AgroConsciência',
         dicas: 'Dicas de Uso Consciente | AgroConsciência',
         alternativas: 'Alternativas Sustentáveis | AgroConsciência',
+        clima: 'Central do Clima | AgroConsciência',
         sos: 'SOS Emergência | AgroConsciência'
     };
 
@@ -130,11 +131,17 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!alvo) return;
 
         const trocouDeView = viewAtiva !== alvo;
+
+        // Cleanup da view anterior se for clima
+        if (viewAtiva && viewAtiva.id === 'view-clima' && typeof window.onClimaViewLeave === 'function') {
+            window.onClimaViewLeave();
+        }
+
         if (trocouDeView) {
             if (viewAtiva) viewAtiva.classList.remove('is-active-view');
             alvo.classList.add('is-active-view');
             viewAtiva = alvo;
-            // riscos/educacao/dicas/alternativas: re-tocam a animação de entrada a cada visita
+            // riscos/educacao/dicas/alternativas/clima: re-tocam a animação de entrada a cada visita
             if (REANIMAR_VIEWS.has(nome)) reiniciarRevealsDaView(alvo);
         }
         hidratarIframes(alvo);
@@ -162,7 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // 1+5 LUXO/CINEMÁTICO: além de carregar, ATIVA o bg correspondente.
         // Sem isso o bg-XYZ baixava mas nunca ganhava .active (ficava opacity:0)
         // e os headers das 4 páginas perdiam a foto após removermos o bg local.
-        const bgPorView = { home: 'bg-home', tela: 'bg-tela', riscos: 'bg-riscos', educacao: 'bg-educacao', dicas: 'bg-dicas', alternativas: 'bg-alternativas' };
+        const bgPorView = { home: 'bg-home', tela: 'bg-tela', riscos: 'bg-riscos', educacao: 'bg-educacao', dicas: 'bg-dicas', alternativas: 'bg-alternativas', clima: 'bg-clima' };
         const bgId = bgPorView[nome];
         if (bgId) {
             try { if (typeof carregarBg === 'function') carregarBg(bgId); } catch (e) {}
@@ -174,6 +181,14 @@ document.addEventListener("DOMContentLoaded", () => {
         } else if (nome === 'sos') {
             // SOS esconde o container via CSS; limpa .active para não vazar foto ao sair
             try { document.querySelectorAll('.bg-image.active').forEach(img => img.classList.remove('active')); } catch (e3) {}
+        }
+
+        // Inicialização específica da view clima
+        if (nome === 'clima' && typeof window.onClimaViewEnter === 'function') {
+            // Pequeno delay para garantir que a view está visível
+            requestAnimationFrame(() => {
+                window.onClimaViewEnter(alvo);
+            });
         }
 
         // Acessibilidade SPA: troca de view sempre começa no topo + move o foco ao h1
@@ -255,7 +270,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
             // Pré-carrega o background da view futura (sem exibir)
-            const bgMap = { riscos: 'bg-riscos', educacao: 'bg-educacao', dicas: 'bg-dicas', alternativas: 'bg-alternativas' };
+            const bgMap = { riscos: 'bg-riscos', educacao: 'bg-educacao', dicas: 'bg-dicas', alternativas: 'bg-alternativas', clima: 'bg-clima' };
             if (bgMap[nome]) carregarBg(bgMap[nome]);
         }
         document.querySelectorAll('.nav-link').forEach(link => {

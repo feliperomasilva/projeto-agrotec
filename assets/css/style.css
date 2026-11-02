@@ -504,6 +504,14 @@ button, a { font: inherit; }
 .nav-link[href="#alternativas"].is-active::before { color: #2ea968; }
 .nav-link[href="#alternativas"].is-active { color: #2ea968; }
 
+/* Clima */
+.nav-link[href="#clima"]::before { content: 'cloud'; }
+.nav-link[href="#clima"]:hover::after,
+.nav-link[href="#clima"].is-active::after { background-color: #00b4d8; }
+.nav-link[href="#clima"]:hover::before,
+.nav-link[href="#clima"].is-active::before { color: #00b4d8; }
+.nav-link[href="#clima"].is-active { color: #00b4d8; }
+
 .nav-actions {
     display: flex;
     align-items: center;
@@ -4167,6 +4175,956 @@ ol.protocol-list > li { counter-increment: passo; }
     max-width: calc(100vw - 48px);
 }
 
+/* ============================================================
+   CENTRAL DO CLIMA — Estilos da view #view-clima
+   ============================================================ */
+
+/* Badge da view clima */
+.clima-badge {
+    background: linear-gradient(135deg, rgba(0, 180, 216, 0.15), rgba(0, 180, 216, 0.05)) !important;
+    border-left-color: #00b4d8 !important;
+    color: #00b4d8 !important;
+}
+
+/* Reveal animation para view clima (tipo desdobramento como educacao) */
+#view-clima .revelar {
+    transform: translateX(-40px) perspective(800px) rotateY(-8deg);
+    transform-origin: left center;
+}
+
+#view-clima .revelar.ativo {
+    opacity: 1;
+    transform: translateX(0) perspective(800px) rotateY(0deg);
+    transition: opacity 1s var(--ease-out-expo), transform 1s var(--ease-out-expo);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #view-clima .revelar {
+        transform: none !important;
+        transition: none !important;
+    }
+}
+
+/* Hero da view clima */
+.clima-hero {
+    min-height: 60vh;
+    padding: 140px 24px 80px;
+    text-align: center;
+}
+
+.clima-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 1rem;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: #00b4d8;
+}
+
+.clima-eyebrow .material-symbols-rounded {
+    font-size: 1rem;
+}
+
+/* Search Section */
+.clima-search-section {
+    padding-top: 40px;
+}
+
+.clima-search-wrapper {
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.clima-search-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 0 16px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.clima-search-box:focus-within {
+    border-color: #00b4d8;
+    box-shadow: 0 0 0 2px rgba(0, 180, 216, 0.2);
+}
+
+.search-icon {
+    color: var(--muted);
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.clima-search-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-size: 1rem;
+    font-family: inherit;
+    padding: 16px 0;
+    min-width: 0;
+}
+
+.clima-search-input::placeholder {
+    color: var(--muted);
+}
+
+.clima-location-btn {
+    white-space: nowrap;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.85rem;
+    gap: 0.5rem;
+}
+
+.clima-location-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.clima-loading-spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.clima-suggestions {
+    position: absolute;
+    width: 100%;
+    max-height: 300px;
+    overflow-y: auto;
+    background: rgba(11, 17, 28, 0.98);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    margin-top: 8px;
+    box-shadow: var(--shadow);
+    z-index: 100;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.clima-suggestion-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 14px 16px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    color: var(--text);
+    font-size: 0.95rem;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.clima-suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.clima-suggestion-item:hover,
+.clima-suggestion-item[aria-selected="true"] {
+    background: rgba(0, 180, 216, 0.1);
+}
+
+.clima-suggestion-item .material-symbols-rounded {
+    color: #00b4d8;
+    font-size: 1.25rem;
+}
+
+.clima-search-hint {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 8px;
+    text-align: center;
+}
+
+.clima-current-location {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 16px;
+    padding: 12px 16px;
+    background: rgba(0, 180, 216, 0.1);
+    border: 1px solid rgba(0, 180, 216, 0.2);
+    border-radius: 10px;
+    font-size: 0.9rem;
+    color: var(--text);
+}
+
+.clima-current-location .material-symbols-rounded {
+    color: #00b4d8;
+}
+
+.clima-refresh-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.clima-refresh-btn:hover {
+    background: rgba(0, 180, 216, 0.15);
+    border-color: #00b4d8;
+    color: #00b4d8;
+    transform: rotate(180deg);
+}
+
+/* Current Weather Card */
+.clima-current-section {
+    padding-top: 40px;
+}
+
+.clima-current-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.04)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    border-radius: 20px;
+    padding: 32px;
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.clima-current-main {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.clima-current-location {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+}
+
+.clima-current-location .material-symbols-rounded {
+    font-size: 1.1rem;
+    color: #00b4d8;
+}
+
+.clima-current-temp {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 12px;
+}
+
+.clima-temp-value {
+    font-size: clamp(4rem, 8vw, 6rem);
+    font-weight: 800;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    background: linear-gradient(135deg, var(--text), #00b4d8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.clima-feels-like {
+    color: var(--muted);
+    font-size: 1rem;
+}
+
+.clima-current-condition {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    background: rgba(0, 180, 216, 0.12);
+    border: 1px solid rgba(0, 180, 216, 0.25);
+    border-radius: 999px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text);
+}
+
+.clima-current-icon {
+    font-size: 1.5rem;
+}
+
+.clima-current-icon.clima-icon--clear { color: #ffd60a; }
+.clima-current-icon.clima-icon--clouds { color: #94a3b8; }
+.clima-current-icon.clima-icon--rain { color: #00b4d8; }
+.clima-current-icon.clima-icon--drizzle { color: #64b5f6; }
+.clima-current-icon.clima-icon--thunderstorm { color: #ff9800; }
+.clima-current-icon.clima-icon--snow { color: #e0f7fa; }
+.clima-current-icon.clima-icon--atmosphere { color: #78909c; }
+
+/* Current Details Grid */
+.clima-current-details {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.clima-detail-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    transition: all 0.3s ease;
+}
+
+.clima-detail-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(0, 180, 216, 0.3);
+}
+
+.clima-detail-item .material-symbols-rounded {
+    font-size: 1.5rem;
+    color: #00b4d8;
+}
+
+.clima-detail-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+}
+
+.clima-detail-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+}
+
+/* Current Meta */
+.clima-current-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    font-size: 0.8rem;
+    color: var(--muted);
+}
+
+.clima-coordinates {
+    font-family: 'Space Grotesk', monospace;
+}
+
+.clima-timezone {
+    font-family: 'Space Grotesk', monospace;
+}
+
+/* Hourly Forecast */
+.clima-hourly-section {
+    padding-top: 40px;
+}
+
+.clima-hourly-wrapper {
+    position: relative;
+}
+
+.clima-hourly-scroll {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding: 0 24px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 180, 216, 0.5) transparent;
+}
+
+.clima-hourly-scroll::-webkit-scrollbar {
+    height: 6px;
+}
+
+.clima-hourly-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.clima-hourly-scroll::-webkit-scrollbar-thumb {
+    background: linear-gradient(90deg, #00b4d8, #0077a8);
+    border-radius: 3px;
+}
+
+.clima-hourly-track {
+    display: flex;
+    gap: 16px;
+    padding: 8px 24px 16px;
+    min-width: max-content;
+}
+
+.clima-hourly-card {
+    flex: 0 0 auto;
+    width: 100px;
+    scroll-snap-align: start;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 16px;
+    padding: 20px 12px;
+    text-align: center;
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.clima-hourly-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(0, 180, 216, 0.4);
+    box-shadow: 0 16px 48px rgba(0, 180, 216, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.clima-hourly-time {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 10px;
+    font-variant-numeric: tabular-nums;
+}
+
+.clima-hourly-icon {
+    font-size: 2rem;
+    margin: 8px 0;
+    display: block;
+}
+
+.clima-hourly-icon.clima-icon--clear { color: #ffd60a; }
+.clima-hourly-icon.clima-icon--clouds { color: #94a3b8; }
+.clima-hourly-icon.clima-icon--rain { color: #00b4d8; }
+.clima-hourly-icon.clima-icon--drizzle { color: #64b5f6; }
+.clima-hourly-icon.clima-icon--thunderstorm { color: #ff9800; }
+.clima-hourly-icon.clima-icon--snow { color: #e0f7fa; }
+.clima-hourly-icon.clima-icon--atmosphere { color: #78909c; }
+
+.clima-hourly-temp {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+    margin-bottom: 8px;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+}
+
+.clima-hourly-pop,
+.clima-hourly-precip,
+.clima-hourly-wind {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-top: 6px;
+    padding: 2px 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 999px;
+}
+
+.clima-hourly-pop .material-symbols-rounded,
+.clima-hourly-precip .material-symbols-rounded,
+.clima-hourly-wind .material-symbols-rounded {
+    font-size: 0.85rem;
+    color: #00b4d8;
+}
+
+.clima-scroll-indicator {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 16px;
+    background: linear-gradient(90deg, transparent, var(--bg));
+    pointer-events: none;
+    z-index: 10;
+}
+
+.clima-scroll-indicator .material-symbols-rounded {
+    color: #00b4d8;
+    font-size: 1.5rem;
+    animation: bounce 1.5s ease-in-out infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(8px); }
+}
+
+/* Daily Forecast */
+.clima-daily-section {
+    padding-top: 40px;
+}
+
+.clima-daily-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.clima-daily-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 16px;
+    padding: 24px;
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s ease, border-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.clima-daily-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(0, 180, 216, 0.4);
+    box-shadow: 0 16px 48px rgba(0, 180, 216, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.clima-daily-date {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: capitalize;
+}
+
+.clima-daily-icon {
+    font-size: 2.5rem;
+    color: #00b4d8;
+}
+
+.clima-daily-icon.clima-icon--clear { color: #ffd60a; }
+.clima-daily-icon.clima-icon--clouds { color: #94a3b8; }
+.clima-daily-icon.clima-icon--rain { color: #00b4d8; }
+.clima-daily-icon.clima-icon--drizzle { color: #64b5f6; }
+.clima-daily-icon.clima-icon--thunderstorm { color: #ff9800; }
+.clima-daily-icon.clima-icon--snow { color: #e0f7fa; }
+.clima-daily-icon.clima-icon--atmosphere { color: #78909c; }
+
+.clima-daily-temps {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-top: 4px;
+}
+
+.clima-daily-max {
+    font-size: 1.75rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+}
+
+.clima-daily-min {
+    font-size: 1.25rem;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+}
+
+.clima-daily-condition {
+    font-size: 0.85rem;
+    color: var(--muted-soft);
+    text-transform: capitalize;
+}
+
+.clima-daily-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.clima-daily-pop,
+.clima-daily-precip,
+.clima-daily-wind,
+.clima-daily-humidity {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.75rem;
+    color: var(--muted);
+    padding: 4px 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 999px;
+}
+
+.clima-daily-pop .material-symbols-rounded,
+.clima-daily-precip .material-symbols-rounded,
+.clima-daily-wind .material-symbols-rounded,
+.clima-daily-humidity .material-symbols-rounded {
+    font-size: 1rem;
+    color: #00b4d8;
+}
+
+/* Insights Agronômicos */
+.clima-insights-section {
+    padding-top: 40px;
+    padding-bottom: 80px;
+}
+
+.clima-insights-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.clima-insight-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    gap: 16px;
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.clima-insight-card:hover {
+    transform: translateY(-2px);
+}
+
+.clima-insight-icon {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    flex-shrink: 0;
+}
+
+.clima-insight-card.clima-insight--info .clima-insight-icon {
+    background: rgba(0, 180, 216, 0.15);
+    color: #00b4d8;
+}
+
+.clima-insight-card.clima-insight--warning .clima-insight-icon {
+    background: rgba(255, 193, 7, 0.15);
+    color: #ffc107;
+}
+
+.clima-insight-card.clima-insight--alert .clima-insight-icon {
+    background: rgba(255, 45, 85, 0.15);
+    color: #ff2d55;
+}
+
+.clima-insight-icon .material-symbols-rounded {
+    font-size: 1.5rem;
+}
+
+.clima-insight-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.clima-insight-title {
+    margin: 0 0 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.clima-insight-message {
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--muted-soft);
+}
+
+.clima-insight-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px 24px;
+    color: var(--muted);
+}
+
+.clima-insight-empty .material-symbols-rounded {
+    font-size: 3rem;
+    color: #2ea968;
+    margin-bottom: 16px;
+    display: block;
+}
+
+.clima-disclaimer {
+    max-width: 800px;
+    margin: 32px auto 0;
+    padding: 16px 20px;
+    background: rgba(0, 180, 216, 0.08);
+    border: 1px solid rgba(0, 180, 216, 0.2);
+    border-radius: 12px;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--muted-soft);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.clima-disclaimer .material-symbols-rounded {
+    color: #00b4d8;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.clima-disclaimer strong {
+    color: var(--text);
+}
+
+/* Error & Empty States */
+.clima-error,
+.clima-empty {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--muted);
+}
+
+.clima-error .material-symbols-rounded,
+.clima-empty .material-symbols-rounded {
+    font-size: 3rem;
+    margin-bottom: 16px;
+    display: block;
+}
+
+.clima-error .material-symbols-rounded {
+    color: #ff2d55;
+}
+
+.clima-empty .material-symbols-rounded {
+    color: var(--muted);
+}
+
+.clima-error p,
+.clima-empty p {
+    margin-bottom: 20px;
+    font-size: 1rem;
+}
+
+.clima-error .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Skeleton Loaders */
+.skeleton {
+    pointer-events: none;
+}
+
+.skeleton-line {
+    height: 16px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%);
+    background-size: 200% 100%;
+    border-radius: 8px;
+    animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.skeleton-line.skeleton-short { width: 40%; margin: 0 auto; }
+.skeleton-line.skeleton-medium { width: 60%; margin: 0 auto; }
+.skeleton-line.skeleton-temp { width: 30%; height: 48px; margin: 0 auto; border-radius: 12px; }
+
+.skeleton-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.skeleton-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 12px;
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Reduced Motion for Clima */
+@media (prefers-reduced-motion: reduce) {
+    .clima-loading-spinner { animation: none; }
+    .clima-scroll-indicator .material-symbols-rounded { animation: none; }
+    .clima-current-card,
+    .clima-hourly-card,
+    .clima-daily-card,
+    .clima-insight-card {
+        transition: none !important;
+    }
+    .clima-hourly-card:hover,
+    .clima-daily-card:hover,
+    .clima-insight-card:hover {
+        transform: none !important;
+    }
+    .clima-refresh-btn:hover {
+        transform: none !important;
+    }
+    .shimmer { animation: none !important; }
+}
+
+/* Mobile Responsive */
+@media (max-width: 900px) {
+    .clima-current-details {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 720px) {
+    .clima-hero {
+        min-height: 50vh;
+        padding: 120px 20px 60px;
+    }
+
+    .clima-search-box {
+        flex-wrap: wrap;
+        padding: 12px;
+    }
+
+    .clima-location-btn {
+        width: 100%;
+        justify-content: center;
+        order: 3;
+    }
+
+    .clima-search-input {
+        flex: 1 1 100%;
+        order: 1;
+        padding: 14px 0;
+    }
+
+    .search-icon {
+        order: 0;
+    }
+
+    .clima-current-card {
+        padding: 24px 20px;
+    }
+
+    .clima-temp-value {
+        font-size: clamp(3rem, 10vw, 4.5rem);
+    }
+
+    .clima-current-details {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .clima-detail-item {
+        padding: 12px;
+    }
+
+    .clima-detail-value {
+        font-size: 1.1rem;
+    }
+
+    .clima-hourly-card {
+        width: 88px;
+        padding: 16px 10px;
+    }
+
+    .clima-hourly-temp {
+        font-size: 1.25rem;
+    }
+
+    .clima-daily-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .clima-daily-card {
+        flex-direction: row;
+        align-items: center;
+        text-align: left;
+        gap: 16px;
+    }
+
+    .clima-daily-date {
+        min-width: 80px;
+    }
+
+    .clima-daily-icon {
+        font-size: 2rem;
+    }
+
+    .clima-daily-temps {
+        margin-top: 0.
+    }
+
+    .clima-daily-max {
+        font-size: 1.5rem;
+    }
+
+    .clima-daily-min {
+        font-size: 1.1rem;
+    }
+
+    .clima-daily-details {
+        flex-direction: row;
+        flex-wrap: wrap;
+        border-top: none;
+        padding-top: 0;
+        margin-top: 8px;
+    }
+
+    .clima-insights-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .clima-insight-card {
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+    }
+
+    .clima-disclaimer {
+        margin: 24px 16px 0;
+        font-size: 0.8rem;
+        text-align: center;
+    }
+}
+
+@media (max-width: 520px) {
+    .clima-current-details {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
 /* Reduced-motion total (C5) */
 @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
@@ -4185,4 +5143,26 @@ ol.protocol-list > li { counter-increment: passo; }
     .riscos-header::after, .edu-header::after, .dicas-header::after, .alt-header::after {
         opacity: 0.4;
     }
+    /* Clima view reduced motion */
+    #view-clima .revelar {
+        transform: none !important;
+        transition: none !important;
+    }
+    .clima-loading-spinner { animation: none; }
+    .clima-scroll-indicator .material-symbols-rounded { animation: none; }
+    .clima-current-card,
+    .clima-hourly-card,
+    .clima-daily-card,
+    .clima-insight-card {
+        transition: none !important;
+    }
+    .clima-hourly-card:hover,
+    .clima-daily-card:hover,
+    .clima-insight-card:hover {
+        transform: none !important;
+    }
+    .clima-refresh-btn:hover {
+        transform: none !important;
+    }
+    .shimmer { animation: none !important; }
 }

@@ -40,6 +40,7 @@ A proposta central é garantir uma produção agrícola mais segura, equilibrand
 - [x] Dicas e boas práticas de aplicação consciente
 - [x] Conteúdo sobre alternativas sustentáveis de manejo
 - [x] Botão **SOS Intoxicação** com atendimento de emergência
+- [x] Dashboard de Clima tempo Real usando a API do OpenWeather
 
 ## SOS Intoxicação
 
@@ -56,6 +57,27 @@ Ao ser acionado, o usuário tem acesso a:
   4. Levar a embalagem ou o rótulo do produto para o hospital
 
 Essa funcionalidade reforça o compromisso do projeto não apenas com a **prevenção**, mas também com a **resposta rápida e segura** em situações de emergência.
+
+🌤️ Central do Clima em Tempo Real
+
+Uma outra principal funcionalidade do site é a Central do Clima, criada para oferecer informações meteorológicas precisas e em tempo real, voltadas ao planejamento de atividades no campo.
+
+Ao acessar pela navbar, o usuário encontra:
+
+- Clima Atual — temperatura, sensação térmica, condição do tempo, umidade, vento (velocidade e direção), pressão atmosférica, visibilidade, horários do nascer e pôr do sol
+- Previsão Horária — próximas 24 horas em scroll horizontal com temperatura, probabilidade de chuva, vento e ícones de condição
+- Previsão 5 Dias — grade responsiva com mínimas/máximas, condição, volume de precipitação, vento médio e umidade
+- Busca Inteligente — autocomplete de cidades com debounce (300ms) via geocoding da OpenWeatherMap
+- Minha Localização — botão que usa a Geolocation API do navegador com fallback silencioso se negado ou indisponível
+
+Diferencial para o agronegócio — Insights Agronômicos
+Baseados nos dados meteorológicos em tempo real, o sistema gera alertas contextuais:
+
+- 🌧️ Chuva — probabilidade >70% nas próximas 6h → "Planeje aplicações e colheita"
+- 💨 Vento forte — acima de 15 km/h → "Risco de deriva em pulverização"
+- 🌡️ Amplitude térmica — variação >15°C → "Atenção a estresse térmico em culturas sensíveis"
+- 💧 Umidade crítica — <30% (incêndio) ou >85% (doenças fúngicas)
+- 📊 Pressão baixa — <1000 hPa → "Possível aproximação de frente fria"
 
 ## Tecnologias Utilizadas
 
