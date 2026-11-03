@@ -17,43 +17,72 @@ let unsubscribeStore = null;
  * @param {HTMLElement} container - Elemento da view #view-clima
  */
 export function initClima(container) {
-  if (climaInitialized && currentViewContainer === container) {
-    // Já inicializado nesta view, apenas atualiza se necessário
-    const state = getState();
-    if (state.location && !state.current) {
-      loadWeatherData(state.location.lat, state.location.lon);
+  try {
+    console.log('[Clima] initClima called', { container: container?.id, climaInitialized, currentViewContainer: currentViewContainer?.id });
+
+    if (climaInitialized && currentViewContainer === container) {
+      // Já inicializado nesta view, apenas atualiza se necessário
+      const state = getState();
+      if (state.location && !state.current) {
+        loadWeatherData(state.location.lat, state.location.lon);
+      }
+      return;
     }
-    return;
+
+    // Limpa estado anterior se trocou de view
+    if (currentViewContainer && currentViewContainer !== container) {
+      destroyClima();
+    }
+
+    currentViewContainer = container;
+
+    // Garante que o container existe e é visível
+    if (!container) {
+      console.error('[Clima] Container não encontrado');
+      return;
+    }
+
+    // Força renderização imediata
+    console.log('[Clima] Calling initClimaUI');
+    initClimaUI(container);
+
+    // Subscreve a eventos globais
+    bindGlobalEvents();
+
+    // Se já tem localização salva, carrega dados
+    const state = getState();
+    if (state.location) {
+      loadWeatherData(state.location.lat, state.location.lon);
+    } else if (state.autoLocation) {
+      // Tenta geolocalização automática
+      useCurrentLocation().catch(() => {
+        // Silencioso - usuário pode usar busca manual
+      });
+    }
+
+    climaInitialized = true;
+
+    // Anuncia entrada na view para acessibilidade
+    announceViewEntry();
+
+    console.log('[Clima] initClima completed successfully');
+  } catch (error) {
+    console.error('[Clima] Erro em initClima:', error);
+    // Tenta mostrar erro na UI
+    if (container) {
+      container.innerHTML = `
+        <section class="section clima-error-section">
+          <div class="clima-error" style="text-align:center;padding:48px 24px;color:var(--muted);">
+            <span class="material-symbols-rounded" style="font-size:3rem;display:block;margin-bottom:16px;color:#ff2d55;">error</span>
+            <p>Erro ao inicializar Central do Clima</p>
+            <button class="btn btn-primary" onclick="window.onClimaViewEnter(document.getElementById('view-clima'))" style="margin-top:16px;">
+              <span class="material-symbols-rounded">refresh</span> Tentar novamente
+            </button>
+          </div>
+        </section>
+      `;
+    }
   }
-
-  // Limpa estado anterior se trocou de view
-  if (currentViewContainer && currentViewContainer !== container) {
-    destroyClima();
-  }
-
-  currentViewContainer = container;
-
-  // Inicializa UI
-  initClimaUI(container);
-
-  // Subscreve a eventos globais
-  bindGlobalEvents();
-
-  // Se já tem localização salva, carrega dados
-  const state = getState();
-  if (state.location) {
-    loadWeatherData(state.location.lat, state.location.lon);
-  } else if (state.autoLocation) {
-    // Tenta geolocalização automática
-    useCurrentLocation().catch(() => {
-      // Silencioso - usuário pode usar busca manual
-    });
-  }
-
-  climaInitialized = true;
-
-  // Anuncia entrada na view para acessibilidade
-  announceViewEntry();
 }
 
 /**

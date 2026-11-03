@@ -2,4 +2,63 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js" defer></script>
 <script src="{{ '/assets/js/main.js' | relative_url }}?v=15" defer></script>
 <script src="{{ '/assets/js/frame-sequence.js' | relative_url }}?v=15" defer></script>
+
+<!-- Polyfills para cross-browser compatibility (carregam antes dos modules) -->
+<script>
+  // Polyfill para fetch se não existir
+  if (typeof fetch === 'undefined') {
+    document.write('<script src="https://cdn.jsdelivr.net/npm/unfetch/dist/unfetch.umd.js"><\/script>');
+  }
+  // Polyfill para Promise se não existir
+  if (typeof Promise === 'undefined') {
+    document.write('<script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.min.js"><\/script>');
+  }
+  // Polyfill para IntersectionObserver se não existir
+  if (typeof IntersectionObserver === 'undefined') {
+    document.write('<script src="https://cdn.jsdelivr.net/npm/intersection-observer"><\/script>');
+  }
+  // Polyfill para Object.assign se não existir
+  if (typeof Object.assign === 'undefined') {
+    document.write('<script src="https://cdn.jsdelivr.net/npm/object-assign-polyfill"><\/script>');
+  }
+  // Polyfill para Array.from se não existir
+  if (!Array.from) {
+    document.write('<script src="https://cdn.jsdelivr.net/npm/core-js-bundle@3"><\/script>');
+  }
+  // Polyfill para Element.closest se não existir
+  if (!Element.prototype.closest) {
+    document.write('<script src="https://cdn.jsdelivr.net/npm/element-closest-polyfill"><\/script>');
+  }
+  // Polyfill para NodeList.forEach se não existir
+  if (typeof NodeList.prototype.forEach === 'undefined') {
+    NodeList.prototype.forEach = Array.prototype.forEach;
+  }
+</script>
+
 <script type="module" src="{{ '/assets/js/clima/index.js' | relative_url }}?v=1" defer></script>
+
+<!-- Fallback para navegadores sem suporte a ES Modules -->
+<script nomodule>
+  // Fallback simples para navegadores sem ES Modules
+  console.warn('ES Modules não suportado. Carregando fallback...');
+  var script = document.createElement('script');
+  script.src = '{{ "/assets/js/clima/index.legacy.js" | relative_url }}?v=1';
+  script.defer = true;
+  document.head.appendChild(script);
+</script>
+
+<!-- Detecta falha no carregamento do módulo ES e tenta fallback -->
+<script>
+  (function() {
+    var moduleScript = document.querySelector('script[type="module"][src*="clima/index.js"]');
+    if (moduleScript) {
+      moduleScript.addEventListener('error', function() {
+        console.warn('Falha ao carregar módulo ES do Clima, tentando fallback...');
+        var fallbackScript = document.createElement('script');
+        fallbackScript.src = '{{ "/assets/js/clima/index.legacy.js" | relative_url }}?v=1';
+        fallbackScript.defer = true;
+        document.head.appendChild(fallbackScript);
+      });
+    }
+  })();
+</script>

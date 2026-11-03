@@ -512,6 +512,14 @@ button, a { font: inherit; }
 .nav-link[href="#clima"].is-active::before { color: #00b4d8; }
 .nav-link[href="#clima"].is-active { color: #00b4d8; }
 
+/* Alinhamento global dos ícones Material Symbols no clima */
+#view-clima .material-symbols-rounded {
+    vertical-align: middle;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+}
+
 .nav-actions {
     display: flex;
     align-items: center;
@@ -4228,6 +4236,13 @@ ol.protocol-list > li { counter-increment: passo; }
     font-size: 1rem;
 }
 
+.clima-eyebrow-icon {
+    width: 1.25em;
+    height: 1.25em;
+    vertical-align: middle;
+    color: #00b4d8;
+}
+
 /* Search Section */
 .clima-search-section {
     padding-top: 40px;
@@ -4341,6 +4356,10 @@ ol.protocol-list > li { counter-increment: passo; }
 .clima-suggestion-item .material-symbols-rounded {
     color: #00b4d8;
     font-size: 1.25rem;
+    vertical-align: middle;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
 }
 
 .clima-search-hint {
@@ -4366,6 +4385,10 @@ ol.protocol-list > li { counter-increment: passo; }
 
 .clima-current-location .material-symbols-rounded {
     color: #00b4d8;
+    vertical-align: middle;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
 }
 
 .clima-refresh-btn {
@@ -4463,6 +4486,10 @@ ol.protocol-list > li { counter-increment: passo; }
 
 .clima-current-icon {
     font-size: 1.5rem;
+    vertical-align: middle;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
 }
 
 .clima-current-icon.clima-icon--clear { color: #ffd60a; }
@@ -4503,6 +4530,10 @@ ol.protocol-list > li { counter-increment: passo; }
 .clima-detail-item .material-symbols-rounded {
     font-size: 1.5rem;
     color: #00b4d8;
+    vertical-align: middle;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
 }
 
 .clima-detail-value {
@@ -4612,6 +4643,7 @@ ol.protocol-list > li { counter-increment: passo; }
     font-size: 2rem;
     margin: 8px 0;
     display: block;
+    line-height: 1;
 }
 
 .clima-hourly-icon.clima-icon--clear { color: #ffd60a; }
@@ -4651,6 +4683,10 @@ ol.protocol-list > li { counter-increment: passo; }
 .clima-hourly-wind .material-symbols-rounded {
     font-size: 0.85rem;
     color: #00b4d8;
+    vertical-align: middle;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
 }
 
 .clima-scroll-indicator {
@@ -4720,6 +4756,9 @@ ol.protocol-list > li { counter-increment: passo; }
 .clima-daily-icon {
     font-size: 2.5rem;
     color: #00b4d8;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
 }
 
 .clima-daily-icon.clima-icon--clear { color: #ffd60a; }
@@ -4787,6 +4826,10 @@ ol.protocol-list > li { counter-increment: passo; }
 .clima-daily-humidity .material-symbols-rounded {
     font-size: 1rem;
     color: #00b4d8;
+    vertical-align: middle;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
 }
 
 /* Insights Agronômicos */
@@ -4845,6 +4888,10 @@ ol.protocol-list > li { counter-increment: passo; }
 
 .clima-insight-icon .material-symbols-rounded {
     font-size: 1.5rem;
+    vertical-align: middle;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
 }
 
 .clima-insight-content {

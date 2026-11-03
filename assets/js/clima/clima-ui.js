@@ -46,7 +46,7 @@ function render(container) {
   container.innerHTML = `
     <section class="hero clima-hero" aria-label="Central do Clima" data-bg="bg-clima">
       <div class="hero-content">
-        <p class="clima-eyebrow"><span class="material-symbols-rounded" aria-hidden="true">cloud</span> Central do Clima</p>
+        <p class="clima-eyebrow"><svg class="clima-eyebrow-icon" aria-hidden="true"><use href="#icon-cloud-hero"></use></svg> Central do Clima</p>
         <h1 class="hero-title hero-title-grande" tabindex="-1">Condições meteorológicas em tempo real para decisões no campo</h1>
         <p class="hero-copy">Consulte temperatura, umidade, vento, precipitação e previsão para planejar suas atividades agrícolas.</p>
       </div>
