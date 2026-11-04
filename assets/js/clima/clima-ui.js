@@ -26,6 +26,55 @@ export function initClimaUI(container) {
 
   // Event listeners
   bindEvents(container);
+
+  // Observa elementos .revelar criados dinamicamente
+  // Necessário porque o reveal system do main.js roda ANTES da UI ser renderizada
+  observeReveals(container);
+}
+
+/**
+ * Observa elementos .revelar no container para animar entrada
+ * Replica a lógica de observarReveals do main.js para elementos criados dinamicamente
+ */
+function observeReveals(container) {
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const revealReduzido = prefersReduzido || !('IntersectionObserver' in window);
+
+  const els = container.querySelectorAll('.revelar:not(.ativo)');
+
+  if (revealReduzido) {
+    els.forEach(el => {
+      el.classList.add('ativo');
+      el.style.transitionDelay = '0s';
+    });
+    return;
+  }
+
+  // Cria observer local se não existir global
+  if (!window.__climaRevealObserver) {
+    window.__climaRevealObserver = new IntersectionObserver((entradas) => {
+      entradas.forEach(entrada => {
+        if (entrada.isIntersecting) {
+          revelarElemento(entrada.target);
+          window.__climaRevealObserver.unobserve(entrada.target);
+        }
+      });
+    }, { root: null, rootMargin: '0px', threshold: 0.12 });
+  }
+
+  els.forEach(el => window.__climaRevealObserver.observe(el));
+}
+
+/**
+ * Revela um elemento (adiciona classe ativo com animação)
+ */
+function revelarElemento(el) {
+  el.style.willChange = 'opacity, transform';
+  el.classList.add('ativo');
+  setTimeout(() => {
+    el.style.willChange = 'auto';
+    el.classList.add('reveal-done');
+  }, 1200);
 }
 
 /**
