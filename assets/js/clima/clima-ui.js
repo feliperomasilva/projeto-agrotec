@@ -38,7 +38,7 @@ export function initClimaUI(container) {
  */
 function observeReveals(container) {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const revealReduzido = prefersReduzido || !('IntersectionObserver' in window);
+  const revealReduzido = prefersReducedMotion || !('IntersectionObserver' in window);
 
   const els = container.querySelectorAll('.revelar:not(.ativo)');
 
