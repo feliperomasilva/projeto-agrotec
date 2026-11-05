@@ -4662,6 +4662,20 @@ ol.protocol-list > li { counter-increment: passo; }
     color: var(--text);
     margin-bottom: 8px;
     font-family: 'Space Grotesk', system-ui, sans-serif;
+    cursor: pointer;
+    transition: color 0.2s ease, transform 0.2s ease;
+    user-select: none;
+}
+
+.clima-hourly-temp:hover {
+    color: #00b4d8;
+    transform: scale(1.05);
+}
+
+.clima-hourly-temp.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.95);
 }
 
 .clima-hourly-pop,
@@ -4722,22 +4736,27 @@ ol.protocol-list > li { counter-increment: passo; }
 
 .clima-daily-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, 392px);
     gap: 20px;
+    justify-content: center;
 }
 
 .clima-daily-card {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)) !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
     border-radius: 16px;
-    padding: 24px;
+    padding: 20px 24px;
     backdrop-filter: blur(20px) saturate(160%);
     -webkit-backdrop-filter: blur(20px) saturate(160%);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     transition: transform 0.3s ease, border-color 0.3s ease;
     display: flex;
-    flex-direction: column;
-    gap: 12px;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    width: 392px;
+    height: 141.56px;
+    flex-shrink: 0;
 }
 
 .clima-daily-card:hover {
@@ -4746,19 +4765,31 @@ ol.protocol-list > li { counter-increment: passo; }
     box-shadow: 0 16px 48px rgba(0, 180, 216, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
+.clima-daily-main {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    flex: 1;
+}
+
 .clima-daily-date {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 600;
     color: var(--muted);
     text-transform: capitalize;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .clima-daily-icon {
-    font-size: 2.5rem;
+    font-size: 2.25rem;
     color: #00b4d8;
     line-height: 1;
     display: inline-flex;
     align-items: center;
+    flex-shrink: 0;
 }
 
 .clima-daily-icon.clima-icon--clear { color: #ffd60a; }
@@ -4772,12 +4803,12 @@ ol.protocol-list > li { counter-increment: passo; }
 .clima-daily-temps {
     display: flex;
     align-items: baseline;
-    gap: 12px;
-    margin-top: 4px;
+    gap: 10px;
+    margin-top: 2px;
 }
 
 .clima-daily-max {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
     font-weight: 700;
     font-variant-numeric: tabular-nums;
     color: var(--text);
@@ -4785,24 +4816,27 @@ ol.protocol-list > li { counter-increment: passo; }
 }
 
 .clima-daily-min {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     font-weight: 500;
     font-variant-numeric: tabular-nums;
     color: var(--muted);
 }
 
 .clima-daily-condition {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: var(--muted-soft);
     text-transform: capitalize;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .clima-daily-details {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    margin-top: auto;
-    padding-top: 8px;
+    gap: 8px;
+    margin-top: 4px;
+    padding-top: 6px;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
@@ -4812,10 +4846,10 @@ ol.protocol-list > li { counter-increment: passo; }
 .clima-daily-humidity {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
-    font-size: 0.75rem;
+    gap: 4px;
+    font-size: 0.7rem;
     color: var(--muted);
-    padding: 4px 10px;
+    padding: 3px 8px;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 999px;
 }
@@ -4863,7 +4897,7 @@ ol.protocol-list > li { counter-increment: passo; }
 
 .clima-insight-icon {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: center;
     width: 48px;
     height: 48px;

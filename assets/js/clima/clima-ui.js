@@ -481,12 +481,64 @@ function bindEvents(container) {
 
   // Scroll indicator para horário
   const scrollContainer = container.querySelector('#clima-hourly-scroll');
+  const track = container.querySelector('#clima-hourly-track');
   if (scrollContainer) {
     scrollContainer.addEventListener('scroll', () => {
       const indicator = container.querySelector('#clima-scroll-indicator');
       if (indicator) {
         const atEnd = scrollContainer.scrollLeft + scrollContainer.clientWidth >= scrollContainer.scrollWidth - 10;
         indicator.hidden = atEnd;
+      }
+
+      // Esconde/ mostra temperatures baseado na posição do scroll
+      if (track) {
+        const temps = track.querySelectorAll('.clima-hourly-temp');
+        temps.forEach((temp, index) => {
+          const card = temp.closest('.clima-hourly-card');
+          if (card) {
+            const cardRect = card.getBoundingClientRect();
+            const containerRect = scrollContainer.getBoundingClientRect();
+            const isVisible = cardRect.right > containerRect.left && cardRect.left < containerRect.right;
+            const isNearEnd = scrollContainer.scrollLeft + scrollContainer.clientWidth >= scrollContainer.scrollWidth - 50;
+
+            // Esconde se não está visível OU se está no final
+            if (!isVisible || isNearEnd) {
+              temp.classList.add('hidden');
+            } else {
+              temp.classList.remove('hidden');
+            }
+          }
+        });
+      }
+    });
+  }
+
+  // Click nas temperaturas horárias para scroll suave
+  if (track) {
+    track.addEventListener('click', (e) => {
+      const temp = e.target.closest('.clima-hourly-temp');
+      if (temp) {
+        const card = temp.closest('.clima-hourly-card');
+        if (card) {
+          const cardRect = card.getBoundingClientRect();
+          const containerRect = scrollContainer.getBoundingClientRect();
+          const isLastCard = card === track.lastElementChild;
+
+          if (isLastCard) {
+            // Se clicar no último card, vai para o final
+            scrollContainer.scrollTo({
+              left: scrollContainer.scrollWidth,
+              behavior: 'smooth'
+            });
+          } else {
+            // Scroll para centralizar o card clicado
+            const scrollLeft = card.offsetLeft - (scrollContainer.clientWidth / 2) + (card.offsetWidth / 2);
+            scrollContainer.scrollTo({
+              left: Math.max(0, scrollLeft),
+              behavior: 'smooth'
+            });
+          }
+        }
       }
     });
   }
@@ -745,13 +797,15 @@ function renderDailyCard(day, index) {
 
   return `
     <article class="clima-daily-card has-glow" role="listitem" aria-label="${formatDate(day.dt, day.timezoneOffset)}: mínima ${formatTemperature(day.tempMin, false)}, máxima ${formatTemperature(day.tempMax, false)}, ${description}${pop ? `, chuva ${pop}` : ''}">
-      <time class="clima-daily-date" datetime="${day.date}">${formatDate(day.dt, day.timezoneOffset)}</time>
-      <span class="material-symbols-rounded clima-daily-icon ${iconClass}" aria-hidden="true">${icon}</span>
-      <div class="clima-daily-temps">
-        <span class="clima-daily-max">${formatTemperature(day.tempMax)}</span>
-        <span class="clima-daily-min">${formatTemperature(day.tempMin)}</span>
+      <div class="clima-daily-main">
+        <time class="clima-daily-date" datetime="${day.date}">${formatDate(day.dt, day.timezoneOffset)}</time>
+        <span class="material-symbols-rounded clima-daily-icon ${iconClass}" aria-hidden="true">${icon}</span>
+        <div class="clima-daily-temps">
+          <span class="clima-daily-max">${formatTemperature(day.tempMax)}</span>
+          <span class="clima-daily-min">${formatTemperature(day.tempMin)}</span>
+        </div>
+        <span class="clima-daily-condition">${description}</span>
       </div>
-      <span class="clima-daily-condition">${description}</span>
       <div class="clima-daily-details">
         ${pop && pop !== '0%' ? `<span class="clima-daily-pop" title="Probabilidade de chuva"><span class="material-symbols-rounded" aria-hidden="true">grain</span>${pop}</span>` : ''}
         ${precip ? `<span class="clima-daily-precip" title="Volume de chuva"><span class="material-symbols-rounded" aria-hidden="true">water_drop</span>${precip}</span>` : ''}
