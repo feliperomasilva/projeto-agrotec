@@ -2425,6 +2425,14 @@ body[data-view="sos"] .background-container {
         linear-gradient(180deg, rgba(5, 7, 12, 0.55) 0%, rgba(5, 7, 12, 0.38) 38%, rgba(5, 7, 12, 0.42) 62%, rgba(5, 7, 12, 0.62) 100%);
 }
 
+/* Escurecimento extra apenas para o background da aba Clima —
+   melhora a legibilidade dos textos brancos sobre a imagem de céu/nuvens */
+#bg-clima::after {
+    background:
+        radial-gradient(120% 80% at 50% 20%, transparent 45%, rgba(3, 5, 9, 0.65) 100%),
+        linear-gradient(180deg, rgba(5, 7, 12, 0.72) 0%, rgba(5, 7, 12, 0.55) 38%, rgba(5, 7, 12, 0.58) 62%, rgba(5, 7, 12, 0.78) 100%);
+}
+
 .bg-image.active {
     opacity: 1;
     transform: scale(1); 
